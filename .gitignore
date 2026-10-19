@@ -28,3 +28,6 @@ manim-math-video/examples/**/media/
 manim-math-video/examples/**/voice/
 manim-math-video/examples/**/output/
 manim-math-video/examples/**/qa/
+
+# Local quick-start output
+my-series/
