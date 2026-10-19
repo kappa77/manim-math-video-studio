@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "skill_version": "1.0.0",
+  "created_at": "2026-01-01T00:00:00Z",
+  "series": {
+    "title": "Path of Knowledge",
+    "slug": "path-of-knowledge",
+    "season": 1,
+    "episode_number": 1,
+    "template": "clean-light",
+    "premise": "One mathematical idea per episode, built from a question to a visual proof.",
+    "audience": "Curious adults and first-year university students.",
+    "visual_motif": "A thin accent line becomes the graph, the proof, or the path.",
+    "consistency_note": null,
+    "defaults": {
+      "quality": "standard",
+      "language": "en-US",
+      "voice": {
+        "provider": "edge",
+        "id": "en-US-AvaMultilingualNeural",
+        "style": "warm-teacher",
+        "rate": "-3%",
+        "pitch": "+0Hz"
+      }
+    }
+  },
+  "episode": {
+    "title": "Why the derivative of x² is 2x",
+    "slug": "why-derivative-x-squared",
+    "thesis": "The derivative is the limit of secant slopes, and that limit turns the geometry of x² into the algebra of 2x.",
+    "question": "Why does the slope of x² at x equal 2x, rather than something that still depends on h?",
+    "audience": "First-year calculus students who know functions and slopes but are shaky on limits.",
+    "prerequisites": [
+      "functions",
+      "slope of a line",
+      "informal limits"
+    ],
+    "goals": [
+      "Explain the derivative as a limit of secant slopes.",
+      "Derive 2x for x² from the limit definition.",
+      "Recognize the cancellation step as the crux."
+    ],
+    "rigor": "sketch",
+    "tone": "curious, precise, unhurried",
+    "target_duration_seconds": 180,
+    "platform": "youtube",
+    "aspect_ratio": "16:9",
+    "key_points": [
+      "A secant slope is an average rate.",
+      "The limit turns average into instantaneous.",
+      "The h cancels before h reaches zero."
+    ],
+    "misconceptions": [
+      "The derivative is just a formula to memorize.",
+      "Setting h to zero is allowed before cancelling.",
+      "The tangent is the secant at a single point."
+    ],
+    "visuals": [
+      "Secant line closing onto a tangent as h shrinks.",
+      "The rise/run triangle with h and f(x+h)-f(x) labeled.",
+      "The graph of x² with the tangent slope at x = 1."
+    ],
+    "next_teaser": "What happens when the function is not a parabola?",
+    "previous_recap": null
+  },
+  "output": {
+    "quality": "standard",
+    "language": "en-US",
+    "subtitle_language": "en",
+    "captions": true,
+    "latex_fallback": false,
+    "music": null,
+    "music_gain_db": -24,
+    "voice": {
+      "provider": "edge",
+      "id": "en-US-AvaMultilingualNeural",
+      "style": "warm-teacher",
+      "rate": "-3%",
+      "pitch": "+0Hz",
+      "volume": "+0%",
+      "command": null,
+      "piper_model": null
+    }
+  },
+  "accuracy": {
+    "notation": [
+      "Use f'(x) for the derivative; do not mix Leibniz and Newton notation in one derivation.",
+      "Use \\mathbb{R} for the domain unless a restriction is stated."
+    ],
+    "conventions": "Angles in radians. Decimal point, not comma.",
+    "pronunciations": {
+      "Euler": "OY-ler",
+      "Riemann": "REE-mahn"
+    },
+    "sources": [
+      "Stewart, Calculus, chapter 2 (for the limit definition)"
+    ],
+    "claims_to_verify": [
+      "The cancellation is valid for h ≠ 0.",
+      "The limit of 2x + h is 2x."
+    ],
+    "reviewed_by": null
+  }
+}

@@ -1,0 +1,30 @@
+# Generated media and caches
+.tmp_*/
+.tmp_*
+media/
+*.pyc
+__pycache__/
+.pytest_cache/
+.tmp_manim/
+test.mp3
+test.wav
+
+# Episode outputs (keep small examples only)
+**/media/
+**/__pycache__/
+**/.venv/
+**/voice/*.mp3
+**/voice/*.wav
+**/voice/*.part
+**/output/*.mp4
+**/qa/contact_sheet.jpg
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Demo generated artifacts (regenerate with scripts/tts.py and scripts/render.py)
+manim-math-video/examples/**/media/
+manim-math-video/examples/**/voice/
+manim-math-video/examples/**/output/
+manim-math-video/examples/**/qa/

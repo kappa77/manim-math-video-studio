@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-19T09:42:40Z",
+  "series": {
+    "title": "Path of Knowledge",
+    "slug": "path-of-knowledge",
+    "season": 1,
+    "premise": "One mathematical idea per episode, built from a question to a visual proof.",
+    "audience": "Curious adults and first-year university students.",
+    "visual_motif": "A thin accent line becomes the graph, the proof, or the path.",
+    "template": "clean-light",
+    "template_version": "1.0.0"
+  },
+  "defaults": {
+    "quality": "standard",
+    "language": "en-US",
+    "voice": {
+      "provider": "edge",
+      "id": "en-US-AvaMultilingualNeural",
+      "style": "warm-teacher",
+      "rate": "-3%",
+      "pitch": "+0Hz",
+      "volume": "+0%"
+    }
+  },
+  "episodes": [
+    {
+      "id": "s01e001",
+      "season": 1,
+      "number": 1,
+      "title": "Why the derivative of x² is 2x",
+      "slug": "why-derivative-x-squared",
+      "path": "episodes/001-why-derivative-x-squared",
+      "template": "clean-light",
+      "quality": "standard",
+      "language": "en-US",
+      "voice": "en-US-AvaMultilingualNeural",
+      "status": "draft",
+      "created_at": "2026-10-19T10:14:06Z"
+    }
+  ],
+  "updated_at": "2026-10-19T10:14:06Z"
+}

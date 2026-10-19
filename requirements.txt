@@ -1,0 +1,5 @@
+manim>=0.19
+edge-tts>=6.1
+av>=12
+pillow>=10
+numpy>=1.24
