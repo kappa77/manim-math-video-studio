@@ -4,14 +4,62 @@ A portable [Agent Skill](https://agentskills.io/specification) for turning a the
 
 The agent interviews the user about the **content**, not just the topic: central question or narrative promise, audience, crux or progression, visual approach, and takeaway. It then locks four production parameters (**quality, voice, language, template**), scaffolds the episode, generates narration with timing, renders the selected visuals, and runs a QA pass. Mathematics is one supported subject; the same workflow serves history, science, technology, literature, philosophy, art, tutorials, and narrative videos.
 
+## Install
+
+One command. It installs the skill for every agent it finds on this machine and prepares a single shared Python environment.
+
+**macOS / Linux**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.sh | bash
+```
+
+**Windows (PowerShell)**
+
+```powershell
+irm https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.ps1 | iex
+```
+
+Two commands at worst, if you prefer not to pipe a script into a shell:
+
+```bash
+git clone --depth 1 https://github.com/kappa77/manim-math-video-studio
+python manim-math-video-studio/install.py
+```
+
+Then restart your agent and invoke the skill with `/manim-math-video` (Claude Code, Copilot), `$manim-math-video` (Codex), or `/skill:manim-math-video` (Pi).
+
+What the installer does:
+
+1. copies the prebuilt skill tree into the personal skill root of each agent it detects — `~/.claude/skills/`, `~/.codex/skills/`, `~/.copilot/skills/`, `~/.pi/agent/skills/`;
+2. creates one shared environment at `~/.manim-math-video/venv` and installs `requirements.txt` (Manim, edge-tts, PyAV, Pillow, NumPy), using `uv` when it is available to keep the install near a minute;
+3. records `~/.manim-math-video/install.json`, runs `check_env.py`, and prints the invocation syntax per agent.
+
+Options — for the piped form, pass them after `bash -s --`:
+
+```bash
+... | bash -s -- --platform claude          # one agent; also: codex, copilot, pi, all
+... | bash -s -- --with-latex               # also install LaTeX + dvisvgm for equation beats
+... | bash -s -- --root ./skills            # install into a directory of your choice
+... | bash -s -- --dry-run                  # print the plan, change nothing
+... | bash -s -- --uninstall                # remove the skills and the shared environment
+```
+
+PowerShell takes the same options as parameters: `.\install.ps1 -Platform codex -WithLatex`.
+
+Pin a release with `MMS_REF=v0.1.0`, or install from a fork with `MMS_REPO=owner/name`. Set `MMS_REF` to a branch name to track `main` deliberately.
+
 ## What is in this repository
 
 ```text
-INSTALL.md                       # installation guide for all four agents
+install.sh / install.ps1          # one-command installers: macOS/Linux, Windows
+install.py                        # installer logic: skill trees + one shared environment
+VERSION                           # release version, used for pinning and updates
+INSTALL.md                        # install guide: options, layout, update, uninstall
 
 scripts/
-├── check_env.py                 # repo-root wrapper for the skill env check
-└── setup.py                     # create .venv and install all requirements
+├── check_env.py                  # repo-root wrapper for the skill env check
+└── setup.py                      # repo-only helper: create .venv and install requirements
 
 manim-math-video/
 ├── SKILL.md                     # routing description + workflow instructions
@@ -73,19 +121,15 @@ python platforms/build.py --check
 
 ## Requirements
 
+`install.py` provides all of this. The list matters only if you set up an environment by hand.
+
 - Python 3.10+
 - Manim Community 0.19+ (0.22+ recommended)
 - `edge-tts` (default narration), or Piper / a custom TTS command
 - PyAV (audio conversion and QA) and Pillow (contact sheets)
 - A LaTeX distribution for equation beats (`latex` + `dvisvgm`)
 
-Recommended, from the repository root:
-
-```bash
-python scripts/setup.py
-```
-
-This creates `.venv`, installs `requirements.txt`, and runs the environment check. Manual setup:
+Manual setup, on top of an existing skill installation:
 
 ```bash
 python -m venv .venv
@@ -104,11 +148,22 @@ python scripts/check_env.py
 
 The check colors `ok`, `warn`, `optional`, and `fail` in a terminal. Use `--color always` to force color in captured output, `--no-color` to disable it, and `--json` for machine-readable output.
 
-`check_env.py` and `render.py` find Manim in the active environment, a local `.venv`, or `MANIM_BIN` before falling back to PATH. On Windows, the Manim CLI is often installed in `%APPDATA%\Python\Python314\Scripts`; add that directory to PATH if you want `manim` available outside the venv.
+### Which Python and Manim the scripts use
+
+The scripts resolve the runtime in this order, so a plain `python scripts/render.py` works without activating anything:
+
+1. `MANIM_BIN`, then the interpreter running the script;
+2. `MANIM_STUDIO_VENV`, then the shared environment at `~/.manim-math-video/venv`;
+3. a `.venv` or `venv` in the working directory or any parent (so a repository `.venv` still wins), or beside the skill directory;
+4. `manim` on `PATH`.
+
+If the interpreter that starts a script lacks NumPy, Manim, PyAV, or Pillow, the script re-executes itself once with the shared environment and says so. Disable that with `MANIM_STUDIO_NO_REEXEC=1`.
 
 ## Install LaTeX + dvisvgm
 
 LaTeX is only needed for **equation beats**. Graphs, narration, captions, and titles work without it. Manim uses the `latex` compiler and `dvisvgm` to turn equations into SVG.
+
+`install.py --with-latex` installs MiKTeX through `winget` on Windows and BasicTeX through `brew` on macOS, then verifies both commands. The manual routes below cover Linux and custom setups.
 
 ### Windows (recommended: MiKTeX)
 
@@ -201,9 +256,9 @@ python scripts/check_env.py
 
 `LaTeX` and `dvisvgm` should both show `ok`. More installation and failure notes are in `manim-math-video/references/troubleshooting.md`.
 
-## Install for your agent
+## Manual install per agent
 
-The repository ships installable builds for Claude Code, Codex, GitHub Copilot, and Pi. Pick the matching tree from `dist/` and copy its `manim-math-video` directory into a skill root. Detailed per-agent guides, including PowerShell commands, project installs, update, and uninstall, are in [INSTALL.md](INSTALL.md).
+The installer covers this section. It stays here for project installs, for pinning a build by hand, and for machines where you cannot run a script. The repository ships installable builds for Claude Code, Codex, GitHub Copilot, and Pi: pick the matching tree from `dist/` and copy its `manim-math-video` directory into a skill root. Detailed per-agent guides are in [INSTALL.md](INSTALL.md).
 
 ### Claude Code
 
@@ -278,7 +333,7 @@ See `platforms/README.md` for the differences between frontmatter, metadata, and
 
 ## Quick start
 
-First run `python scripts/setup.py` once from the repository root: it creates `.venv`, installs all dependencies, and checks the environment. Activate `.venv` or call its Python directly for the commands below.
+Run the installer once; it creates the shared environment and checks it. Then work from the skill directory; the scripts find that environment on their own.
 
 ```bash
 cd manim-math-video

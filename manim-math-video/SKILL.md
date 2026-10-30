@@ -24,7 +24,7 @@ The identifier `manim-math-video` is retained for existing invocations. It does 
 <!-- platform-usage:start -->
 ## Using this skill
 
-Requirements: Python 3.10+, Manim Community 0.19+, edge-tts 6+; LaTeX for equation beats; PyAV or ffmpeg for audio conversion. Run `scripts/check_env.py` to determine which dependencies are actually available before rendering. Skill installation alone does not install them.
+Requirements: Python 3.10+, Manim Community 0.19+, edge-tts 6+; LaTeX for equation beats; PyAV or ffmpeg for audio conversion. `install.py` (or `install.sh` / `install.ps1`) creates a shared environment at `~/.manim-math-video/venv`, and `scripts/*.py` switch to it automatically when the interpreter on `PATH` lacks the dependencies, so `python scripts/<name>.py` works without activating anything. Run `scripts/check_env.py` to confirm which dependencies are actually available before rendering; it reports `fail` rows as blocking. If the skill was copied by hand, install `requirements.txt` yourself.
 
 Resolve scripts, assets, and references relative to the directory containing this `SKILL.md`, even when the working directory is another project. Invoke scripts by absolute path and use absolute paths for brief files and episode output directories. Keep generated series and media in the user's workspace, outside the installed skill directory. Use the user's conversation language for questions and explanations; set narration language separately in the brief.
 

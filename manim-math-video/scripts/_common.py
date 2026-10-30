@@ -28,12 +28,69 @@ VOICES_PATH = ASSETS / "voices.json"
 MANIM_NAMES = ("manim.exe", "manim.cmd", "manim") if os.name == "nt" else ("manim",)
 
 
+MANAGED_VENV = Path.home() / ".manim-math-video" / "venv"
+#: Modules that must exist for the scripts to run; used by ensure_runtime().
+RUNTIME_MODULES = ("numpy", "manim", "av", "PIL")
+
+
+def _shared_venv_roots() -> list[Path]:
+    """Environments created by install.py, honoured before PATH."""
+    roots: list[Path] = []
+    override = os.environ.get("MANIM_STUDIO_VENV", "").strip()
+    if override:
+        roots.append(Path(override).expanduser())
+    roots.append(MANAGED_VENV)
+    return roots
+
+
+def managed_venv_python() -> Path | None:
+    """Return the interpreter of the shared environment installed by install.py."""
+    binary = "Scripts/python.exe" if os.name == "nt" else "bin/python"
+    for root in _shared_venv_roots():
+        candidate = root / binary
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def ensure_runtime() -> None:
+    """Re-exec this script with the shared environment when dependencies are missing.
+
+    The skill is installed by ``install.py``, which prepares one environment at
+    ``~/.manim-math-video/venv``. Agents often call ``python scripts/render.py``
+    with whatever interpreter is on PATH, which would miss Manim and PyAV. Rather
+    than failing, switch to the prepared interpreter once. Set
+    ``MANIM_STUDIO_NO_REEXEC=1`` to disable.
+    """
+    if os.environ.get("MANIM_STUDIO_NO_REEXEC") or os.environ.get("MANIM_STUDIO_REEXEC"):
+        return
+    try:
+        if all(importlib.util.find_spec(name) is not None for name in RUNTIME_MODULES):
+            return
+    except (ImportError, ValueError):
+        pass
+    python = managed_venv_python()
+    if python is None:
+        return
+    try:
+        if Path(python).resolve() == Path(sys.executable).resolve():
+            return
+    except OSError:
+        pass
+    os.environ["MANIM_STUDIO_REEXEC"] = "1"
+    print(f"[manim-math-video] using the managed environment: {python}", file=sys.stderr, flush=True)
+    try:
+        os.execv(str(python), [str(python), *sys.argv])
+    except OSError:
+        pass
+
+
 def _venv_script_directories() -> list[Path]:
     binary_dir = "Scripts" if os.name == "nt" else "bin"
     roots: list[Path] = []
     for base in (Path.cwd(), *Path.cwd().parents):
         roots.extend((base / ".venv", base / "venv"))
-    roots.extend((SKILL_ROOT.parent / ".venv", SKILL_ROOT / ".venv"))
+    roots.extend((SKILL_ROOT.parent / ".venv", SKILL_ROOT / ".venv", *_shared_venv_roots()))
     return [root / binary_dir for root in roots]
 
 
@@ -691,3 +748,7 @@ def validate_manifest(manifest: dict[str, Any], storyboard: dict[str, Any]) -> t
     if total <= 0:
         errors.append("Voice manifest total_duration must be positive.")
     return errors, warnings
+
+# Switch to the shared environment prepared by install.py when this interpreter
+# lacks the runtime dependencies, so `python scripts/render.py` just works.
+ensure_runtime()
