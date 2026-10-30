@@ -75,7 +75,7 @@ agent detected, the installer falls back to Claude Code and says so; pass
 | `--dry-run` | print the plan and exit |
 | `--uninstall` | remove the installed skills and the shared environment |
 | `--source DIR` | use a local checkout instead of downloading |
-| `--ref REF` | git ref to download: `main` (default), a branch, or `v0.1.0` |
+| `--ref REF` | git ref to download: `main` (default), a branch, or `v0.2.0` |
 | `--quiet` / `--verbose` | hide command lines / show full `pip` output |
 With the piped installer, pass flags after `bash -s --`. With the universal one-liner, append them after the closing quote:
 
@@ -91,7 +91,7 @@ If a shell mangles the trailing flags, use the environment instead: `MMS_ARGS="-
 With PowerShell, use the parameter form: `.\install.ps1 -Platform codex -WithLatex`.
 
 Environment overrides: `MMS_REPO=owner/name` installs from a fork,
-`MMS_REF=v0.1.0` pins a release, `MMS_REF=<branch>` tracks another branch.
+`MMS_REF=v0.2.0` pins a release, `MMS_REF=<branch>` tracks another branch.
 ## Verify
 
 ```bash

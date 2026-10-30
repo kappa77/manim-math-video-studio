@@ -17,7 +17,7 @@ Other routes — `curl -fsSL …/install.sh | bash`, `irm …/install.ps1 | iex`
 
 ![The birthday-problem episode: the probability curve for a shared birthday rising through 23 people at 50.7%](docs/img/demo.gif)
 
-*"Why 23 people are enough for a shared birthday" — 2½ minutes, produced end to end by the skill: brief → storyboard → narration → render → QA. [Watch the full episode](https://github.com/kappa77/manim-math-video-studio/releases/download/v0.1.0/manim-math-video-demo-23-people-1080p.mp4) (1080p, subtitles included).*
+*"Why 23 people are enough for a shared birthday" — 2½ minutes, produced end to end by the skill: brief → storyboard → narration → render → QA. [Watch the full episode](https://github.com/kappa77/manim-math-video-studio/releases/download/v0.2.0/manim-math-video-demo-23-people-1080p.mp4) (1080p, subtitles included).*
 
 ## What it does
 

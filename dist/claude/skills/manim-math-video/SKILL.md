@@ -3,7 +3,7 @@ name: manim-math-video
 description: Develop any topic into a storyboarded, narrated animated video with subtitles using Manim. Use for planning, researching, scripting, animating, voicing, rendering, or reviewing educational, historical, scientific, technical, cultural, or narrative videos and series.
 license: MIT
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
   category: video
 argument-hint: "[topic, brief.json, or episode directory]"
 ---
