@@ -6,19 +6,27 @@ directories by hand.
 
 ## Quick start
 
-**macOS / Linux**
+One command, identical on macOS, Linux, and Windows:
 
 ```bash
+python -c "import urllib.request as u;exec(u.urlopen('https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.py').read().decode())"
+```
+
+It needs only Python 3.10+ (Windows: `winget install --id Python.Python.3.12 -e`, macOS: `brew install python`, Debian/Ubuntu: `sudo apt install python3`). Use `python` or `py` — the line is the same in PowerShell, `cmd`, bash, and zsh.
+
+Shorter native wrappers, one per platform:
+
+```bash
+# macOS / Linux
 curl -fsSL https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.sh | bash
 ```
 
-**Windows (PowerShell)**
-
 ```powershell
+# Windows
 irm https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.ps1 | iex
 ```
 
-Two commands at worst, without piping a script into a shell:
+Two commands at worst, with no download-through-a-pipe at all:
 
 ```bash
 git clone --depth 1 https://github.com/kappa77/manim-math-video-studio
@@ -67,13 +75,16 @@ agent detected, the installer falls back to Claude Code and says so; pass
 | `--dry-run` | print the plan and exit |
 | `--uninstall` | remove the installed skills and the shared environment |
 | `--quiet` / `--verbose` | hide command lines / show full `pip` output |
-
-With the piped installer, pass flags after `bash -s --`:
+With the piped installer, pass flags after `bash -s --`. With the universal one-liner, append them after the closing quote:
 
 ```bash
 curl -fsSL .../install.sh | bash -s -- --platform claude --with-latex
 curl -fsSL .../install.sh | bash -s -- --dry-run
+
+python -c "..." --platform claude --with-latex
 ```
+
+If a shell mangles the trailing flags, use the environment instead: `MMS_ARGS="--platform claude --with-latex"`.
 
 With PowerShell, use the parameter form: `.\install.ps1 -Platform codex -WithLatex`.
 
@@ -200,11 +211,12 @@ for subtitle burn-in and audio normalization.
 
 ## Update
 
-Run the installer again. It replaces the skill trees in place and leaves the
-shared environment alone when the requirements are already satisfied:
+Run the same one command again — the installer is idempotent. It replaces the
+skill trees in place and leaves the shared environment alone when the
+requirements are already satisfied:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.sh | bash
+python -c "import urllib.request as u;exec(u.urlopen('https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.py').read().decode())"
 ```
 
 Force a dependency refresh with `--venv` pointing at a new directory, or delete

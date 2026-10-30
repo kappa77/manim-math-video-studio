@@ -19,6 +19,7 @@ import argparse
 import json
 import os
 import platform as platform_module
+import shlex
 import shutil
 import subprocess
 import sys
@@ -89,7 +90,7 @@ def looks_like_source(root: Path) -> bool:
 def download_source(ref: str, destination: Path) -> Path:
     """Download the repository archive for `ref` and return the extracted root."""
     kind = "tags" if ref.startswith("v") else "heads"
-    url = f"https://codeload.github.com/{REPO}/{kind}/refs/{ref}"
+    url = f"https://codeload.github.com/{REPO}/tar.gz/refs/{kind}/{ref}"
     say(f"    fetching {REPO}@{ref}")
     archive = destination / "repo.archive"
     try:
@@ -129,8 +130,10 @@ def resolve_source(explicit: str | None) -> tuple[Path, "tempfile.TemporaryDirec
             die(f"--source {root} is not a checkout of this repository")
         return root, None
 
-    here = Path(__file__).resolve().parent
-    if looks_like_source(here):
+    # When exec'd from a URL (`python -c "...exec(urlopen(...))"`) there is no
+    # __file__, so fall through to the download path.
+    here = Path(globals()["__file__"]).resolve().parent if "__file__" in globals() else None
+    if here is not None and looks_like_source(here):
         return here, None
 
     holder = tempfile.TemporaryDirectory(prefix="mms-install-")
@@ -428,8 +431,8 @@ def uninstall(dry_run: bool) -> int:
     state = read_state()
     targets = dict(state.get("platforms", {}))
     if not targets:
+        manifest = load_manifest(resolve_source(None)[0])
         for name in PLATFORMS:
-            manifest = load_manifest(Path(__file__).resolve().parent)
             targets[name] = str(target_dir(name, manifest, None))
     venv = Path(state.get("venv", DEFAULT_VENV)).expanduser()
     step("Removing installed skills" + (" (dry run)" if dry_run else ""))
@@ -470,6 +473,13 @@ def build_plan(root: Path, manifest: dict, platforms: list[str], root_override: 
 
 
 def main(argv: list[str] | None = None) -> int:
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    # Flags are awkward to append to the universal `python -c` one-liner, so
+    # accept them from the environment too.
+    extra = os.environ.get("MMS_ARGS", "").strip()
+    if extra:
+        arguments = [*shlex.split(extra), *arguments]
+
     parser = argparse.ArgumentParser(
         prog="install.py",
         description="Install the manim-math-video skill for your agents.",
@@ -494,11 +504,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--uninstall", action="store_true", help="remove the installed skills and environment")
     parser.add_argument("--quiet", action="store_true", help="hide subprocess commands")
     parser.add_argument("--verbose", action="store_true", help="show full pip output")
-    args = parser.parse_args(argv)
+    args = parser.parse_args(arguments)
 
     global ECHO, VERBOSE
     ECHO = not args.quiet
     VERBOSE = args.verbose
+
 
     if args.uninstall:
         return uninstall(args.dry_run)

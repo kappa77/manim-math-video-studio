@@ -6,28 +6,36 @@ The agent interviews the user about the **content**, not just the topic: central
 
 ## Install
 
-One command. It installs the skill for every agent it finds on this machine and prepares a single shared Python environment.
-
-**macOS / Linux**
+One command, identical on macOS, Linux, and Windows. It installs the skill for every agent it finds on this machine and prepares a single shared Python environment. The only prerequisite is Python 3.10+ already on the machine.
 
 ```bash
+python -c "import urllib.request as u;exec(u.urlopen('https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.py').read().decode())"
+```
+
+Windows: use `python` or `py` from PowerShell or `cmd` — same line, no edits. No Python yet? `winget install --id Python.Python.3.12 -e` (Windows), `brew install python` (macOS), `sudo apt install python3` (Debian/Ubuntu).
+
+Add options after the closing quote, for example `--platform codex` or `--dry-run`. If your shell mangles them, set `MMS_ARGS="--platform codex"` instead.
+
+Shorter variants, if you prefer a native wrapper:
+
+```bash
+# macOS / Linux
 curl -fsSL https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.sh | bash
 ```
 
-**Windows (PowerShell)**
-
 ```powershell
+# Windows
 irm https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.ps1 | iex
 ```
 
-Two commands at worst, if you prefer not to pipe a script into a shell:
+Two commands at worst, without downloading a script from a URL at all:
 
 ```bash
 git clone --depth 1 https://github.com/kappa77/manim-math-video-studio
 python manim-math-video-studio/install.py
 ```
 
-Then restart your agent and invoke the skill with `/manim-math-video` (Claude Code, Copilot), `$manim-math-video` (Codex), or `/skill:manim-math-video` (Pi).
+Then restart your agent and invoke the skill with `/manim-math-video` (Claude Code, Copilot), `$manim-math-video` (Codex), or `/skill:manim-math-video` (Pi). Running the same command again updates an existing installation and is safe to repeat.
 
 What the installer does:
 
@@ -35,14 +43,14 @@ What the installer does:
 2. creates one shared environment at `~/.manim-math-video/venv` and installs `requirements.txt` (Manim, edge-tts, PyAV, Pillow, NumPy), using `uv` when it is available to keep the install near a minute;
 3. records `~/.manim-math-video/install.json`, runs `check_env.py`, and prints the invocation syntax per agent.
 
-Options — for the piped form, pass them after `bash -s --`:
+Options — append them to the one-liner, pass them after `bash -s --` for the wrapper, or set `MMS_ARGS`:
 
 ```bash
-... | bash -s -- --platform claude          # one agent; also: codex, copilot, pi, all
-... | bash -s -- --with-latex               # also install LaTeX + dvisvgm for equation beats
-... | bash -s -- --root ./skills            # install into a directory of your choice
-... | bash -s -- --dry-run                  # print the plan, change nothing
-... | bash -s -- --uninstall                # remove the skills and the shared environment
+... --platform claude          # one agent; also: codex, copilot, pi, all
+... --with-latex               # also install LaTeX + dvisvgm for equation beats
+... --root ./skills            # install into a directory of your choice
+... --dry-run                  # print the plan, change nothing
+... --uninstall                # remove the skills and the shared environment
 ```
 
 PowerShell takes the same options as parameters: `.\install.ps1 -Platform codex -WithLatex`.
