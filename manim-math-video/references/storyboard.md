@@ -1,5 +1,7 @@
 # The storyboard
 
+The mathematical examples below demonstrate the format. For other topics, use a chronology, explanation, procedure, comparison, analysis, or narrative. Graphs, equations, and misconceptions are optional. Use an `image` beat for an existing illustration and implement `custom_beat` for animated timelines, maps, flowcharts, or character scenes; those are not built-in beat kinds.
+
 `storyboard.json` is the bridge between the argument and the render. It is machine-readable, so the default `Episode` scene can render every standard beat without handwritten Manim code, and it is human-readable, so the voice, pacing, and visuals can be reviewed before a single frame is rendered.
 
 The schema is `assets/storyboard.schema.json`. A filled example is `assets/storyboard.example.json`.
@@ -319,10 +321,10 @@ title/hook -> one visual -> one equation or comparison -> takeaway -> next
 - Does the first 10 seconds state the question and promise?
 - Does each beat advance the chain, not just decorate it?
 - Is the crux given the most time and the clearest visual?
-- Is there exactly one misconception?
+- If a misconception is relevant, is its correction supported and clear?
 - Does the recap use the same words as the chain?
 - Does the outro ask a real next question?
 - Is every graph necessary?
-- Is every equation checked?
+- Are factual claims, quotations, chronology, and any equations checked as appropriate?
 - Does the estimated duration match the target?
 - Are the spoken forms of symbols and names correct?

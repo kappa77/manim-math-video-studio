@@ -1,0 +1,7 @@
+interface:
+  display_name: "Manim Video Studio"
+  short_description: "Turn any topic into a narrated, storyboarded Manim video"
+  default_prompt: "Use $manim-math-video to turn the topic I describe into a narrated animated video with subtitles."
+  brand_color: "#2563EB"
+policy:
+  allow_implicit_invocation: true

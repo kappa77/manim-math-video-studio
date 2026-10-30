@@ -1,29 +1,47 @@
 # Voice, language, and pronunciation
 
-The voice is part of the series identity. Choose it once, record it, and reuse it. The default provider is **edge-tts** because it is free, has broad language coverage, and returns word boundaries for captions. The pipeline can also use a custom command (ElevenLabs, OpenAI TTS, Piper, a local model) or run silently for timing drafts.
+The voice is part of the series identity. Select it explicitly before producing a new video; for later episodes ask the user to confirm the saved voice. Reuse a choice already made for the current episode without asking again. The default provider is **edge-tts** because it is free, has broad language coverage, and returns word boundaries for captions. The pipeline can also use a custom command (ElevenLabs, OpenAI TTS, Piper, a local model) or run silently for timing drafts.
 
 ## Selection order
 
 1. Ask for the **narration language and locale** (for example `en-US`, `it-IT`, `es-MX`).
 2. Ask for the **delivery style** (`warm-teacher`, `calm-documentary`, `energetic-explainer`, `authoritative-lecturer`, `friendly-conversational`).
-3. Pick the default voice for that locale and style from `assets/voices.json`, or let the user name a voice.
-4. Confirm **rate** and **pitch**. Start with the style defaults; adjust only if the sample sounds wrong.
-5. Record all of it in `brief.json`:
+3. Before production, generate **three playable samples of about 6-12 seconds** in that locale, using the same topic-relevant sentence, rate, and pitch for a fair comparison. Use distinct available voices, with varied timbres when possible. Catalog defaults are candidates to recommend, not automatic selections.
 
-```json
-"output": {
-  "language": "en-US",
-  "subtitle_language": "en",
-  "voice": {
-    "provider": "edge",
-    "id": "en-US-AvaMultilingualNeural",
-    "style": "warm-teacher",
-    "rate": "-3%",
-    "pitch": "+0Hz",
-    "volume": "+0%"
-  }
-}
-```
+   ```bash
+   python scripts/voice_samples.py --language it-IT --style warm-teacher \
+     --text "In questa puntata seguiamo un'idea dalla prima domanda al momento in cui tutto si chiarisce."
+   ```
+
+   This writes numbered MP3 files and `voice-samples/samples.json` with the exact ids, labels, and durations. Use `--voices` to preselect candidates, `--list` to inspect the catalog, and `--force` to regenerate. The script supports edge-tts, Piper, and a custom command.
+
+4. Display the samples inline, numbered and labelled with their names and exact voice ids. Ask the user which one to use and **wait for an explicit numbered or named choice**. A clear instruction such as "use Isabella" or "reuse the series voice" for this episode also counts; do not repeat a choice already made. General assent to a theme or brief does not identify a narrator.
+5. Confirm **rate** and **pitch** through the sample settings; change them only if requested or if pronunciation/pacing needs correction. If the user delegates voice choice, recommend one sample and ask them to confirm it instead of starting production.
+6. Record all of it in `brief.json`:
+
+   ```json
+   "output": {
+     "language": "en-US",
+     "subtitle_language": "en",
+     "voice": {
+       "provider": "edge",
+       "id": "en-US-AvaMultilingualNeural",
+       "style": "warm-teacher",
+       "rate": "-3%",
+       "pitch": "+0Hz",
+       "volume": "+0%"
+     }
+   }
+   ```
+
+## Voice-selection gate
+
+- Generate samples in the user workspace, for example `voice-samples/`, outside the installed skill. Use the existing provider and synthesize only the short comparison sentence at this stage, never the full episode.
+- Put the same 18-25 word sentence in every sample so the user compares voices rather than scripts. Include a significant place or personal name when relevant. If fewer than three suitable voices are available, offer the available choices and explain that limitation.
+- Before the user chooses, interview, source research, environment checks, and sample generation may continue. Hold episode scaffolding, the full script/storyboard, narration, and rendering until the choice is explicit.
+- For an existing series, first offer its saved narrator with a reusable sample and ask whether to keep it for this episode or hear alternatives. Only generate alternatives when needed. Do not silently inherit a narrator for a new episode.
+- If the voice was already explicitly selected for this episode, retain it and skip another question. If samples cannot be generated or played, report the limitation and ask for a named voice; do not substitute a silent video or an unselected default.
+- Record the decision in `brief.json`, for example `output.voice_selection: {"status": "confirmed", "voice_id": "it-IT-IsabellaNeural", "user_choice": "sample 2", "sample_paths": ["voice-samples/02-isabella.mp3"]}`. For an explicitly named voice or confirmed reuse, `sample_paths` may be empty. This supplements `output.voice`; it does not replace its provider/id/style/rate/pitch fields.
 
 ## Curated default voices
 

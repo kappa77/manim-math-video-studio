@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "skill": "manim-math-video",
+  "source": "manim-math-video",
+  "output": "dist",
+  "platforms": {
+    "claude": {
+      "label": "Claude Code",
+      "frontmatter_drop": [],
+      "frontmatter_add": [
+        "argument-hint: \"[topic, brief.json, or episode directory]\""
+      ],
+      "include_agents": false,
+      "install_root": "~/.claude/skills",
+      "project_root": ".claude/skills"
+    },
+    "codex": {
+      "label": "Codex",
+      "frontmatter_drop": [],
+      "frontmatter_add": [],
+      "include_agents": true,
+      "install_root": "~/.codex/skills",
+      "project_root": ".agents/skills"
+    },
+    "copilot": {
+      "label": "GitHub Copilot",
+      "frontmatter_drop": [
+        "license",
+        "metadata"
+      ],
+      "frontmatter_add": [
+        "argument-hint: \"[topic, brief.json, or episode directory]\""
+      ],
+      "include_agents": false,
+      "install_root": "~/.copilot/skills",
+      "project_root": ".github/skills"
+    },
+    "pi": {
+      "label": "Pi",
+      "frontmatter_drop": [],
+      "frontmatter_add": [],
+      "include_agents": false,
+      "install_root": "~/.pi/agent/skills",
+      "project_root": ".pi/skills"
+    }
+  }
+}

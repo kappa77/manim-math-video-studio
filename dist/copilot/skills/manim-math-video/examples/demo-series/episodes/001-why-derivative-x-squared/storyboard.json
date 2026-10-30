@@ -1,0 +1,267 @@
+{
+  "schema_version": 1,
+  "episode_id": "s01e001",
+  "episode_slug": "why-derivative-x-squared",
+  "title": "Why the derivative of x² is 2x",
+  "language": "en-US",
+  "template": "clean-light",
+  "target_duration_seconds": 180,
+  "beats": [
+    {
+      "id": "title",
+      "kind": "title",
+      "narration": "Here is a question that the derivative formula hides. At a single point, a curve has no width, so what could its slope possibly mean?",
+      "title": "Why the derivative of x² is 2x",
+      "subtitle": "A limit you can see",
+      "notes": "Open with the conceptual tension, not the formula."
+    },
+    {
+      "id": "the-question",
+      "kind": "section",
+      "narration": "The answer is a process. Start with an average slope over an interval, then shrink the interval toward a single point.",
+      "heading": "The question",
+      "subheading": "Average slope versus instantaneous slope",
+      "notes": "Set up the two quantities the episode will connect."
+    },
+    {
+      "id": "what-we-know",
+      "kind": "bullets",
+      "narration": "For a straight line, slope is rise over run. For a parabola, the slope changes at every point. So we need a slope that belongs to one point, not to an interval.",
+      "heading": "What we already know",
+      "items": [
+        "A line has one slope: rise over run.",
+        "A parabola changes steepness at every point.",
+        "An interval has an average slope; a point needs a limit."
+      ],
+      "notes": "Bridge from prior knowledge to the need for a limit."
+    },
+    {
+      "id": "secant-1-3",
+      "kind": "graph",
+      "narration": "Take x squared and two inputs, one and three. The secant line through those points has slope four. That is the average rate over the interval.",
+      "speech": "Take x squared and two inputs, one and three. The secant line through those points has slope four. That is the average rate over the interval.",
+      "heading": "Average slope on [1, 3]",
+      "notes": "This graph shows that the secant slope is an average rate because it uses two distinct inputs.",
+      "graph": {
+        "type": "cartesian",
+        "x_range": [-1, 4, 1],
+        "y_range": [-1, 10, 2],
+        "x_label": "x",
+        "y_label": "f(x)",
+        "show_ticks": true,
+        "legend": false,
+        "plots": [
+          {"expr": "x**2", "color_role": "primary", "label": "f(x) = x²"}
+        ],
+        "annotations": [
+          {"type": "point", "x": 1, "y": 1, "label": "P", "label_offset": [0.15, 0.2]},
+          {"type": "point", "x": 3, "y": 9, "label": "Q", "label_offset": [0.15, 0.2]},
+          {"type": "secant", "x1": 1, "x2": 3, "expr": "x**2", "label": "average slope = 4", "color_role": "secondary"}
+        ],
+        "animation": "draw"
+      }
+    },
+    {
+      "id": "secant-1-2",
+      "kind": "graph",
+      "narration": "Now move the second point closer: from three to two. The average slope drops to three. The interval is smaller, and the average is closer to what we want.",
+      "heading": "Shrink the interval",
+      "notes": "This graph shows the average slope changing as the interval shrinks; it motivates the limit.",
+      "graph": {
+        "type": "cartesian",
+        "x_range": [-1, 4, 1],
+        "y_range": [-1, 10, 2],
+        "x_label": "x",
+        "y_label": "f(x)",
+        "show_ticks": true,
+        "legend": false,
+        "plots": [
+          {"expr": "x**2", "color_role": "primary", "label": "f(x) = x²"}
+        ],
+        "annotations": [
+          {"type": "point", "x": 1, "y": 1, "label": "P", "label_offset": [0.15, 0.2]},
+          {"type": "point", "x": 2, "y": 4, "label": "Q", "label_offset": [0.15, 0.2]},
+          {"type": "secant", "x1": 1, "x2": 2, "expr": "x**2", "label": "average slope = 3", "color_role": "secondary"}
+        ],
+        "animation": "draw"
+      }
+    },
+    {
+      "id": "approaching-two",
+      "kind": "bullets",
+      "narration": "Keep shrinking h. The average slopes are four, three, two point five, two point one. They are converging to two, but no single average is the answer.",
+      "heading": "A sequence of averages",
+      "items": [
+        "h = 2: average slope 4",
+        "h = 1: average slope 3",
+        "h = 0.5: average slope 2.5",
+        "h = 0.1: average slope 2.1",
+        "Limit as h → 0: 2"
+      ],
+      "notes": "Make the numerical pattern explicit before the visual limit."
+    },
+    {
+      "id": "secant-to-tangent",
+      "kind": "graph",
+      "narration": "Watch the secant line as h goes to zero. The line pivots toward the tangent, and the average slope approaches two. That limiting line is the derivative at x equals one.",
+      "heading": "The secant becomes the tangent",
+      "notes": "This graph shows the crux visually: the secant line's limiting position is the tangent, and its slope is the derivative.",
+      "graph": {
+        "type": "cartesian",
+        "x_range": [-1, 4, 1],
+        "y_range": [-1, 10, 2],
+        "x_label": "x",
+        "y_label": "f(x)",
+        "show_ticks": true,
+        "legend": false,
+        "plots": [
+          {"expr": "x**2", "color_role": "primary", "label": "f(x) = x²"}
+        ],
+        "annotations": [],
+        "animation": {
+          "type": "secant_to_tangent",
+          "x": 1,
+          "h_start": 2,
+          "h_end": 0.02,
+          "expr": "x**2",
+          "show_triangle": true
+        }
+      }
+    },
+    {
+      "id": "definition",
+      "kind": "equation",
+      "narration": "Formally, the derivative is the limit of the difference quotient as h approaches zero. The quotient is an average slope; the limit is the instantaneous slope.",
+      "speech": "Formally, the derivative is the limit of the difference quotient as h approaches zero. The quotient is an average slope; the limit is the instantaneous slope.",
+      "heading": "The definition",
+      "latex": "f'(x) = \\lim_{h \\to 0} \\frac{f(x+h)-f(x)}{h}",
+      "highlight": ["h"],
+      "notes": "The formal bridge from geometry to algebra."
+    },
+    {
+      "id": "expand",
+      "kind": "equation",
+      "narration": "For f of x equals x squared, the numerator becomes x plus h squared minus x squared. Expanding gives two x h plus h squared.",
+      "speech": "For f of x equals x squared, the numerator becomes x plus h, squared, minus x squared. Expanding gives two x h plus h squared.",
+      "heading": "Substitute and expand",
+      "latex": "\\frac{(x+h)^2 - x^2}{h} = \\frac{2xh + h^2}{h}",
+      "highlight": ["h"],
+      "notes": "Keep the h in the denominator visible: the cancellation is the next beat."
+    },
+    {
+      "id": "cancel",
+      "kind": "equation",
+      "narration": "Dividing by h is allowed because h is not zero during the limit. The quotient simplifies to two x plus h. Then the limit is two x.",
+      "speech": "Dividing by h is allowed because h is not zero during the limit. The quotient simplifies to two x plus h. Then the limit is two x.",
+      "heading": "Cancel, then take the limit",
+      "latex": "f'(x) = \\lim_{h \\to 0} (2x + h) = 2x",
+      "highlight": ["h", "2x"],
+      "notes": "The crux: cancellation is valid before the limit because h is nonzero on a punctured neighborhood."
+    },
+    {
+      "id": "tangent-at-one",
+      "kind": "graph",
+      "narration": "At x equals one, the formula gives a slope of two. The tangent line is y equals two x minus one, and it touches the parabola at one, one.",
+      "heading": "The tangent at x = 1",
+      "notes": "This graph shows the formula as a geometric object: the tangent line at (1,1) has slope 2.",
+      "graph": {
+        "type": "cartesian",
+        "x_range": [-1, 4, 1],
+        "y_range": [-1, 10, 2],
+        "x_label": "x",
+        "y_label": "f(x)",
+        "show_ticks": true,
+        "legend": false,
+        "plots": [
+          {"expr": "x**2", "color_role": "primary", "label": "f(x) = x²"}
+        ],
+        "annotations": [
+          {"type": "point", "x": 1, "y": 1, "label": "(1, 1)", "label_offset": [0.15, 0.25]},
+          {"type": "tangent", "x": 1, "expr": "x**2", "label": "slope = 2", "color_role": "secondary"}
+        ],
+        "animation": "draw"
+      }
+    },
+    {
+      "id": "misconception",
+      "kind": "compare",
+      "narration": "The common mistake is to set h equal to zero too early. That gives zero over zero. The correct move is to cancel h first, then let h approach zero.",
+      "heading": "The trap",
+      "left": {
+        "heading": "Common mistake",
+        "items": [
+          "Set h = 0 immediately.",
+          "Get 0 / 0.",
+          "Conclude the slope is undefined."
+        ],
+        "role": "danger"
+      },
+      "right": {
+        "heading": "Correct move",
+        "items": [
+          "Keep h ≠ 0 while simplifying.",
+          "Cancel the common factor h.",
+          "Then let h → 0."
+        ],
+        "role": "success"
+      }
+    },
+    {
+      "id": "why-cancellation",
+      "kind": "bullets",
+      "narration": "This is why the cancellation step is the crux. It removes the thing that would make the denominator zero, and it leaves a finite expression whose limit we can read.",
+      "heading": "Why cancellation matters",
+      "items": [
+        "The limit never evaluates the quotient at h = 0.",
+        "Cancellation is valid for every h ≠ 0.",
+        "The simplified expression has a finite limit."
+      ],
+      "notes": "Make the logical status of the cancellation explicit."
+    },
+    {
+      "id": "derivative-function",
+      "kind": "graph",
+      "narration": "The derivative is also a function. For x squared, f prime of x equals two x. At each x, the height of the line gives the slope of the parabola.",
+      "heading": "The derivative as a function",
+      "notes": "This graph shows the derivative as a new function: its height at x is the slope of x² at x.",
+      "graph": {
+        "type": "cartesian",
+        "x_range": [-2, 4, 1],
+        "y_range": [-3, 10, 2],
+        "x_label": "x",
+        "y_label": "y",
+        "show_ticks": true,
+        "legend": true,
+        "plots": [
+          {"expr": "x**2", "color_role": "primary", "label": "f(x) = x²"},
+          {"expr": "2*x", "color_role": "secondary", "label": "f'(x) = 2x"}
+        ],
+        "annotations": [
+          {"type": "vertical_line", "x": 2, "label": "x = 2", "color_role": "muted"},
+          {"type": "point", "x": 2, "y": 4, "label": "slope here = 4", "label_offset": [0.15, 0.25]}
+        ],
+        "animation": "draw"
+      }
+    },
+    {
+      "id": "recap",
+      "kind": "recap",
+      "narration": "So the derivative is not a formula to memorize. It is the limit of an average slope, and the algebra is what survives the limit.",
+      "heading": "What we established",
+      "items": [
+        "A secant slope is an average rate over an interval.",
+        "The limit turns that average into an instantaneous rate.",
+        "Cancelling h is the step that makes the limit finite.",
+        "For x², the result is 2x."
+      ]
+    },
+    {
+      "id": "outro",
+      "kind": "outro",
+      "narration": "Next time: what happens when the curve is not a parabola, and the average slope does not settle down?",
+      "heading": "Next question",
+      "next": "What happens when the function is not a parabola?",
+      "cta": "Follow the path for the next episode."
+    }
+  ]
+}

@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import os
 import re
 import shutil
 import sys
@@ -23,6 +24,41 @@ ASSETS = SKILL_ROOT / "assets"
 TEMPLATES_DIR = ASSETS / "templates"
 PROJECT_DIR = ASSETS / "project"
 VOICES_PATH = ASSETS / "voices.json"
+
+MANIM_NAMES = ("manim.exe", "manim.cmd", "manim") if os.name == "nt" else ("manim",)
+
+
+def _venv_script_directories() -> list[Path]:
+    binary_dir = "Scripts" if os.name == "nt" else "bin"
+    roots: list[Path] = []
+    for base in (Path.cwd(), *Path.cwd().parents):
+        roots.extend((base / ".venv", base / "venv"))
+    roots.extend((SKILL_ROOT.parent / ".venv", SKILL_ROOT / ".venv"))
+    return [root / binary_dir for root in roots]
+
+
+def find_manim_executable() -> str | None:
+    """Find the Manim CLI in MANIM_BIN, the active venv, a local venv, or PATH."""
+    override = os.environ.get("MANIM_BIN", "").strip()
+    if override:
+        candidate = Path(override).expanduser()
+        if candidate.is_file():
+            return str(candidate)
+        resolved = shutil.which(override)
+        if resolved:
+            return resolved
+
+    directories = [Path(sys.executable).parent, *_venv_script_directories()]
+    seen: set[Path] = set()
+    for directory in directories:
+        if directory in seen:
+            continue
+        seen.add(directory)
+        for name in MANIM_NAMES:
+            candidate = directory / name
+            if candidate.is_file():
+                return str(candidate)
+    return shutil.which("manim")
 QUALITY_PRESETS: dict[str, dict[str, Any]] = {
     "draft": {
         "width": 854,
@@ -345,12 +381,13 @@ def validate_brief(brief: dict[str, Any], *, check_template: bool = True) -> tup
             errors.append(str(exc))
 
     for key in ("title", "slug", "thesis", "audience", "prerequisites", "goals", "rigor", "tone", "target_duration_seconds", "platform", "aspect_ratio", "key_points", "misconceptions", "visuals"):
-        if key not in episode or episode.get(key) in (None, "", []):
+        empty_list_allowed = key in {"prerequisites", "misconceptions"}
+        if key not in episode or episode.get(key) in (None, "") or (episode.get(key) == [] and not empty_list_allowed):
             errors.append(f"episode.{key} is required.")
     if episode.get("slug") and not SLUG_RE.match(str(episode["slug"])):
         errors.append("episode.slug must be lowercase, hyphenated.")
-    if episode.get("rigor") not in {"intuition", "sketch", "proof", "derivation"}:
-        errors.append("episode.rigor must be one of intuition, sketch, proof, derivation.")
+    if episode.get("rigor") not in {"explanation", "narrative", "procedure", "analysis", "intuition", "sketch", "proof", "derivation"}:
+        errors.append("episode.rigor must be one of explanation, narrative, procedure, analysis, intuition, sketch, proof, derivation.")
     if episode.get("aspect_ratio") not in {"16:9", "9:16", "1:1", "4:3"}:
         errors.append("episode.aspect_ratio must be 16:9, 9:16, 1:1, or 4:3.")
     duration = episode.get("target_duration_seconds")
@@ -401,6 +438,12 @@ def validate_brief(brief: dict[str, Any], *, check_template: bool = True) -> tup
                     f"Voice {voice_id!r} is not in the curated list for {locale}; "
                     "it will be used if edge-tts recognizes it."
                 )
+    selection = output.get("voice_selection") or {}
+    if provider != "none" and str(selection.get("status", "")).lower() != "confirmed":
+        warnings.append(
+            "output.voice_selection is not confirmed; obtain an explicit voice choice "
+            "or confirmed series-voice reuse before generating narration."
+        )
     if not output.get("captions", True):
         warnings.append("Captions are disabled; this reduces accessibility and searchability.")
     if output.get("latex_fallback"):

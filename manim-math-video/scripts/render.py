@@ -18,6 +18,7 @@ from _common import (
     QUALITY_PRESETS,
     atomic_write_json,
     episode_id,
+    find_manim_executable,
     latex_available,
     load_json,
     now_iso,
@@ -31,10 +32,11 @@ from _common import (
 
 
 def _manim_command(version: tuple[int, ...]) -> list[str]:
-    manim = shutil.which("manim")
+    manim = find_manim_executable()
     if not manim:
         raise FileNotFoundError(
-            "Manim is not on PATH. Install Manim Community and run `manim checkhealth`."
+            "Manim CLI not found. Activate the project venv, add its Scripts "
+            "directory to PATH, or set MANIM_BIN to the manim executable."
         )
     if version >= (0, 22, 0):
         return [manim, "render"]
@@ -42,9 +44,9 @@ def _manim_command(version: tuple[int, ...]) -> list[str]:
 
 
 def _manim_version() -> tuple[int, ...]:
-    manim = shutil.which("manim")
+    manim = find_manim_executable()
     if not manim:
-        raise FileNotFoundError("Manim is not on PATH.")
+        raise FileNotFoundError("Manim CLI not found (PATH, local venv, or MANIM_BIN).")
     completed = subprocess.run(
         [manim, "--version"],
         capture_output=True,

@@ -20,7 +20,7 @@ Choose one template per series. Episodes inherit it. A one-off restyle is a new 
 
 **Look:** deep navy-black background, chalk-white ink, cyan and violet accents, amber highlights, monospace-flavored equations, high contrast.
 
-**Best for:** calculus, analysis, linear algebra, physics-adjacent math, long-form technical videos, nocturnal viewing.
+**Best for:** science, technology, mathematical explanations, dramatic treatments, long-form technical videos, nocturnal viewing.
 
 **Motion:** create/draw, glow-like accent reveals, slower holds, more dramatic emphasis.
 
@@ -30,7 +30,7 @@ Choose one template per series. Episodes inherit it. A one-off restyle is a new 
 
 **Look:** warm paper, dark brown ink, oxblood and olive accents, serif headings and body, ruled lines and margin notes.
 
-**Best for:** history of mathematics, philosophy of mathematics, essayistic explanations, biographies, gentle long-form.
+**Best for:** history, philosophy, literature, culture, essayistic explanations, biographies, gentle long-form.
 
 **Motion:** fade/write, page-like transitions, restrained camera movement.
 

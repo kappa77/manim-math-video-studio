@@ -104,6 +104,9 @@ def _storyboard_skeleton(brief: dict[str, Any], template: dict[str, Any]) -> dic
     series = brief["series"]
     episode = brief["episode"]
     kinds = list(template.get("story", {}).get("beats") or ["title", "section", "graph", "recap", "outro"])
+    if episode.get("rigor") in {"explanation", "narrative", "procedure", "analysis"}:
+        # Templates define a visual style; general subjects do not require math beats.
+        kinds = [{"equation": "bullets", "graph": "section"}.get(kind, kind) for kind in kinds]
     counts: dict[str, int] = {}
     beats: list[dict[str, Any]] = []
     for kind in kinds:
@@ -135,7 +138,7 @@ def _script_template(brief: dict[str, Any]) -> str:
 **Language:** {brief['output'].get('language', 'TODO')}
 **Voice:** {brief['output'].get('voice', {}).get('id', 'TODO')}
 
-## Argument chain
+## Content progression
 
 {chr(10).join(f"{i}. {point}" for i, point in enumerate(episode.get('key_points', []), start=1))}
 
@@ -148,9 +151,9 @@ python scripts/storyboard_to_script.py --episode .
 
 ## Accuracy checklist
 
-- [ ] Every formula re-derived.
-- [ ] Domains and edge cases checked.
-- [ ] Notation consistent with the series.
+- [ ] Facts, quotations, and claims verified; interpretations clearly identified.
+- [ ] Chronology, process steps, or narrative continuity checked as applicable.
+- [ ] Terminology consistent with the series; formulas checked when present.
 - [ ] Sources real and cited.
 - [ ] Pronunciations checked.
 """

@@ -1,8 +1,8 @@
 # The argument interview
 
-The goal is not to collect a topic. It is to reconstruct the argument the viewer will follow, then choose the smallest visual evidence that makes that argument feel inevitable.
+Develop the topic into a focused explanation, chronology, comparison, procedure, analysis, or story. Choose the progression and visual evidence appropriate to that purpose. Do not force a proof structure onto a historical, practical, or fictional topic.
 
-Ask in rounds. Number the questions. Keep a round to 8 questions or fewer. Offer defaults so the user can answer quickly. Never ask for information that is already in `series.json` or the current brief.
+Ask in rounds. Number the questions. Keep a round to 8 questions or fewer. Offer defaults so the user can answer quickly. Reuse information already in `series.json` or the current brief. For each new episode, explicitly confirm the saved narrator unless the user has already chosen it for that episode.
 
 ## Round 0 — the four required parameters
 
@@ -30,7 +30,7 @@ Examples: `en-US`, `en-GB`, `it-IT`, `es-ES`, `es-MX`, `fr-FR`, `de-DE`, `pt-BR`
 Also ask:
 
 - Should subtitles use the same language as the narration? If not, provide translated caption text per beat.
-- Should on-screen math notation stay standard/international, or follow a local convention (decimal comma, `\operatorname{tg}` vs `\tan`, etc.)?
+- Are there terminology, spelling, unit, or notation conventions to preserve? Ask about mathematical notation only when relevant.
 
 ### 3. Voice
 
@@ -44,7 +44,7 @@ Offer a style first, then a specific voice:
 | `authoritative-lecturer` | precise, deliberate, minimal hype | university, proofs, technical |
 | `friendly-conversational` | informal, close, conversational | podcasts, accessible intros |
 
-Then confirm the exact voice id, rate, and pitch. The curated catalog is in `references/voices.md`; any edge-tts voice id is also accepted.
+Follow the voice-selection gate in `references/voices.md`: generate three short playable samples with the same sentence and settings, present numbered choices, and wait for explicit selection before starting production. For an existing series, offer the saved voice with a sample and ask whether to keep it or hear alternatives. Record the exact voice id, rate, pitch, and choice in the brief. An explicit choice already made for the current episode does not need repeating; a generic "ok" or "you decide" does not identify a voice.
 
 Ask whether the voice should be:
 
@@ -66,12 +66,12 @@ Ask whether this is a new series or an existing one. If existing, inherit its te
 
 These questions determine whether the episode is worth making.
 
-1. **Thesis.** What is the one sentence the viewer should accept by the end? If you cannot write it in one sentence, the episode is not ready.
+1. **Focus.** What central question, learning goal, or narrative promise should the video fulfill? Record it in `episode.thesis`.
 2. **Audience.** Who is this for, and what do they already know? Name the prerequisite, not just "beginners".
 3. **Stakes.** Why should this audience care now? What question are they already asking?
 4. **Crux.** What is the hard step, the surprising turn, or the thing that is commonly misunderstood?
 5. **Outcome.** What should the viewer be able to do, explain, or predict after watching?
-6. **Rigor.** Intuition only, sketch of a proof, full proof, or worked derivation?
+6. **Treatment.** Explanation, narrative, procedure, or analysis? For mathematics, intuition, proof sketch, full proof, or derivation may fit better.
 7. **Duration and platform.** Target minutes, aspect ratio, and where it will be watched (lecture, YouTube, classroom, social).
 
 ### Good vs. weak answers
@@ -88,13 +88,13 @@ These questions determine whether the episode is worth making.
 Build the chain explicitly. Ask the user to list, or propose a list and ask them to correct it.
 
 1. **Definitions.** What must be defined before the argument starts?
-2. **Assumptions.** What are we taking as given? Domain, continuity, differentiability, independence, finiteness, existence?
-3. **Claims.** What are the 3-7 steps from assumptions to thesis? Write each as a one-line claim.
+2. **Context.** What background, setting, assumptions, or initial conditions does the viewer need?
+3. **Progression.** What sequence of ideas, events, actions, or scenes fulfills the central promise? Record it in `episode.key_points`.
 4. **Crux.** Which step is the one the viewer will resist or misread? That step gets the most time and the best visual.
 5. **Example.** What concrete example makes the chain checkable?
-6. **Counterexample or edge case.** What breaks if an assumption is dropped?
-7. **Misconception.** What does the audience currently believe that is wrong, incomplete, or backwards?
-8. **Visual evidence.** What should be plotted, transformed, or compared? What changes on screen as the claim becomes true?
+6. **Limits or alternatives, if relevant.** What exception, competing interpretation, or failure case changes the conclusion?
+7. **Misconception, if relevant.** Is there a belief to correct? Otherwise leave the list empty.
+8. **Visual approach.** What should be shown, compared, mapped, ordered, or transformed? What does the viewer understand from that visual?
 9. **Conclusion.** What is the precise takeaway, including its scope and limits?
 
 If the user cannot supply the chain, propose a draft chain from the thesis and ask them to correct it. This is usually faster than more open questions.
@@ -144,15 +144,47 @@ Ask: "Approve this, or change any line?" Do not proceed on silence.
 
 ## Adaptive question rules
 
-- **Vague theme** ("calculus", "linear algebra"): ask for a specific question, a specific audience, and a specific misconception. Offer 2-3 episode-sized angles.
+- **Vague theme** ("the Renaissance", "cybersecurity", "calculus"): ask for a specific question or narrative angle and audience. Offer 2-3 episode-sized angles.
 - **Too broad**: split by question, not by chapter. "Why is the derivative a limit?" is an episode; "Calculus" is a season.
 - **User is an expert**: skip basics, ask for the crux, the notation, and the counterexample. Do not over-explain.
 - **User is a beginner**: ask what they already know and what confused them. Use their confusion as the episode's question.
-- **User says "you decide"**: choose defaults, state them, and ask for a single approval. Do not keep asking.
+- **User says "you decide"**: choose defaults for parameters other than voice. For the narrator, recommend a short playable sample and wait for the user to select or explicitly confirm it. Combine this with other unresolved confirmations where practical.
 - **User gives a script**: reverse-engineer the thesis, chain, visual, and parameters; point out gaps; ask only about the gaps.
 - **User wants a series**: run the series interview in `references/series.md` before episode 1. Lock the template, voice, language, quality, naming, and narrative rhythm.
 
 ## Question bank by topic type
+
+Use only the relevant branch. The mathematical branches below are optional specializations.
+
+### History and culture
+
+- What time, place, actors, and events define the scope?
+- What is documented, disputed, or an interpretation?
+- Would a timeline, map, artifact, or comparison explain the change?
+
+### Science and technology
+
+- Which mechanism or system should the viewer understand?
+- What evidence supports the explanation, and what are the model's limits?
+- Would a causal diagram, process animation, or concrete demonstration help?
+
+### Practical tutorials
+
+- What should the viewer accomplish, using which tools and prerequisites?
+- What ordered steps and observable checks demonstrate success?
+- Where can the process fail, and how should the viewer recover?
+
+### Literature, philosophy, and analysis
+
+- Which work, question, or interpretation is the focus?
+- Which passages or arguments support the reading, and what alternatives matter?
+- Should the visual show relationships, concepts, excerpts, or contrasts?
+
+### Fiction and storytelling
+
+- Who wants what, what obstructs them, and what changes?
+- What setting, tone, point of view, and ending fit the audience?
+- Which scenes carry the emotional progression and preserve continuity?
 
 ### Calculus / analysis
 

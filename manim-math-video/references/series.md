@@ -97,7 +97,7 @@ series/
    - "<Object> is <surprise>"
    - "The <concept> behind <phenomenon>"
    - "What <assumption> buys you"
-6. **One narrative rhythm.** Same order of hook, question, intuition, formalization, example, misconception, recap, next question.
+6. **One narrative rhythm.** Reuse a progression suited to the series: explanation, chronology, procedure, analysis, or story. Formalization and misconceptions belong only where relevant.
 7. **One notation glossary.** Keep symbols, units, and spoken forms in `series.json` or a `glossary.json`.
 8. **One episode id scheme.** `s<season two digits>e<episode three digits>`, zero-padded, never reused.
 9. **One recap/outro contract.** Each episode recaps the chain and asks the next question.
@@ -106,8 +106,8 @@ series/
 ## Adding an episode
 
 1. Read `series.json`.
-2. Interview for the **episode-specific** content only: title, thesis, question, chain, visual, misconception, next hook.
-3. Reuse the locked template, quality, language, voice, title grammar, and rhythm.
+2. Interview for the **episode-specific** content only: title, central question or promise, progression, visual approach, optional misconception, next hook.
+3. Reuse the locked template, quality, language, title grammar, and rhythm. Before production, offer the saved voice with a short playable sample and ask the user to keep it for this episode or request alternatives, following `voices.md`. A prior explicit choice for this episode already satisfies this step; a saved default alone does not.
 4. Create `brief.json` with the same series metadata and increment `episode_number`.
 5. Run `new_episode.py`. It refuses a style drift unless `--allow-style-drift "reason"` is passed.
 6. After approval, change the registry status from `draft` to `published` and add the output path.

@@ -6,7 +6,15 @@ Run this first:
 python scripts/check_env.py
 ```
 
-It reports Python, Manim, LaTeX, PyAV, edge-tts, fonts, and optional tools. Use `--json` for a machine-readable report.
+It reports Python, Manim, LaTeX, PyAV, edge-tts, fonts, and optional tools. Use `--json` for a machine-readable report. In a terminal the statuses are colored; use `--color always` or `--no-color` to override.
+
+If you have the repository, the one-step setup is:
+
+```bash
+python scripts/setup.py
+```
+
+It creates `.venv`, installs `requirements.txt`, and runs the check.
 
 ## Minimal installation
 
@@ -16,11 +24,24 @@ Python 3.10 or newer. A virtual environment is strongly recommended:
 
 ```bash
 python -m venv .venv
-# Windows
-.venv\Scripts\activate
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+# Windows cmd
+.venv\Scripts\activate.bat
 # macOS / Linux
 source .venv/bin/activate
 python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+If `manim` is not on PATH, `check_env.py` and `render.py` also look next to the current Python, in a local `.venv`, and at `MANIM_BIN`. Set `MANIM_BIN` to the full executable path when your environment is non-standard:
+
+```powershell
+$env:MANIM_BIN = "C:\path\to\.venv\Scripts\manim.exe"
+```
+
+```bash
+export MANIM_BIN="/path/to/.venv/Scripts/manim.exe"
 ```
 
 ### Manim Community
@@ -261,7 +282,8 @@ Manim 0.22 introduced the `render` subcommand. `render.py` detects the version. 
 ### Windows
 
 - Use PowerShell or Git Bash consistently.
-- If `manim` is not on PATH, activate the virtual environment first.
+- If `manim` is not on PATH, activate the virtual environment first, or set `MANIM_BIN` to the venv's `manim.exe`.
+- The pip user-scripts directory is often `%APPDATA%\Python\Python314\Scripts`; add it to PATH if you want the global `manim` command outside the venv.
 - Long paths can be enabled in Windows settings, but shorter paths are safer.
 - `winget install Gyan.FFmpeg` and `winget install MiKTeX.MiKTeX` are convenient.
 - If `latex` is installed but not found, add the MiKTeX `bin` directory to PATH and restart the terminal.
@@ -292,6 +314,7 @@ Include:
 - the exact command;
 - the full traceback or Manim log tail;
 - `python scripts/check_env.py --json`;
+- `python scripts/check_env.py --color always` or `--no-color` when piping output;
 - the Manim version (`manim --version`);
 - the operating system;
 - whether the failure is in TTS, Manim, or QA.

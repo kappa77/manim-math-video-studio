@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/manim-math-video/storyboard.schema.json",
+  "title": "Math video storyboard",
+  "type": "object",
+  "required": ["schema_version", "episode_id", "title", "language", "template", "beats"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "episode_id": { "type": "string", "pattern": "^s\\d{2}e\\d{3}$" },
+    "episode_slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "title": { "type": "string", "minLength": 1 },
+    "language": { "type": "string", "minLength": 2 },
+    "template": { "type": "string", "minLength": 1 },
+    "target_duration_seconds": { "type": "integer", "minimum": 15 },
+    "beats": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/beat" }
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "beat": {
+      "type": "object",
+      "required": ["id", "kind", "narration"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]*$" },
+        "kind": { "type": "string" },
+        "narration": { "type": "string" },
+        "speech": { "type": "string" },
+        "caption": { "type": "string" },
+        "notes": { "type": "string" },
+        "silent": { "type": "boolean" },
+        "duration_hint": { "type": "number", "minimum": 0.2 },
+        "clear": { "type": "boolean" }
+      },
+      "required": ["id", "kind", "narration"],
+      "oneOf": [
+        {
+          "properties": {
+            "kind": { "const": "title" },
+            "title": { "type": "string" },
+            "subtitle": { "type": "string" },
+            "kicker": { "type": "string" }
+          },
+          "required": ["kind"]
+        },
+        {
+          "properties": {
+            "kind": { "const": "section" },
+            "heading": { "type": "string" },
+            "subheading": { "type": "string" },
+            "number": { "type": "string" }
+          },
+          "required": ["kind", "heading"]
+        },
+        {
+          "properties": {
+            "kind": { "const": "bullets" },
+            "heading": { "type": "string" },
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "anyOf": [
+                  { "type": "string" },
+                  {
+                    "type": "object",
+                    "required": ["text"],
+                    "properties": {
+                      "text": { "type": "string" },
+                      "emphasis": { "type": "boolean" },
+                      "role": { "type": "string" }
+                    },
+                    "additionalProperties": true
+                  }
+                ]
+              }
+            },
+            "reveal": { "enum": ["one_by_one", "all"] }
+          },
+          "required": ["kind", "heading", "items"]
+        },
+        {
+          "properties": {
+            "kind": { "const": "equation" },
+            "heading": { "type": "string" },
+            "latex": { "type": "string", "minLength": 1 },
+            "steps": { "type": "array", "items": { "type": "string" } },
+            "highlight": { "type": "array", "items": { "type": "string" } },
+            "note": { "type": "string" }
+          },
+          "required": ["kind", "latex"]
+        },
+        {
+          "properties": {
+            "kind": { "const": "graph" },
+            "heading": { "type": "string" },
+            "graph": { "$ref": "#/$defs/graph" }
+          },
+          "required": ["kind", "graph"]
+        },
+        {
+          "properties": {
+            "kind": { "const": "compare" },
+            "heading": { "type": "string" },
+            "left": { "$ref": "#/$defs/column" },
+            "right": { "$ref": "#/$defs/column" }
+          },
+          "required": ["kind", "left", "right"]
+        },
+        {
+          "properties": {
+            "kind": { "const": "recap" },
+            "heading": { "type": "string" },
+            "items": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+          },
+          "required": ["kind", "heading", "items"]
+        },
+        {
+          "properties": {
+            "kind": { "const": "outro" },
+            "heading": { "type": "string" },
+            "next": { "type": "string" },
+            "cta": { "type": "string" }
+          },
+          "required": ["kind"]
+        },
+        {
+          "properties": {
+            "kind": { "const": "quote" },
+            "quote": { "type": "string", "minLength": 1 },
+            "attribution": { "type": "string" }
+          },
+          "required": ["kind", "quote"]
+        },
+        {
+          "properties": {
+            "kind": { "const": "image" },
+            "path": { "type": "string", "minLength": 1 },
+            "alt": { "type": "string" },
+            "label": { "type": "string" },
+            "width": { "type": "number", "minimum": 0.5 }
+          },
+          "required": ["kind", "path"]
+        },
+        {
+          "properties": {
+            "kind": { "const": "custom" }
+          },
+          "required": ["kind"]
+        }
+      ]
+    },
+    "column": {
+      "type": "object",
+      "required": ["heading", "items"],
+      "properties": {
+        "heading": { "type": "string" },
+        "items": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "role": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "graph": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": ["cartesian", "parametric", "data", "bars", "vector_field"]
+        },
+        "x_range": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 3
+        },
+        "y_range": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 3
+        },
+        "x_label": { "type": "string" },
+        "y_label": { "type": "string" },
+        "expr": { "type": "string" },
+        "plots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "expr": { "type": "string" },
+              "label": { "type": "string" },
+              "color_role": { "type": "string" },
+              "color": { "type": "string" },
+              "domain": {
+                "type": "array",
+                "items": { "type": "number" },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "stroke_width": { "type": "number" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "annotations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+              "type": { "type": "string" },
+              "label": { "type": "string" },
+              "color_role": { "type": "string" },
+              "color": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "animation": {
+          "anyOf": [
+            { "type": "string" },
+            {
+              "type": "object",
+              "required": ["type"],
+              "properties": { "type": { "type": "string" } },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "legend": { "type": "boolean" },
+        "show_ticks": { "type": "boolean" },
+        "show_grid": { "type": "boolean" },
+        "equal_aspect": { "type": "boolean" },
+        "x_length": { "type": "number" },
+        "y_length": { "type": "number" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

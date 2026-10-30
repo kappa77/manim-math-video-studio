@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "id": "dark-board",
+  "name": "Nocturne",
+  "version": "1.0.0",
+  "description": "Deep navy-black canvas, chalk-bright ink, cyan and violet accents. Dramatic, technical, high contrast.",
+  "best_for": [
+    "calculus",
+    "analysis",
+    "linear algebra",
+    "physics-adjacent mathematics",
+    "long-form technical videos",
+    "evening viewing"
+  ],
+  "aspect_ratio": "16:9",
+  "background": "#0B1220",
+  "surface": "#111A2E",
+  "ink": "#F2F2EF",
+  "muted": "#94A3B8",
+  "roles": {
+    "primary": "#22D3EE",
+    "secondary": "#A78BFA",
+    "success": "#34D399",
+    "warning": "#FBBF24",
+    "danger": "#F87171",
+    "grid": "#1E293B",
+    "axis": "#64748B"
+  },
+  "fonts": {
+    "heading": ["Inter", "Segoe UI", "DejaVu Sans"],
+    "body": ["Inter", "Segoe UI", "DejaVu Sans"],
+    "mono": ["JetBrains Mono", "Cascadia Mono", "Consolas", "DejaVu Sans Mono"]
+  },
+  "sizes": {
+    "title": 58,
+    "heading": 44,
+    "body": 30,
+    "bullet": 30,
+    "caption": 24,
+    "equation": 46,
+    "label": 22,
+    "tick": 18
+  },
+  "layout": {
+    "margin": 0.7,
+    "heading_top_buff": 0.45,
+    "graph_width": 9.6,
+    "graph_height": 5.0,
+    "graph_center_y": -0.75,
+    "text_max_width": 11.5,
+    "bullet_spacing": 0.35,
+    "column_gap": 0.9
+  },
+  "graph": {
+    "stroke_width": 5.5,
+    "axis_stroke_width": 2.5,
+    "tick_size": 18,
+    "label_size": 22,
+    "tick_label_buff": 0.12,
+    "area_opacity": 0.25,
+    "dot_radius": 0.075,
+    "grid_opacity": 0.3
+  },
+  "motion": {
+    "style": "draw",
+    "transition": "fade",
+    "transition_time": 0.32,
+    "default_hold": 0.25,
+    "reveal_lag": 0.2
+  },
+  "captions": {
+    "enabled": true,
+    "max_chars": 84,
+    "tail_pad": 0.15
+  },
+  "story": {
+    "beats": ["title", "section", "graph", "equation", "bullets", "compare", "recap", "outro"],
+    "words_per_minute": 140
+  }
+}

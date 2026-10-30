@@ -23,6 +23,9 @@ test.wav
 .DS_Store
 Thumbs.db
 
+# Voice-selection samples
+voice-samples/
+
 # Demo generated artifacts (regenerate with scripts/tts.py and scripts/render.py)
 manim-math-video/examples/**/media/
 manim-math-video/examples/**/voice/

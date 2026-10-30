@@ -1,0 +1,535 @@
+{
+  "schema_version": 1,
+  "default_language": "en-US",
+  "languages": {
+    "en-US": {
+      "label": "English (United States)",
+      "aliases": ["en", "en-us", "english", "american english", "us english"],
+      "default_voice": "en-US-AvaMultilingualNeural",
+      "voices": [
+        {
+          "id": "en-US-AvaMultilingualNeural",
+          "label": "Ava",
+          "gender": "female",
+          "style": "warm, clear, expressive",
+          "best_for": ["teaching", "explainers", "series narrator"]
+        },
+        {
+          "id": "en-US-AndrewMultilingualNeural",
+          "label": "Andrew",
+          "gender": "male",
+          "style": "calm, grounded, authoritative",
+          "best_for": ["documentary", "technical", "long-form"]
+        },
+        {
+          "id": "en-US-EmmaMultilingualNeural",
+          "label": "Emma",
+          "gender": "female",
+          "style": "bright, energetic, conversational",
+          "best_for": ["shorts", "young audience", "fast explainers"]
+        },
+        {
+          "id": "en-US-BrianMultilingualNeural",
+          "label": "Brian",
+          "gender": "male",
+          "style": "friendly, relaxed, natural",
+          "best_for": ["conversational", "podcast-style"]
+        },
+        {
+          "id": "en-US-AriaNeural",
+          "label": "Aria",
+          "gender": "female",
+          "style": "crisp, news-like, precise",
+          "best_for": ["lecture", "news", "clear diction"]
+        }
+      ]
+    },
+    "en-GB": {
+      "label": "English (United Kingdom)",
+      "aliases": ["en-gb", "british english", "uk english"],
+      "default_voice": "en-GB-SoniaNeural",
+      "voices": [
+        {
+          "id": "en-GB-SoniaNeural",
+          "label": "Sonia",
+          "gender": "female",
+          "style": "measured, elegant, documentary",
+          "best_for": ["documentary", "essay", "long-form"]
+        },
+        {
+          "id": "en-GB-RyanNeural",
+          "label": "Ryan",
+          "gender": "male",
+          "style": "clear, warm, reliable",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "en-GB-ThomasNeural",
+          "label": "Thomas",
+          "gender": "male",
+          "style": "formal, deliberate, academic",
+          "best_for": ["lecture", "proof"]
+        }
+      ]
+    },
+    "it-IT": {
+      "label": "Italian (Italy)",
+      "aliases": ["it", "it-it", "italian", "italiano"],
+      "default_voice": "it-IT-ElsaNeural",
+      "voices": [
+        {
+          "id": "it-IT-ElsaNeural",
+          "label": "Elsa",
+          "gender": "female",
+          "style": "warm, clear, teacherly",
+          "best_for": ["teaching", "explainers", "series narrator"]
+        },
+        {
+          "id": "it-IT-IsabellaNeural",
+          "label": "Isabella",
+          "gender": "female",
+          "style": "bright, conversational, engaging",
+          "best_for": ["shorts", "young audience"]
+        },
+        {
+          "id": "it-IT-DiegoNeural",
+          "label": "Diego",
+          "gender": "male",
+          "style": "calm, natural, friendly",
+          "best_for": ["documentary", "conversational"]
+        },
+        {
+          "id": "it-IT-GiuseppeMultilingualNeural",
+          "label": "Giuseppe",
+          "gender": "male",
+          "style": "authoritative, measured, formal",
+          "best_for": ["lecture", "technical"]
+        }
+      ]
+    },
+    "es-ES": {
+      "label": "Spanish (Spain)",
+      "aliases": ["es", "es-es", "spanish", "español", "castilian"],
+      "default_voice": "es-ES-ElviraNeural",
+      "voices": [
+        {
+          "id": "es-ES-ElviraNeural",
+          "label": "Elvira",
+          "gender": "female",
+          "style": "warm, clear, teaching",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "es-ES-AlvaroNeural",
+          "label": "Alvaro",
+          "gender": "male",
+          "style": "calm, grounded, documentary",
+          "best_for": ["documentary", "long-form"]
+        },
+        {
+          "id": "es-ES-XimenaNeural",
+          "label": "Ximena",
+          "gender": "female",
+          "style": "bright, conversational",
+          "best_for": ["shorts", "conversational"]
+        }
+      ]
+    },
+    "es-MX": {
+      "label": "Spanish (Mexico)",
+      "aliases": ["es-mx", "mexican spanish", "latam spanish"],
+      "default_voice": "es-MX-DaliaNeural",
+      "voices": [
+        {
+          "id": "es-MX-DaliaNeural",
+          "label": "Dalia",
+          "gender": "female",
+          "style": "warm, clear, conversational",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "es-MX-JorgeNeural",
+          "label": "Jorge",
+          "gender": "male",
+          "style": "calm, friendly, reliable",
+          "best_for": ["documentary", "teaching"]
+        }
+      ]
+    },
+    "fr-FR": {
+      "label": "French (France)",
+      "aliases": ["fr", "fr-fr", "french", "français"],
+      "default_voice": "fr-FR-DeniseNeural",
+      "voices": [
+        {
+          "id": "fr-FR-DeniseNeural",
+          "label": "Denise",
+          "gender": "female",
+          "style": "warm, elegant, clear",
+          "best_for": ["teaching", "essay", "series narrator"]
+        },
+        {
+          "id": "fr-FR-HenriNeural",
+          "label": "Henri",
+          "gender": "male",
+          "style": "calm, authoritative, documentary",
+          "best_for": ["documentary", "lecture"]
+        },
+        {
+          "id": "fr-FR-VivienneMultilingualNeural",
+          "label": "Vivienne",
+          "gender": "female",
+          "style": "bright, expressive, modern",
+          "best_for": ["explainers", "shorts"]
+        },
+        {
+          "id": "fr-FR-RemyMultilingualNeural",
+          "label": "Remy",
+          "gender": "male",
+          "style": "friendly, natural, conversational",
+          "best_for": ["conversational", "explainers"]
+        }
+      ]
+    },
+    "de-DE": {
+      "label": "German (Germany)",
+      "aliases": ["de", "de-de", "german", "deutsch"],
+      "default_voice": "de-DE-KatjaNeural",
+      "voices": [
+        {
+          "id": "de-DE-KatjaNeural",
+          "label": "Katja",
+          "gender": "female",
+          "style": "clear, warm, precise",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "de-DE-ConradNeural",
+          "label": "Conrad",
+          "gender": "male",
+          "style": "calm, authoritative, formal",
+          "best_for": ["lecture", "documentary"]
+        },
+        {
+          "id": "de-DE-SeraphinaMultilingualNeural",
+          "label": "Seraphina",
+          "gender": "female",
+          "style": "expressive, modern, engaging",
+          "best_for": ["shorts", "explainers"]
+        },
+        {
+          "id": "de-DE-FlorianMultilingualNeural",
+          "label": "Florian",
+          "gender": "male",
+          "style": "friendly, natural, conversational",
+          "best_for": ["conversational", "teaching"]
+        }
+      ]
+    },
+    "pt-BR": {
+      "label": "Portuguese (Brazil)",
+      "aliases": ["pt", "pt-br", "brazilian portuguese", "português", "portuguese"],
+      "default_voice": "pt-BR-FranciscaNeural",
+      "voices": [
+        {
+          "id": "pt-BR-FranciscaNeural",
+          "label": "Francisca",
+          "gender": "female",
+          "style": "warm, clear, friendly",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "pt-BR-AntonioNeural",
+          "label": "Antonio",
+          "gender": "male",
+          "style": "calm, reliable, documentary",
+          "best_for": ["documentary", "long-form"]
+        },
+        {
+          "id": "pt-BR-ThalitaMultilingualNeural",
+          "label": "Thalita",
+          "gender": "female",
+          "style": "bright, expressive, modern",
+          "best_for": ["shorts", "conversational"]
+        }
+      ]
+    },
+    "pt-PT": {
+      "label": "Portuguese (Portugal)",
+      "aliases": ["pt-pt", "european portuguese"],
+      "default_voice": "pt-PT-RaquelNeural",
+      "voices": [
+        {
+          "id": "pt-PT-RaquelNeural",
+          "label": "Raquel",
+          "gender": "female",
+          "style": "clear, warm, teaching",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "pt-PT-DuarteNeural",
+          "label": "Duarte",
+          "gender": "male",
+          "style": "calm, formal, documentary",
+          "best_for": ["documentary", "lecture"]
+        }
+      ]
+    },
+    "nl-NL": {
+      "label": "Dutch (Netherlands)",
+      "aliases": ["nl", "nl-nl", "dutch", "nederlands"],
+      "default_voice": "nl-NL-FennaNeural",
+      "voices": [
+        {
+          "id": "nl-NL-FennaNeural",
+          "label": "Fenna",
+          "gender": "female",
+          "style": "clear, warm, natural",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "nl-NL-MaartenNeural",
+          "label": "Maarten",
+          "gender": "male",
+          "style": "calm, friendly, documentary",
+          "best_for": ["documentary", "conversational"]
+        }
+      ]
+    },
+    "pl-PL": {
+      "label": "Polish (Poland)",
+      "aliases": ["pl", "pl-pl", "polish", "polski"],
+      "default_voice": "pl-PL-ZofiaNeural",
+      "voices": [
+        {
+          "id": "pl-PL-ZofiaNeural",
+          "label": "Zofia",
+          "gender": "female",
+          "style": "warm, clear, teaching",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "pl-PL-MarekNeural",
+          "label": "Marek",
+          "gender": "male",
+          "style": "calm, authoritative, formal",
+          "best_for": ["lecture", "documentary"]
+        }
+      ]
+    },
+    "ru-RU": {
+      "label": "Russian (Russia)",
+      "aliases": ["ru", "ru-ru", "russian", "русский"],
+      "default_voice": "ru-RU-SvetlanaNeural",
+      "voices": [
+        {
+          "id": "ru-RU-SvetlanaNeural",
+          "label": "Svetlana",
+          "gender": "female",
+          "style": "warm, clear, teacherly",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "ru-RU-DmitryNeural",
+          "label": "Dmitry",
+          "gender": "male",
+          "style": "calm, formal, documentary",
+          "best_for": ["lecture", "documentary"]
+        }
+      ]
+    },
+    "uk-UA": {
+      "label": "Ukrainian (Ukraine)",
+      "aliases": ["uk", "uk-ua", "ukrainian", "українська"],
+      "default_voice": "uk-UA-PolinaNeural",
+      "voices": [
+        {
+          "id": "uk-UA-PolinaNeural",
+          "label": "Polina",
+          "gender": "female",
+          "style": "warm, clear, teaching",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "uk-UA-OstapNeural",
+          "label": "Ostap",
+          "gender": "male",
+          "style": "calm, formal, documentary",
+          "best_for": ["documentary", "lecture"]
+        }
+      ]
+    },
+    "tr-TR": {
+      "label": "Turkish (Türkiye)",
+      "aliases": ["tr", "tr-tr", "turkish", "türkçe"],
+      "default_voice": "tr-TR-EmelNeural",
+      "voices": [
+        {
+          "id": "tr-TR-EmelNeural",
+          "label": "Emel",
+          "gender": "female",
+          "style": "warm, clear, teaching",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "tr-TR-AhmetNeural",
+          "label": "Ahmet",
+          "gender": "male",
+          "style": "calm, reliable, documentary",
+          "best_for": ["documentary", "lecture"]
+        }
+      ]
+    },
+    "ar-SA": {
+      "label": "Arabic (Saudi Arabia)",
+      "aliases": ["ar", "ar-sa", "arabic", "العربية"],
+      "default_voice": "ar-SA-ZariyahNeural",
+      "voices": [
+        {
+          "id": "ar-SA-ZariyahNeural",
+          "label": "Zariyah",
+          "gender": "female",
+          "style": "warm, clear, formal",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "ar-SA-HamedNeural",
+          "label": "Hamed",
+          "gender": "male",
+          "style": "calm, authoritative, documentary",
+          "best_for": ["documentary", "lecture"]
+        }
+      ]
+    },
+    "hi-IN": {
+      "label": "Hindi (India)",
+      "aliases": ["hi", "hi-in", "hindi", "हिन्दी"],
+      "default_voice": "hi-IN-SwaraNeural",
+      "voices": [
+        {
+          "id": "hi-IN-SwaraNeural",
+          "label": "Swara",
+          "gender": "female",
+          "style": "warm, clear, teaching",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "hi-IN-MadhurNeural",
+          "label": "Madhur",
+          "gender": "male",
+          "style": "calm, friendly, documentary",
+          "best_for": ["documentary", "conversational"]
+        }
+      ]
+    },
+    "zh-CN": {
+      "label": "Chinese (Mainland)",
+      "aliases": ["zh", "zh-cn", "chinese", "mandarin", "中文", "简体中文"],
+      "default_voice": "zh-CN-XiaoxiaoNeural",
+      "voices": [
+        {
+          "id": "zh-CN-XiaoxiaoNeural",
+          "label": "Xiaoxiao",
+          "gender": "female",
+          "style": "warm, clear, natural",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "zh-CN-YunxiNeural",
+          "label": "Yunxi",
+          "gender": "male",
+          "style": "bright, friendly, conversational",
+          "best_for": ["shorts", "conversational"]
+        },
+        {
+          "id": "zh-CN-YunyangNeural",
+          "label": "Yunyang",
+          "gender": "male",
+          "style": "professional, authoritative, news",
+          "best_for": ["lecture", "documentary"]
+        }
+      ]
+    },
+    "ja-JP": {
+      "label": "Japanese (Japan)",
+      "aliases": ["ja", "ja-jp", "japanese", "日本語"],
+      "default_voice": "ja-JP-NanamiNeural",
+      "voices": [
+        {
+          "id": "ja-JP-NanamiNeural",
+          "label": "Nanami",
+          "gender": "female",
+          "style": "warm, clear, natural",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "ja-JP-KeitaNeural",
+          "label": "Keita",
+          "gender": "male",
+          "style": "calm, reliable, documentary",
+          "best_for": ["documentary", "lecture"]
+        }
+      ]
+    },
+    "ko-KR": {
+      "label": "Korean (Korea)",
+      "aliases": ["ko", "ko-kr", "korean", "한국어"],
+      "default_voice": "ko-KR-SunHiNeural",
+      "voices": [
+        {
+          "id": "ko-KR-SunHiNeural",
+          "label": "SunHi",
+          "gender": "female",
+          "style": "warm, clear, teaching",
+          "best_for": ["teaching", "explainers"]
+        },
+        {
+          "id": "ko-KR-InJoonNeural",
+          "label": "InJoon",
+          "gender": "male",
+          "style": "calm, reliable, documentary",
+          "best_for": ["documentary", "lecture"]
+        },
+        {
+          "id": "ko-KR-HyunsuMultilingualNeural",
+          "label": "Hyunsu",
+          "gender": "male",
+          "style": "bright, conversational, modern",
+          "best_for": ["shorts", "conversational"]
+        }
+      ]
+    }
+  },
+  "styles": {
+    "warm-teacher": {
+      "label": "Warm teacher",
+      "rate": "-3%",
+      "pitch": "+0Hz",
+      "description": "Clear, patient, slightly slower. The default for classroom and general explainers."
+    },
+    "calm-documentary": {
+      "label": "Calm documentary",
+      "rate": "-8%",
+      "pitch": "-2Hz",
+      "description": "Measured, low energy, authoritative. Good for long-form and history."
+    },
+    "energetic-explainer": {
+      "label": "Energetic explainer",
+      "rate": "+8%",
+      "pitch": "+2Hz",
+      "description": "Faster, brighter, more animated. Good for shorts and young audiences."
+    },
+    "authoritative-lecturer": {
+      "label": "Authoritative lecturer",
+      "rate": "-5%",
+      "pitch": "-3Hz",
+      "description": "Precise, deliberate, minimal hype. Good for proofs and technical material."
+    },
+    "friendly-conversational": {
+      "label": "Friendly conversational",
+      "rate": "+3%",
+      "pitch": "+0Hz",
+      "description": "Informal, close, conversational. Good for podcast-style episodes."
+    }
+  }
+}

@@ -80,6 +80,12 @@
       "volume": "+0%",
       "command": null,
       "piper_model": null
+    },
+    "voice_selection": {
+      "status": "confirmed",
+      "voice_id": "en-US-AvaMultilingualNeural",
+      "user_choice": "demo narrator",
+      "sample_paths": []
     }
   },
   "accuracy": {

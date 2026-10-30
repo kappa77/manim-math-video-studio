@@ -89,7 +89,7 @@ Render time depends heavily on graph complexity, text, and caching. A 7-minute e
 ```
 
 - `thesis` is one sentence. If it needs two, the episode is not scoped.
-- `rigor` accepts `intuition`, `sketch`, `proof`, or `derivation`.
+- `rigor` accepts `explanation`, `narrative`, `procedure`, or `analysis` for general topics, plus `intuition`, `sketch`, `proof`, or `derivation` for mathematical treatments. It selects the treatment, not the subject. For general modes, the scaffold substitutes neutral beats for template graphs and equations; add quantitative visuals only where relevant.
 - `target_duration_seconds` is a target, not a hard cut. Aim within 15%.
 - `platform` is descriptive; it does not change rendering except through `aspect_ratio`.
 - `key_points` are the 3-7 claims of the argument, in order.
@@ -116,6 +116,12 @@ Render time depends heavily on graph complexity, text, and caching. A 7-minute e
     "volume": "+0%",
     "command": null,
     "piper_model": null
+  },
+  "voice_selection": {
+    "status": "confirmed",
+    "voice_id": "en-US-AvaMultilingualNeural",
+    "user_choice": "example narrator",
+    "sample_paths": []
   }
 }
 ```
@@ -127,6 +133,7 @@ Render time depends heavily on graph complexity, text, and caching. A 7-minute e
 - `voice.provider` accepts `edge`, `piper`, `custom`, or `none`.
 - `voice.command` is required for `custom`; `voice.piper_model` is required for `piper`.
 - `rate`, `pitch`, and `volume` use edge-tts syntax (`+0%`, `-3%`, `+2Hz`). For other providers, they are passed through if supported.
+- `voice_selection` records the voice-selection gate: `status` is `confirmed` only after an explicit choice or confirmed series-voice reuse, `voice_id` must match `voice.id`, and `user_choice` / `sample_paths` preserve what the user chose. Do not run narration while it is `pending` or missing.
 
 ## `accuracy`
 
@@ -171,7 +178,7 @@ If the user has no preference:
 | `output.captions` | `true` |
 | `output.latex_fallback` | `false` |
 | `series.template` | `clean-light` |
-| `episode.rigor` | `sketch` |
+| `episode.rigor` | `explanation` for general topics; `sketch` for mathematical arguments |
 | `episode.target_duration_seconds` | 420 |
 | `episode.aspect_ratio` | `16:9` |
 
@@ -183,8 +190,8 @@ State the defaults you used in the confirmation block. Never hide them.
 python scripts/validate.py --brief path/to/brief.json
 ```
 
-The validator checks required fields, template existence, quality, locale/voice compatibility, aspect ratio, duration, and suspicious values (for example, a 30-second target for a full proof). It does not judge the mathematics; that is the agent's job.
+The validator checks required fields, template existence, quality, locale/voice compatibility, aspect ratio, duration, and suspicious values. It does not verify content accuracy; apply `references/accuracy.md`.
 
 ## Example
 
-See `assets/brief.example.json` for a complete, valid brief that can be used with the demo storyboard.
+See `assets/brief.example.json` for a complete mathematical example compatible with the demo storyboard. It illustrates the format, not a subject restriction. For other subjects replace the content, choose a general `rigor` mode, and use empty lists for irrelevant misconceptions or notation. Store the central question or narrative promise in `thesis` and the content progression in `key_points`.

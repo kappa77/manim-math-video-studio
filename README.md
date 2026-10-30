@@ -1,16 +1,22 @@
 # Manim Math Video Studio
 
-A portable [Agent Skill](https://agentskills.io/specification) for turning a mathematical theme into a storyboarded, narrated Manim video — and into a consistent series.
+A portable [Agent Skill](https://agentskills.io/specification) for turning a theme into a storyboarded, narrated Manim video — and into a consistent series. Prebuilt for Claude Code, Codex, GitHub Copilot, and Pi.
 
-The agent interviews the user about the **argument**, not just the topic: thesis, audience, crux, chain of claims, misconception, visual evidence, and takeaway. It then locks four production parameters (**quality, voice, language, template**), scaffolds the episode, generates narration with timing, renders graphs and equations, and runs a QA pass.
+The agent interviews the user about the **content**, not just the topic: central question or narrative promise, audience, crux or progression, visual approach, and takeaway. It then locks four production parameters (**quality, voice, language, template**), scaffolds the episode, generates narration with timing, renders the selected visuals, and runs a QA pass. Mathematics is one supported subject; the same workflow serves history, science, technology, literature, philosophy, art, tutorials, and narrative videos.
 
 ## What is in this repository
 
 ```text
+INSTALL.md                       # installation guide for all four agents
+
+scripts/
+├── check_env.py                 # repo-root wrapper for the skill env check
+└── setup.py                     # create .venv and install all requirements
+
 manim-math-video/
 ├── SKILL.md                     # routing description + workflow instructions
 ├── references/
-│   ├── interview.md             # argument interview question bank
+│   ├── interview.md             # content interview question bank
 │   ├── brief.md                 # brief schema, defaults, quality presets
 │   ├── templates.md             # template catalog and series rules
 │   ├── voices.md                # voice/language selection and pronunciation
@@ -18,8 +24,11 @@ manim-math-video/
 │   ├── graphs.md                # graph specs, annotations, animations
 │   ├── manim-recipes.md         # custom beats, 3D, camera, equations
 │   ├── series.md                # series registry and consistency
-│   ├── accuracy.md              # math verification checklist
+│   ├── accuracy.md              # content verification checklist
+│   ├── accuracy-math.md         # optional math specialization
 │   └── troubleshooting.md       # installation and failure modes
+├── agents/
+│   └── openai.yaml              # Codex/ChatGPT interface metadata
 ├── assets/
 │   ├── templates/               # clean-light, dark-board, paper-editorial
 │   ├── project/                 # standalone manim_lib runtime + episode template
@@ -34,10 +43,32 @@ manim-math-video/
 │   ├── new_episode.py           # scaffold a series episode
 │   ├── storyboard_to_script.py  # readable script + duration estimate
 │   ├── tts.py                   # edge-tts / Piper / custom / silent
+│   ├── voice_samples.py         # comparable samples for voice selection
 │   ├── render.py                # Manim render + copy + QA
 │   ├── qa.py                    # streams, audio, subtitles, contact sheet
 │   └── selftest.py              # asset checks + optional smoke render
 └── examples/                    # verified demo series source + preview contact sheet
+
+platforms/                       # per-platform frontmatter, usage, and install notes
+├── manifest.json
+├── build.py                     # build/check/install dist copies
+├── claude/
+├── codex/
+├── copilot/
+└── pi/
+
+dist/                            # generated installable skill trees
+├── claude/skills/manim-math-video/
+├── codex/skills/manim-math-video/
+├── copilot/skills/manim-math-video/
+└── pi/skills/manim-math-video/
+```
+
+`manim-math-video/` is the canonical skill. `dist/` contains the same scripts, references, assets, and examples with platform-specific frontmatter and usage instructions. Regenerate it after editing the canonical skill:
+
+```bash
+python platforms/build.py
+python platforms/build.py --check
 ```
 
 ## Requirements
@@ -48,12 +79,32 @@ manim-math-video/
 - PyAV (audio conversion and QA) and Pillow (contact sheets)
 - A LaTeX distribution for equation beats (`latex` + `dvisvgm`)
 
+Recommended, from the repository root:
+
 ```bash
-python -m pip install -r requirements.txt   # from the repository root
-# or: python -m pip install manim edge-tts av pillow
+python scripts/setup.py
+```
+
+This creates `.venv`, installs `requirements.txt`, and runs the environment check. Manual setup:
+
+```bash
+python -m venv .venv
+# Windows PowerShell: .\.venv\Scripts\Activate.ps1
+# Windows cmd:        .venv\Scripts\activate.bat
+# macOS / Linux:      source .venv/bin/activate
+python -m pip install -r requirements.txt
+
+# from the repository root (wrapper)
+python scripts/check_env.py
+
+# or from the skill directory
 cd manim-math-video
 python scripts/check_env.py
 ```
+
+The check colors `ok`, `warn`, `optional`, and `fail` in a terminal. Use `--color always` to force color in captured output, `--no-color` to disable it, and `--json` for machine-readable output.
+
+`check_env.py` and `render.py` find Manim in the active environment, a local `.venv`, or `MANIM_BIN` before falling back to PATH. On Windows, the Manim CLI is often installed in `%APPDATA%\Python\Python314\Scripts`; add that directory to PATH if you want `manim` available outside the venv.
 
 ## Install LaTeX + dvisvgm
 
@@ -150,24 +201,84 @@ python scripts/check_env.py
 
 `LaTeX` and `dvisvgm` should both show `ok`. More installation and failure notes are in `manim-math-video/references/troubleshooting.md`.
 
-## Install as a Pi skill
+## Install for your agent
 
-Copy or symlink the `manim-math-video` directory into a discovered skills location:
+The repository ships installable builds for Claude Code, Codex, GitHub Copilot, and Pi. Pick the matching tree from `dist/` and copy its `manim-math-video` directory into a skill root. Detailed per-agent guides, including PowerShell commands, project installs, update, and uninstall, are in [INSTALL.md](INSTALL.md).
 
-```text
-# User-level
-~/.pi/agent/skills/manim-math-video/
+### Claude Code
 
-# Project-level
-<project>/.pi/skills/manim-math-video/
+```bash
+# Personal
+mkdir -p ~/.claude/skills
+cp -R dist/claude/skills/manim-math-video ~/.claude/skills/
 
-# Agent Skills standard
-~/.agents/skills/manim-math-video/
+# Project
+mkdir -p .claude/skills
+cp -R dist/claude/skills/manim-math-video .claude/skills/
 ```
 
-Then run `/skill:manim-math-video` in Pi, or let the model route to it when the task matches.
+Invoke with `/manim-math-video <topic>`. See `platforms/claude/README.md`.
+
+### Codex
+
+```bash
+# Current Agent Skills location
+mkdir -p ~/.agents/skills
+cp -R dist/codex/skills/manim-math-video ~/.agents/skills/
+
+# Codex desktop app location, if that is where Codex looks
+mkdir -p ~/.codex/skills
+cp -R dist/codex/skills/manim-math-video ~/.codex/skills/
+
+# Project
+mkdir -p .agents/skills
+cp -R dist/codex/skills/manim-math-video .agents/skills/
+```
+
+Invoke with `$manim-math-video <topic>` or choose it from `/skills`. See `platforms/codex/README.md`.
+
+### GitHub Copilot
+
+```bash
+# Project, shared with the repository
+mkdir -p .github/skills
+cp -R dist/copilot/skills/manim-math-video .github/skills/
+
+# Personal
+mkdir -p ~/.copilot/skills
+cp -R dist/copilot/skills/manim-math-video ~/.copilot/skills/
+```
+
+Invoke with `/manim-math-video <topic>` in Copilot Chat, the Copilot CLI, or the Copilot app. VS Code also discovers `.claude/skills/` and `.agents/skills/`. See `platforms/copilot/README.md`.
+
+### Pi
+
+```bash
+# Personal
+mkdir -p ~/.pi/agent/skills
+cp -R dist/pi/skills/manim-math-video ~/.pi/agent/skills/
+
+# Project
+mkdir -p .pi/skills
+cp -R dist/pi/skills/manim-math-video .pi/skills/
+```
+
+Invoke with `/skill:manim-math-video <topic>`. See `platforms/pi/README.md`.
+
+On Windows PowerShell, create directories with `New-Item -ItemType Directory -Force -Path <dir>` and copy with `Copy-Item -Recurse -Force <source> <destination>`. All builds require the complete directory; `SKILL.md` references the bundled scripts, references, and assets.
+
+To install every platform into its personal skill root at once, and to verify that `dist/` is current:
+
+```bash
+python platforms/build.py --install
+python platforms/build.py --check
+```
+
+See `platforms/README.md` for the differences between frontmatter, metadata, and invocation syntax.
 
 ## Quick start
+
+First run `python scripts/setup.py` once from the repository root: it creates `.venv`, installs all dependencies, and checks the environment. Activate `.venv` or call its Python directly for the commands below.
 
 ```bash
 cd manim-math-video
@@ -190,13 +301,14 @@ python scripts/render.py --episode ../my-series/episodes/001-why-derivative-x-sq
 
 ## How the pipeline works
 
-1. **Interview** — the agent follows `references/interview.md` and asks for the four required parameters plus the argument core.
-2. **Brief** — `brief.json` records the approved thesis, audience, chain, notation, quality, voice, language, and template.
-3. **Scaffold** — `new_episode.py` creates a standalone episode with a copied `manim_lib/`, a theme snapshot, and a storyboard skeleton.
-4. **Storyboard** — `storyboard.json` has one narration segment per beat and one visual idea per beat.
-5. **Narration** — `tts.py` writes `voice/*.wav`, `voice/manifest.json`, and a preview SRT. Edge TTS word boundaries are captured.
-6. **Render** — the generated `episode.py` subclasses `StoryboardScene`, which reads the storyboard, theme, and voice manifest, adds sound and captions, and renders graphs and equations.
-7. **QA** — `render.py` copies the MP4/SRT and `qa.py` produces a contact sheet, stream report, audio levels, subtitle coverage, and warnings.
+1. **Interview** — the agent follows `references/interview.md` and asks for the four required parameters plus the content core.
+2. **Voice selection** — `voice_samples.py` generates numbered, comparable samples; the explicit choice is recorded in `brief.json`.
+3. **Brief** — `brief.json` records the approved thesis, audience, progression, terminology, quality, voice, language, and template.
+4. **Scaffold** — `new_episode.py` creates a standalone episode with a copied `manim_lib/`, a theme snapshot, and a storyboard skeleton.
+5. **Storyboard** — `storyboard.json` has one narration segment per beat and one visual idea per beat.
+6. **Narration** — `tts.py` writes `voice/*.wav`, `voice/manifest.json`, and a preview SRT. Edge TTS word boundaries are captured.
+7. **Render** — the generated `episode.py` subclasses `StoryboardScene`, which reads the storyboard, theme, and voice manifest, adds sound and captions, and renders the selected visuals (graphs, equations, diagrams, and custom beats).
+8. **QA** — `render.py` copies the MP4/SRT and `qa.py` produces a contact sheet, stream report, audio levels, subtitle coverage, and warnings.
 
 ## The templates
 

@@ -7,13 +7,54 @@ import argparse
 import importlib
 import importlib.util
 import json
+import os
 import platform
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 
-from _common import SKILL_ROOT
+from _common import SKILL_ROOT, find_manim_executable
+
+ANSI_RESET = "\033[0m"
+ANSI_BOLD = "\033[1m"
+ANSI_DIM = "\033[2m"
+STATUS_COLORS = {
+    "ok": "\033[32m",
+    "warn": "\033[33m",
+    "optional": "\033[36m",
+    "fail": "\033[31m",
+}
+
+
+def _enable_windows_ansi() -> None:
+    """Enable virtual-terminal sequences on Windows consoles."""
+    if os.name != "nt":
+        return
+    try:
+        import ctypes
+
+        kernel32 = ctypes.windll.kernel32
+        handle = kernel32.GetStdHandle(-11)
+        mode = ctypes.c_uint32()
+        if kernel32.GetConsoleMode(handle, ctypes.byref(mode)):
+            kernel32.SetConsoleMode(handle, mode.value | 0x0004)
+    except Exception:
+        pass
+
+
+def _color_enabled(stream, mode: str) -> bool:
+    if mode == "never":
+        return False
+    if mode == "always":
+        return True
+    if os.environ.get("NO_COLOR") is not None:
+        return False
+    return bool(getattr(stream, "isatty", lambda: False)())
+
+
+def _paint(text: str, code: str, enabled: bool) -> str:
+    return f"{code}{text}{ANSI_RESET}" if enabled and code else text
 
 
 def _version_of(module_name: str) -> str | None:
@@ -35,7 +76,19 @@ def _tool_version(command: list[str]) -> str | None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--json", action="store_true", help="Print JSON")
+    parser.add_argument(
+        "--color",
+        choices=["auto", "always", "never"],
+        default="auto",
+        help="Color the table (default: auto; respects NO_COLOR)",
+    )
+    parser.add_argument("--no-color", action="store_true", help="Same as --color never")
     args = parser.parse_args(argv)
+    if args.no_color:
+        args.color = "never"
+    if args.color != "never":
+        _enable_windows_ansi()
+    color = _color_enabled(sys.stdout, args.color)
 
     checks: list[dict[str, str]] = []
 
@@ -50,10 +103,13 @@ def main(argv: list[str] | None = None) -> int:
         )
 
     python_ok = sys.version_info >= (3, 10)
+    python_detail = f"{platform.python_version()} ({sys.executable})"
+    if sys.prefix != sys.base_prefix:
+        python_detail += " [venv]"
     add(
         "Python",
         "ok" if python_ok else "fail",
-        f"{platform.python_version()} ({sys.executable})",
+        python_detail,
         "Install Python 3.10 or newer." if not python_ok else "",
     )
 
@@ -64,12 +120,15 @@ def main(argv: list[str] | None = None) -> int:
         manim_version or "not importable",
         "Install Manim Community: python -m pip install manim" if not manim_version else "",
     )
-    manim_exe = shutil.which("manim")
+    manim_exe = find_manim_executable()
     add(
         "manim executable",
         "ok" if manim_exe else "fail",
-        manim_exe or "not on PATH",
-        "Add the Python Scripts directory to PATH or use the same virtual environment." if not manim_exe else "",
+        manim_exe or "not found in PATH, the active venv, a local .venv, or MANIM_BIN",
+        "Activate the project venv (or add its Scripts directory to PATH). "
+        "You can also set MANIM_BIN to the full manim executable path."
+        if not manim_exe
+        else "",
     )
 
     latex = shutil.which("latex")
@@ -168,15 +227,46 @@ def main(argv: list[str] | None = None) -> int:
     if args.json:
         print(json.dumps({"ok": not any(item["status"] == "fail" for item in checks), "checks": checks}, indent=2))
     else:
-        print(f"manim-math-video environment — {platform.system()} {platform.release()}")
-        print(f"Skill root: {SKILL_ROOT}\n")
-        print(f"{'Component':22} {'Status':9} Detail")
-        print("-" * 100)
+        title = f"manim-math-video environment — {platform.system()} {platform.release()}"
+        print(_paint(title, ANSI_BOLD, color))
+        print(f"Skill root: {_paint(str(SKILL_ROOT), ANSI_DIM, color)}\n")
+        header = f"{'Component':22} {'Status':9} Detail"
+        print(_paint(header, ANSI_BOLD, color))
+        print(_paint("-" * 100, ANSI_DIM, color))
         for item in checks:
-            print(f"{item['component']:22} {item['status']:9} {item['detail']}")
+            status_color = STATUS_COLORS.get(item["status"], "")
+            status = _paint(f"{item['status']:9}", status_color, color)
+            print(f"{item['component']:22} {status} {item['detail']}")
             if item["recommendation"]:
-                print(f"{'':32} -> {item['recommendation']}")
-        print("\nLegend: ok = ready, warn = needed for some workflows, optional = nice to have, fail = blocking.")
+                arrow = _paint("->", ANSI_DIM, color)
+                print(f"{'':32} {arrow} {item['recommendation']}")
+
+        legend = ", ".join(
+            f"{_paint(label, STATUS_COLORS[label], color)} = {description}"
+            for label, description in (
+                ("ok", "ready"),
+                ("warn", "needed for some workflows"),
+                ("optional", "nice to have"),
+                ("fail", "blocking"),
+            )
+        )
+        print(f"\nLegend: {legend}")
+
+        failures = [item for item in checks if item["status"] == "fail"]
+        warnings = [item for item in checks if item["status"] == "warn"]
+        if failures:
+            names = ", ".join(item["component"] for item in failures)
+            print(
+                f"\n{_paint('Blocking issues:', STATUS_COLORS['fail'], color)}"
+                f" {len(failures)} ({names})"
+            )
+        else:
+            print(f"\n{_paint('Environment ready.', STATUS_COLORS['ok'], color)}")
+        if warnings:
+            print(
+                f"{_paint('Warnings:', STATUS_COLORS['warn'], color)}"
+                f" {len(warnings)} (review the rows above)"
+            )
 
     return 1 if any(item["status"] == "fail" for item in checks) else 0
 

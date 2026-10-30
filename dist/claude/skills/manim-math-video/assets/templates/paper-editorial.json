@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "id": "paper-editorial",
+  "name": "Marginalia",
+  "version": "1.0.0",
+  "description": "Warm paper, dark brown ink, oxblood and olive accents, serif typography. Essayistic and restrained.",
+  "best_for": [
+    "history of mathematics",
+    "philosophy of mathematics",
+    "essayistic explanations",
+    "biographies",
+    "gentle long-form"
+  ],
+  "aspect_ratio": "16:9",
+  "background": "#F4EFE6",
+  "surface": "#FBF8F2",
+  "ink": "#2B2A27",
+  "muted": "#6B6257",
+  "roles": {
+    "primary": "#8C2F39",
+    "secondary": "#5F6F52",
+    "success": "#4F6B52",
+    "warning": "#B08D57",
+    "danger": "#A23E48",
+    "grid": "#D6CCBC",
+    "axis": "#7A6E60"
+  },
+  "fonts": {
+    "heading": ["Source Serif 4", "Georgia", "DejaVu Serif"],
+    "body": ["Source Serif 4", "Georgia", "DejaVu Serif"],
+    "mono": ["JetBrains Mono", "Consolas", "DejaVu Sans Mono"]
+  },
+  "sizes": {
+    "title": 54,
+    "heading": 42,
+    "body": 30,
+    "bullet": 29,
+    "caption": 23,
+    "equation": 44,
+    "label": 21,
+    "tick": 17
+  },
+  "layout": {
+    "margin": 0.75,
+    "heading_top_buff": 0.5,
+    "graph_width": 9.2,
+    "graph_height": 4.8,
+    "graph_center_y": -0.7,
+    "text_max_width": 11.0,
+    "bullet_spacing": 0.38,
+    "column_gap": 0.9
+  },
+  "graph": {
+    "stroke_width": 4.5,
+    "axis_stroke_width": 2.2,
+    "tick_size": 17,
+    "label_size": 21,
+    "tick_label_buff": 0.12,
+    "area_opacity": 0.18,
+    "dot_radius": 0.065,
+    "grid_opacity": 0.2
+  },
+  "motion": {
+    "style": "fade",
+    "transition": "fade",
+    "transition_time": 0.35,
+    "default_hold": 0.3,
+    "reveal_lag": 0.2
+  },
+  "captions": {
+    "enabled": true,
+    "max_chars": 78,
+    "tail_pad": 0.18
+  },
+  "story": {
+    "beats": ["title", "section", "quote", "equation", "graph", "compare", "recap", "outro"],
+    "words_per_minute": 135
+  }
+}

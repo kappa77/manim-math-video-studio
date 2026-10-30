@@ -1,28 +1,49 @@
 ---
 name: manim-math-video
-description: Turn a math theme into a storyboarded, narrated Manim video with graphs and subtitles, and keep a consistent series template. Use when planning, scripting, animating, voicing, rendering, or QA-ing a mathematical explainer video, episode, or video series.
+description: Develop any topic into a storyboarded, narrated animated video with subtitles using Manim. Use for planning, researching, scripting, animating, voicing, rendering, or reviewing educational, historical, scientific, technical, cultural, or narrative videos and series.
 license: MIT
-compatibility: Python 3.10+, Manim Community 0.19+, edge-tts 6+; LaTeX for equation beats; PyAV or ffmpeg for audio conversion.
 metadata:
-  version: "1.0.0"
+  version: "1.2.0"
   category: video
 ---
 
-# Manim math video studio
+# Animated video studio for any topic
 
-Produce a finished math explainer from a theme: interrogate the argument, lock the output parameters, choose a series template, write a beat-by-beat storyboard, generate narration, render graphs and equations, and QA the result.
+Produce a finished animated video from any theme: clarify its purpose, develop the content, choose a series template, write a beat-by-beat storyboard, generate narration, animate the appropriate visuals, and QA the result. Mathematics is one supported subject, alongside history, science, technology, literature, philosophy, art, practical tutorials, and fictional storytelling.
 
-This skill is deliberately **interview-first**. A theme is not a brief. Do not scaffold or render until the viewer, the thesis, the argument chain, the visual evidence, and the four output parameters are settled.
+The identifier `manim-math-video` is retained for existing invocations. It does not restrict the subject. This skill still produces animated videos with Manim; it does not imply support for arbitrary artifact formats or live-action production.
+
+## Adapt to the subject
+
+- Select a structure that serves the topic: explanation, chronology, comparison, procedure, analysis, or narrative. The central question or narrative promise fills `episode.thesis`; the sequence of ideas, events, or steps fills `episode.key_points`.
+- For factual topics, distinguish verified facts, interpretations, disputed accounts, and uncertainty. For fiction, preserve internal consistency and label invented material when it could be mistaken for fact. Do not force a thesis to prove, a misconception, or a counterexample into every video.
+- Match visuals to the content: timelines and maps for history; diagrams and causal models for science; workflows and state changes for technology; excerpts and relationships for literature; scenes and character arcs for narrative. Use graphs and equations only when they clarify the subject.
+- Standard beats include `title`, `section`, `bullets`, `compare`, `quote`, `image`, `recap`, and `outro`. A timeline, map, flowchart, or character animation may need an implemented `custom_beat`; these are not additional built-in beat kinds. Read `references/storyboard.md` for the actual fields.
+- Set `episode.rigor` to `explanation`, `narrative`, `procedure`, or `analysis` for general subjects. Keep `intuition`, `sketch`, `proof`, and `derivation` for mathematical treatments. Empty `misconceptions`, `prerequisites`, or `accuracy.notation` lists are valid when irrelevant.
+
+<!-- platform-usage:start -->
+## Using this skill
+
+Requirements: Python 3.10+, Manim Community 0.19+, edge-tts 6+; LaTeX for equation beats; PyAV or ffmpeg for audio conversion. Run `scripts/check_env.py` to determine which dependencies are actually available before rendering. Skill installation alone does not install them.
+
+Resolve scripts, assets, and references relative to the directory containing this `SKILL.md`, even when the working directory is another project. Invoke scripts by absolute path and use absolute paths for brief files and episode output directories. Keep generated series and media in the user's workspace, outside the installed skill directory. Use the user's conversation language for questions and explanations; set narration language separately in the brief.
+
+Invoke the skill explicitly when the agent exposes skills as commands: `/skill:manim-math-video <topic>` in Pi, `$manim-math-video <topic>` in Codex, or `/manim-math-video <topic>` in Claude Code and GitHub Copilot. The model may also load it automatically when the task matches the description. If the agent does not support skills natively, give it this file and ask it to follow the workflow.
+<!-- platform-usage:end -->
+
+Reuse decisions and approvals already supplied by the user. An explicit voice choice for the current video satisfies the voice-selection gate; do not ask again. A saved series default alone does not satisfy it for a new episode. The interview and brief approval below apply only to unresolved choices or a brief that has not already been approved.
+
+This skill is deliberately **interview-first**. A theme is not a brief. Before starting production of each new video or episode, always ask the user to choose the narration voice and wait for their explicit choice. Offer short playable samples as described in `references/voices.md`. Until that choice is settled, only interview, source research, environment checks, and voice-sample generation may proceed; do not scaffold, write the full script/storyboard, generate episode narration, or render. An existing explicit choice for the current video counts; a generic "ok", "go ahead", or delegated choice does not select an unidentified voice. Do not scaffold or render until the audience, central focus, content progression, visual approach, and four output parameters are settled.
 
 ## Non-negotiables
 
-1. **Collect four parameters before generating anything:** video quality, voice, language, and template. Never guess one silently. If the user delegates, propose a default, state it, and record it in `brief.json`.
-2. **One argument per episode.** A thesis, a chain of 3-7 claims, one crux, one misconception, one takeaway. Split anything larger into episodes.
+1. **Collect four parameters before production:** video quality, voice, language, and template. Never guess one silently. Voice samples are the explicit exception: generate them before the voice is chosen. Always obtain an explicit voice choice before production; a recommendation or delegated default is not a choice. For other delegated parameters, propose defaults, state them, and record them in `brief.json`.
+2. **One coherent focus per episode.** A central question or narrative promise, a clear progression, and a takeaway or resolution. Split overly broad themes into episodes. Include a misconception only when relevant.
 3. **Narration is spoken prose, not slide text.** The storyboard's `narration` is what the viewer hears; on-screen text is short. Use `speech` when a symbol or name needs a pronounceable form.
 4. **Graphs must earn their place.** Every graph needs a reason to be seen: a limit, a comparison, a counterexample, a rate, an area, a transformation. Write that reason in the beat's `notes`.
 5. **Series consistency is a feature.** Reuse the template, voice, language, quality, palette, fonts, title grammar, episode numbering, and intro/outro rhythm. Do not restyle an episode casually.
 6. **Draft before final.** Render `draft` (480p15) first, inspect the contact sheet and audio, then render `standard`/`high`. Never burn a long final render on an unvalidated script.
-7. **Verify the mathematics.** Re-derive every nontrivial formula, check domains and edge cases, and label axes and units. Do not invent citations or historical claims.
+7. **Verify the content.** Check facts, dates, causal claims, quotations, and sources according to the subject. For mathematics, also re-derive formulas and check domains. Label quantitative axes and units. Do not invent evidence or citations.
 8. **Accessibility by default.** Keep captions, high contrast, large type, and redundant color/shape cues. Captions are generated from the narration unless explicitly disabled.
 
 ## Workflow
@@ -41,7 +62,7 @@ Read only what the current step needs:
 | Graph specs and animation recipes | `references/graphs.md` |
 | Custom Manim code, 3D, camera, equations | `references/manim-recipes.md` |
 | Series registry and continuity | `references/series.md` |
-| Math verification and notation | `references/accuracy.md` |
+| Content verification and domain-specific checks | `references/accuracy.md` |
 | Install and failure modes | `references/troubleshooting.md` |
 
 ### 1. Interview the argument
@@ -52,14 +73,14 @@ Follow `references/interview.md`. Ask in small rounds, at most 8 numbered questi
 - audience and prerequisites;
 - target duration and platform;
 - the crux or tension;
-- the one visual that carries the intuition;
+- the visual approach that carries the explanation or story;
 - video quality, voice, language, template.
 
-Then probe the argument chain, misconceptions, examples, and accuracy. If the user says "you choose", choose and say what you chose. Do not ask questions whose answer is already in the series registry.
+Then develop the explanation, chronology, procedure, or story, probing examples and accuracy as relevant. If the user says "you choose", choose and state defaults for parameters other than voice. For voice, recommend a sample and wait for explicit selection. Reuse series settings, but ask the user to confirm the saved narrator for each new episode unless they have already selected it for that episode.
 
 ### 2. Lock the series template
 
-If a series already exists, read its `series.json` and inherit the template, voice, language, and quality. Ask only for episode-specific content. If the user requests a style change, warn that it breaks the series and get explicit confirmation.
+If a series already exists, read its `series.json` and inherit the template, language, and quality. Offer the saved voice as the recommended option, with a short sample, and ask the user to select it or request alternatives before production. Keep that voice locked once confirmed. If the user requests a style change, explain the series-consistency impact and get explicit confirmation.
 
 If this is a new series, choose a template using `references/templates.md`. State the choice and why in one sentence. The template controls palette, fonts, layout, graph styling, motion, caption style, and narrative rhythm.
 
@@ -71,7 +92,7 @@ Create `brief.json` from `assets/brief.schema.json` and the example at `assets/b
 - `output.language` and `output.voice` (provider, id, style, rate, pitch);
 - `series.template`;
 - thesis, audience, goals, rigor, key points, misconceptions, visuals, target duration;
-- notation, pronunciations, sources, claims to verify.
+- terminology or notation, pronunciations, sources, claims to verify; use empty lists for irrelevant fields.
 
 Run:
 
@@ -91,7 +112,7 @@ This creates a series registry (first run), an episode directory, a theme snapsh
 
 ### 5. Write the script and storyboard
 
-Use `references/storyboard.md`. Keep one narration segment per beat and one visual idea per beat. Typical 5-9 minute episode:
+Use `references/storyboard.md`. Keep one narration segment per beat and one visual idea per beat. The following is a mathematical example, not a required outline for other topics; adapt the sequence using the subject guidance above:
 
 1. `title` — hook and promise.
 2. `section`/`bullets` — the question and why it matters.
@@ -112,6 +133,8 @@ python scripts/validate.py --episode <episode-dir>
 Check the estimated duration against the target. Cut, don't rush. Target roughly 135-155 spoken words per minute.
 
 ### 6. Generate narration
+
+Verify that the user explicitly selected the exact voice, or confirmed reuse of it, for this video. Record the choice before running TTS; do not infer it from general brief approval.
 
 ```bash
 python scripts/tts.py --episode <episode-dir>
@@ -158,16 +181,16 @@ Report the output paths, duration, quality, voice/language, template, and any wa
 
 When the user gives only a theme, reply with a short framing and **one** round of numbered questions. Do not dump the entire question bank. A good first round is:
 
-1. One-sentence thesis — what should the viewer believe or be able to do?
+1. Central question, learning goal, or narrative promise in one sentence.
 2. Audience and prerequisites.
 3. Target duration and platform (16:9 long-form, 9:16 short, classroom).
-4. The crux: what is surprising, hard, or commonly misunderstood?
-5. The visual evidence: what should be plotted or transformed?
+4. The key challenge, turning point, or surprising idea.
+5. The visual approach: what should be shown, ordered, compared, or transformed?
 6. Quality: draft / standard (1080p30) / high (1080p60) / 4K?
-7. Voice and language: choose a style and locale, or describe the voice you want.
+7. Language and voice: confirm the locale; offer to generate three short playable voice samples, then ask for a numbered or named choice before production. If the locale is already known, generate the samples directly.
 8. Template: choose from the catalog, or let me recommend one.
 
-If a series exists, replace 6-8 with "reuse series settings?" and ask only for the episode title/thesis.
+If a series exists, reuse its quality, language, and template. Still ask the user to choose the saved narrator for this episode or request alternatives; include a short playable sample. Do not repeat a voice choice already made for the current episode.
 
 ## Command cheat sheet
 
@@ -178,6 +201,10 @@ All paths are relative to this skill directory unless noted.
 python scripts/check_env.py
 python scripts/selftest.py
 python scripts/selftest.py --full   # optional silent smoke render
+
+# comparable voice samples before the voice-selection gate
+python scripts/voice_samples.py --language it-IT --style warm-teacher \
+  --text "In questa puntata seguiamo un'idea dalla prima domanda al momento in cui tutto si chiarisce."
 
 # validate a brief
 python scripts/validate.py --brief brief.json
@@ -202,14 +229,14 @@ python scripts/qa.py --video output/video.mp4 --srt output/video.srt
 
 ## Decision rules
 
-- **No series yet:** recommend `clean-light` for general audiences and graphs, `dark-board` for calculus/linear algebra/long-form, `paper-editorial` for history/philosophy/essayistic episodes. See `references/templates.md`.
-- **User is unsure about voice:** default to a warm teacher style in the narration language. State the exact voice id.
+- **No series yet:** recommend `clean-light` for accessible explainers and procedures, `dark-board` for technical or dramatic treatments, `paper-editorial` for history, culture, and essays. See `references/templates.md`. Treat templates as visual styles; adapt their suggested beat sequence to the topic.
+- **User is unsure about voice:** offer three short samples in the narration language, recommend one suited to the topic, and wait for the user to choose. Never silently default the narrator, even after "you choose". See `references/voices.md`.
 - **User is unsure about quality:** `standard` = 1080p30 is the default final; `draft` = 480p15 for review; `high` = 1080p60 for motion-heavy work; `4k` only when requested or when the platform needs it.
 - **Topic is too big:** split at a natural question boundary; make this episode's thesis narrow; put the rest in the next-episode hook.
 - **Graph would be decorative:** replace it with a diagram, equation transformation, or a concrete example. Do not animate a plot that carries no claim.
 - **LaTeX is unavailable:** equation beats fail loudly by default. Install LaTeX (see `references/troubleshooting.md`) or set `output.latex_fallback` for a draft-only Unicode approximation. Never ship the fallback as final math.
 - **TTS is unavailable:** use `--provider none` only for a silent timing draft; keep the final narrated.
-- **A series exists:** inherit its locked settings. Do not change template, voice, language, or quality without explicit user confirmation and a recorded reason.
+- **A series exists:** inherit its locked settings, but explicitly confirm the narrator for each new episode using the voice-selection gate. Confirming the existing voice is not a style change; changing it still requires explicit approval and a recorded reason.
 
 ## Deliverables
 

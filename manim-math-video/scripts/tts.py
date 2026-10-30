@@ -446,6 +446,15 @@ def main(argv: list[str] | None = None) -> int:
                 "edge-tts will be asked directly."
             )
 
+    selection = output_cfg.get("voice_selection") or {}
+    if provider != "none" and str(selection.get("status", "")).lower() != "confirmed":
+        print(
+            "  ! output.voice_selection is not confirmed. The voice-selection gate "
+            "requires an explicit choice, or confirmed reuse of the series voice, "
+            "before narration.",
+            file=sys.stderr,
+        )
+
     if args.check:
         print(f"Episode: {episode_dir}")
         print(f"Provider: {provider} | voice: {voice_id} | language: {language}")
