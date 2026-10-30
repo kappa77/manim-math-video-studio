@@ -2,7 +2,28 @@
 
 Thanks for looking. This repository is an **Agent Skill**: prose that an agent reads, plus the scripts it runs. Both halves matter.
 
-## Layout and source of truth
+## Repository layout
+
+```text
+manim-math-video/                 # canonical skill — the source of truth
+├── SKILL.md                      # routing + workflow the agent follows
+├── references/                   # interview, brief, storyboard, graphs, voices, series, accuracy
+├── assets/                       # templates, voices.json, schemas, project/manim_lib runtime
+├── scripts/                      # check_env, validate, new_episode, tts, render, qa, selftest
+└── examples/                     # verified demo series source + preview contact sheet
+
+platforms/                        # per-agent frontmatter and install notes
+├── manifest.json                 # platform config: install roots, frontmatter edits
+├── build.py                      # build / --check / --install the dist/ trees
+└── claude/  codex/  copilot/  pi/
+
+dist/                             # GENERATED skill trees, one per agent — do not edit
+install.py                        # installer: detection, skill trees, shared environment
+install.sh / install.ps1          # one-command wrappers for macOS/Linux and Windows
+scripts/check_env.py              # repo-root wrapper for the skill environment check
+scripts/setup.py                  # repo-only helper: create ./.venv and install requirements
+docs/                             # GitHub Pages landing page
+```
 
 | Path | Role |
 |---|---|
