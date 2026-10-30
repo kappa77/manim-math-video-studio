@@ -15,9 +15,9 @@ It finds the agents on your machine, installs the skill for each, prepares one s
 
 Other routes — `curl -fsSL …/install.sh | bash`, `irm …/install.ps1 | iex`, or `git clone` + `python install.py` — are in [INSTALL.md](INSTALL.md).
 
-![Contact sheet: frames from the generated demo episode on the derivative of x squared](manim-math-video/examples/demo-preview.jpg)
+![The birthday-problem episode: the probability curve for a shared birthday rising through 23 people at 50.7%](docs/img/demo.gif)
 
-*Frames from the demo episode in `manim-math-video/examples/` — generated end to end by the skill, from brief to render.*
+*"Why 23 people are enough for a shared birthday" — 2 minutes, produced end to end by the skill: brief → storyboard → narration → render → QA. [Watch the full episode](https://github.com/kappa77/manim-math-video-studio/releases/download/v0.1.0/manim-math-video-demo-23-people-1080p.mp4) (1080p, subtitles included).*
 
 ## What it does
 
