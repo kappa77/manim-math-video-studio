@@ -539,6 +539,8 @@ def main(argv: list[str] | None = None) -> int:
             step("Preparing the Python environment (2-4 min on first run)")
             create_venv(venv, use_uv=not args.no_uv)
             install_dependencies(venv, root / "requirements.txt", use_uv=not args.no_uv)
+            for path in plan.values():
+                (path / ".venv-path").write_text(str(venv) + "\n", encoding="utf-8", newline="\n")
 
         install_latex(args.with_latex, dry_run=False)
         write_state({name: str(path) for name, path in plan.items()}, venv, version)

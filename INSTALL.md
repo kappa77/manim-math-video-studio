@@ -160,7 +160,8 @@ python platforms/build.py --install   # copy every build into its personal root
 The scripts pick the first working runtime:
 
 1. `MANIM_BIN`, then the interpreter running the script;
-2. `MANIM_STUDIO_VENV`, then `~/.manim-math-video/venv`;
+2. `MANIM_STUDIO_VENV`, then the environment recorded in
+   `<skill>/.venv-path` by the installer, then `~/.manim-math-video/venv`;
 3. a `.venv` or `venv` in the working directory or any parent, or beside the
    skill directory;
 4. `manim` on `PATH`.

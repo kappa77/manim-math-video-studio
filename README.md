@@ -153,7 +153,7 @@ The check colors `ok`, `warn`, `optional`, and `fail` in a terminal. Use `--colo
 The scripts resolve the runtime in this order, so a plain `python scripts/render.py` works without activating anything:
 
 1. `MANIM_BIN`, then the interpreter running the script;
-2. `MANIM_STUDIO_VENV`, then the shared environment at `~/.manim-math-video/venv`;
+2. `MANIM_STUDIO_VENV`, then the environment recorded in `<skill>/.venv-path` by the installer, then the shared `~/.manim-math-video/venv`;
 3. a `.venv` or `venv` in the working directory or any parent (so a repository `.venv` still wins), or beside the skill directory;
 4. `manim` on `PATH`.
 

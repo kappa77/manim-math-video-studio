@@ -33,12 +33,24 @@ MANAGED_VENV = Path.home() / ".manim-math-video" / "venv"
 RUNTIME_MODULES = ("numpy", "manim", "av", "PIL")
 
 
+def _marker_venv_root() -> Path | None:
+    """Environment recorded by install.py beside the skill files."""
+    try:
+        text = (SKILL_ROOT / ".venv-path").read_text(encoding="utf-8").strip()
+    except OSError:
+        return None
+    return Path(text).expanduser() if text else None
+
+
 def _shared_venv_roots() -> list[Path]:
     """Environments created by install.py, honoured before PATH."""
     roots: list[Path] = []
     override = os.environ.get("MANIM_STUDIO_VENV", "").strip()
     if override:
         roots.append(Path(override).expanduser())
+    marker = _marker_venv_root()
+    if marker is not None:
+        roots.append(marker)
     roots.append(MANAGED_VENV)
     return roots
 
