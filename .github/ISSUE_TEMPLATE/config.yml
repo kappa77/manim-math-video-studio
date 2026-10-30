@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Installation help
+    url: https://github.com/kappa77/manim-math-video-studio/blob/main/INSTALL.md
+    about: One-command install, options, layout, update, uninstall, and troubleshooting.
+  - name: Troubleshooting reference
+    url: https://github.com/kappa77/manim-math-video-studio/blob/main/manim-math-video/references/troubleshooting.md
+    about: Rendering, LaTeX, fonts, TTS, and environment failures with fixes.
+  - name: Read me first
+    url: https://github.com/kappa77/manim-math-video-studio/blob/main/CONTRIBUTING.md
+    about: How the source tree, dist/ builds, and the installer relate.

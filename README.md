@@ -1,6 +1,21 @@
 # Manim Math Video Studio
 
+[![release](https://img.shields.io/github/v/release/kappa77/manim-math-video-studio?color=blue)](https://github.com/kappa77/manim-math-video-studio/releases/latest)
+[![license](https://img.shields.io/github/license/kappa77/manim-math-video-studio)](LICENSE)
+[![python](https://img.shields.io/badge/python-3.10%2B-yellow)](INSTALL.md)
+[![agents](https://img.shields.io/badge/agents-Claude%20Code%20%7C%20Codex%20%7C%20Copilot%20%7C%20Pi-blueviolet)](INSTALL.md)
+
 A portable [Agent Skill](https://agentskills.io/specification) for turning a theme into a storyboarded, narrated Manim video — and into a consistent series. Prebuilt for Claude Code, Codex, GitHub Copilot, and Pi.
+
+```bash
+python -c "import urllib.request as u;exec(u.urlopen('https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.py').read().decode())"
+```
+
+One command on macOS, Linux, and Windows: it finds your agents, installs the skill for each, prepares one shared environment, and verifies it. No activation step afterwards. See [Install](#install) or the [landing page](https://kappa77.github.io/manim-math-video-studio/) for the alternatives.
+
+![Contact sheet: frames from the generated demo episode on the derivative of x squared](manim-math-video/examples/demo-preview.jpg)
+
+*Frames from the demo episode in `manim-math-video/examples/` — generated end to end by the skill, from brief to render.*
 
 The agent interviews the user about the **content**, not just the topic: central question or narrative promise, audience, crux or progression, visual approach, and takeaway. It then locks four production parameters (**quality, voice, language, template**), scaffolds the episode, generates narration with timing, renders the selected visuals, and runs a QA pass. Mathematics is one supported subject; the same workflow serves history, science, technology, literature, philosophy, art, tutorials, and narrative videos.
 
@@ -64,6 +79,8 @@ install.sh / install.ps1          # one-command installers: macOS/Linux, Windows
 install.py                        # installer logic: skill trees + one shared environment
 VERSION                           # release version, used for pinning and updates
 INSTALL.md                        # install guide: options, layout, update, uninstall
+CONTRIBUTING.md / CHANGELOG.md    # how to change the skill, what changed when
+docs/                             # landing page published with GitHub Pages
 
 scripts/
 ├── check_env.py                  # repo-root wrapper for the skill env check

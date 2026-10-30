@@ -1,0 +1,72 @@
+name: Bug report
+description: Something in the skill, the scripts, or the installer does not work
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing: run `python scripts/check_env.py` from the skill directory and read
+        `references/troubleshooting.md`. Most rendering failures are an environment or LaTeX issue.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you expected, and what happened instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: command
+    attributes:
+      label: Command and traceback
+      description: The exact command, plus the full error output.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: env-check
+    attributes:
+      label: Environment check output
+      description: Output of `python scripts/check_env.py` (add `--json` if the table is hard to paste).
+      render: shell
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: How did you install?
+      options:
+        - One-command installer (install.sh / install.ps1 / python -c)
+        - Release zip, copied by hand
+        - git clone into a skill root
+        - Project install (--root)
+    validations:
+      required: true
+
+  - type: input
+    id: agent
+    attributes:
+      label: Agent and version
+      placeholder: Claude Code 2.x / Codex 0.x / Copilot CLI x / Pi 1.4.0
+    validations:
+      required: true
+
+  - type: input
+    id: platform
+    attributes:
+      label: OS and Python
+      placeholder: Windows 11 · Python 3.13.7
+    validations:
+      required: true
+
+  - type: input
+    id: skill-version
+    attributes:
+      label: Skill version
+      description: From `VERSION`, the release tag, or `metadata.version` in `SKILL.md`.
+      placeholder: v0.1.0
+    validations:
+      required: false

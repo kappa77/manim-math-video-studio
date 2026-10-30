@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manim Math Video Studio — an agent skill for narrated animated videos</title>
+<meta name="description" content="An Agent Skill that turns a topic into a storyboarded, narrated Manim video — and into a consistent series. Prebuilt for Claude Code, Codex, GitHub Copilot, and Pi. One command install.">
+<meta property="og:title" content="Manim Math Video Studio">
+<meta property="og:description" content="Topic in, narrated Manim video out. One command install for Claude Code, Codex, GitHub Copilot, and Pi.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kappa77.github.io/manim-math-video-studio/">
+<meta property="og:image" content="https://kappa77.github.io/manim-math-video-studio/media/demo-preview.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+<style>
+  :root {
+    --bg: #0d1015;
+    --panel: #151a22;
+    --panel-2: #1b222c;
+    --line: #263040;
+    --text: #e7edf5;
+    --muted: #9aa8ba;
+    --accent: #7cc4ff;
+    --accent-2: #ffcf6b;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: radial-gradient(1100px 500px at 50% -10%, #16202c 0%, var(--bg) 60%) no-repeat, var(--bg);
+    color: var(--text);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+  header { padding: 72px 0 8px; text-align: center; }
+  h1 { font-size: clamp(28px, 5vw, 44px); line-height: 1.15; margin: 0 0 16px; letter-spacing: -0.02em; }
+  .tagline { color: var(--muted); font-size: clamp(16px, 2.2vw, 19px); max-width: 640px; margin: 0 auto 28px; }
+  .tagline strong { color: var(--text); font-weight: 600; }
+  .tagline a { color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; }
+  .pills { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 32px; }
+  .pill {
+    font-size: 13px; color: var(--muted); text-decoration: none;
+    border: 1px solid var(--line); background: var(--panel);
+    padding: 4px 10px; border-radius: 999px;
+  }
+  .pill:hover { color: var(--text); border-color: var(--accent); }
+  .install {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 14px 14px 16px; text-align: left; position: relative;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .install code {
+    font-family: var(--mono); font-size: 13px; line-height: 1.5;
+    white-space: pre-wrap; word-break: break-word; color: #cfe6ff; flex: 1;
+  }
+  button.copy {
+    flex: 0 0 auto; font: inherit; font-size: 13px; cursor: pointer;
+    color: var(--text); background: var(--panel-2); border: 1px solid var(--line);
+    border-radius: 8px; padding: 6px 12px;
+  }
+  button.copy:hover { border-color: var(--accent); }
+  button.copy.done { color: #9ef0b3; border-color: #2f6a41; }
+  .note { color: var(--muted); font-size: 13px; margin: 10px 2px 0; }
+  .hero-img {
+    display: block; width: 100%; height: auto; margin: 40px 0 6px;
+    border: 1px solid var(--line); border-radius: 10px; background: #0a0d12;
+  }
+  figcaption { color: var(--muted); font-size: 13px; text-align: center; margin-bottom: 8px; }
+  section { padding: 48px 0 8px; }
+  h2 { font-size: 22px; margin: 0 0 18px; letter-spacing: -0.01em; }
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+  .card h3 { margin: 0 0 8px; font-size: 15px; }
+  .card p { margin: 0; color: var(--muted); font-size: 14px; }
+  ol.pipeline { counter-reset: step; list-style: none; padding: 0; margin: 0; }
+  ol.pipeline li {
+    counter-increment: step; position: relative; padding: 0 0 16px 46px; color: var(--muted);
+  }
+  ol.pipeline li::before {
+    content: counter(step); position: absolute; left: 0; top: -2px;
+    width: 30px; height: 30px; border-radius: 50%;
+    display: grid; place-items: center; font-size: 13px; color: var(--accent);
+    border: 1px solid var(--line); background: var(--panel);
+  }
+  ol.pipeline strong { color: var(--text); font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 500; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; }
+  td code, p code, li code {
+    font-family: var(--mono); font-size: 12.5px; background: var(--panel-2);
+    border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; color: #cfe6ff;
+  }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+  .cta a {
+    text-decoration: none; font-size: 14px; padding: 10px 16px; border-radius: 9px;
+    border: 1px solid var(--line); color: var(--text); background: var(--panel);
+  }
+  .cta a.primary { background: var(--accent); border-color: var(--accent); color: #08131d; font-weight: 600; }
+  .cta a:hover { border-color: var(--accent); }
+  footer { margin-top: 56px; padding: 28px 0 56px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  footer a { color: var(--muted); }
+  @media (prefers-reduced-motion: no-preference) { button.copy { transition: border-color 120ms ease, color 120ms ease; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Topic in, narrated Manim video out.</h1>
+    <p class="tagline">
+      An <a href="https://agentskills.io/specification">Agent Skill</a> that interviews you about the content,
+      writes a beat-by-beat storyboard, narrates it, renders it with Manim, and QA-checks every beat —
+      <strong>then keeps doing it in the same visual style for the whole series.</strong>
+    </p>
+    <div class="pills">
+      <a class="pill" href="https://github.com/kappa77/manim-math-video-studio/releases/latest">v0.1.0 release</a>
+      <a class="pill" href="https://github.com/kappa77/manim-math-video-studio/blob/main/INSTALL.md">install guide</a>
+      <a class="pill" href="https://github.com/kappa77/manim-math-video-studio">source · MIT</a>
+      <a class="pill" href="https://github.com/kappa77/manim-math-video-studio/issues">issues</a>
+    </div>
+
+    <div class="install">
+      <code id="cmd">python -c "import urllib.request as u;exec(u.urlopen('https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.py').read().decode())"</code>
+      <button class="copy" id="copy" type="button">Copy</button>
+    </div>
+    <p class="note">One command on macOS, Linux, and Windows. Detects Claude Code, Codex, GitHub Copilot, and Pi; installs one shared environment; verifies it. Needs Python 3.10+.</p>
+  </header>
+
+  <figure>
+    <img class="hero-img" src="media/demo-preview.jpg" alt="Contact sheet of the demo episode: eleven frames from the video 'Why the derivative of x squared is 2x'">
+    <figcaption>Frames from the generated demo episode — <code>manim-math-video/examples/demo-series</code></figcaption>
+  </figure>
+
+  <section>
+    <h2>Why it is not just a prompt</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Interview first</h3>
+        <p>It asks about the content — central question, audience, crux, visual approach, takeaway — before writing a single line of scene code. A theme is not a brief.</p>
+      </div>
+      <div class="card">
+        <h3>Narration drives the clock</h3>
+        <p>Each beat gets a measured TTS duration, and the animation follows it. Nothing is ever cut off mid-sentence, and subtitles stay in sync.</p>
+      </div>
+      <div class="card">
+        <h3>Built for series</h3>
+        <p>A series registry keeps template, palette, typography, and narration identity stable, so episode 12 still looks like episode 1.</p>
+      </div>
+      <div class="card">
+        <h3>Verified, not vibes</h3>
+        <p>JSON-schema validation for the brief and storyboard, an environment check, contact-sheet QA, and a self-test.</p>
+      </div>
+      <div class="card">
+        <h3>Any subject</h3>
+        <p>History, science, technology, literature, philosophy, art, tutorials — mathematics is one supported domain, not the whole product.</p>
+      </div>
+      <div class="card">
+        <h3>Portable skill</h3>
+        <p>One skill tree, four frontmatter variants: Claude Code, Codex, GitHub Copilot, and Pi. Same workflow, same references, same scripts.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The pipeline</h2>
+    <ol class="pipeline">
+      <li><strong>Interview</strong> — content, audience, crux, visuals, takeaway → <code>brief.json</code></li>
+      <li><strong>Lock</strong> — quality, voice, language, template (the only four parameters that need deciding up front)</li>
+      <li><strong>Storyboard</strong> — beats, timings, graph specs, captions → <code>storyboard.json</code></li>
+      <li><strong>Narrate</strong> — edge-tts, Piper, or your own command → audio + per-beat timings + SRT/VTT</li>
+      <li><strong>Render &amp; QA</strong> — Manim, then a contact sheet per beat so you can review without scrubbing</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Install by hand, if you prefer</h2>
+    <table>
+      <thead><tr><th>Agent</th><th>Unzip the release asset into</th><th>Invoke</th></tr></thead>
+      <tbody>
+        <tr><td>Claude Code</td><td><code>~/.claude/skills/</code></td><td><code>/manim-math-video</code></td></tr>
+        <tr><td>Codex</td><td><code>~/.codex/skills/</code> or <code>~/.agents/skills/</code></td><td><code>$manim-math-video</code></td></tr>
+        <tr><td>GitHub Copilot</td><td><code>~/.copilot/skills/</code></td><td><code>/manim-math-video</code></td></tr>
+        <tr><td>Pi</td><td><code>~/.pi/agent/skills/</code></td><td><code>/skill:manim-math-video</code></td></tr>
+      </tbody>
+    </table>
+    <p class="note">Each zip contains a single <code>manim-math-video/</code> folder. Keep it complete — <code>SKILL.md</code> references the bundled scripts, references, and assets.</p>
+  </section>
+
+  <section>
+    <h2>Get it</h2>
+    <div class="cta">
+      <a class="primary" href="https://github.com/kappa77/manim-math-video-studio/releases/latest">Download v0.1.0</a>
+      <a href="https://github.com/kappa77/manim-math-video-studio">Star on GitHub</a>
+      <a href="https://github.com/kappa77/manim-math-video-studio/blob/main/INSTALL.md">Read the install guide</a>
+    </div>
+  </section>
+
+  <footer>
+    MIT licensed · Built with <a href="https://www.manim.community/">Manim Community</a> and
+    <a href="https://github.com/rany2/edge-tts">edge-tts</a> ·
+    <a href="https://github.com/kappa77/manim-math-video-studio">github.com/kappa77/manim-math-video-studio</a>
+  </footer>
+
+</div>
+<script>
+  const button = document.getElementById('copy');
+  const command = document.getElementById('cmd');
+  button.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(command.textContent.trim());
+    } catch {
+      const range = document.createRange();
+      range.selectNodeContents(command);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand('copy');
+    }
+    button.textContent = 'Copied';
+    button.classList.add('done');
+    setTimeout(() => { button.textContent = 'Copy'; button.classList.remove('done'); }, 1600);
+  });
+</script>
+</body>
+</html>

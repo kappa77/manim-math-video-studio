@@ -1,0 +1,41 @@
+name: Feature request
+description: A new beat, template, voice, subject pack, or workflow improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to make?
+      description: Describe the video or series, not the implementation. What does the skill do today, and where does it stop?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Beat or visual (storyboard, graphs, equations, camera, 3D)
+        - Narration and subtitles
+        - Template and series consistency
+        - Interview and brief
+        - Installer and environment
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behaviour
+      description: What should the skill do differently? Concrete phrasing helps, since the agent reads this text at runtime.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Workarounds you tried
+    validations:
+      required: false
