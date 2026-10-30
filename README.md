@@ -55,7 +55,7 @@ Options — append them to the one-liner, pass them after `bash -s --` for the w
 
 PowerShell takes the same options as parameters: `.\install.ps1 -Platform codex -WithLatex`.
 
-Pin a release with `MMS_REF=v0.1.0`, or install from a fork with `MMS_REPO=owner/name`. Set `MMS_REF` to a branch name to track `main` deliberately.
+Pin a release with `--ref v0.1.0` (or `MMS_REF=v0.1.0`), or install from a fork with `MMS_REPO=owner/name`. Set the ref to a branch name to track it deliberately.
 
 ## What is in this repository
 

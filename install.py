@@ -123,7 +123,7 @@ def download_source(ref: str, destination: Path) -> Path:
     return entries[0]
 
 
-def resolve_source(explicit: str | None) -> tuple[Path, "tempfile.TemporaryDirectory | None"]:
+def resolve_source(explicit: str | None, ref: str = DEFAULT_REF) -> tuple[Path, "tempfile.TemporaryDirectory | None"]:
     if explicit:
         root = Path(explicit).expanduser().resolve()
         if not looks_like_source(root):
@@ -137,7 +137,7 @@ def resolve_source(explicit: str | None) -> tuple[Path, "tempfile.TemporaryDirec
         return here, None
 
     holder = tempfile.TemporaryDirectory(prefix="mms-install-")
-    return download_source(DEFAULT_REF, Path(holder.name)), holder
+    return download_source(ref, Path(holder.name)), holder
 
 
 # --------------------------------------------------------------------------- #
@@ -497,6 +497,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--root", help="install into this directory instead of the personal root")
     parser.add_argument("--venv", default=str(DEFAULT_VENV), help=f"environment directory (default: {DEFAULT_VENV})")
     parser.add_argument("--source", help="path to this repository (default: auto-detect or download)")
+    parser.add_argument(
+        "--ref",
+        default=DEFAULT_REF,
+        help=f"git ref to download when not installed from a checkout (default: {DEFAULT_REF})",
+    )
     parser.add_argument("--with-latex", action="store_true", help="install a LaTeX engine for equation beats")
     parser.add_argument("--no-deps", action="store_true", help="skip Python dependencies")
     parser.add_argument("--no-uv", action="store_true", help="do not use uv even when it is installed")
@@ -514,7 +519,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.uninstall:
         return uninstall(args.dry_run)
 
-    root, holder = resolve_source(args.source)
+    root, holder = resolve_source(args.source, args.ref or DEFAULT_REF)
     try:
         manifest = load_manifest(root)
         platforms = resolve_platforms(args.platform)
