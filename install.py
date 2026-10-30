@@ -264,10 +264,12 @@ def create_venv(venv: Path, use_uv: bool) -> None:
     venv.parent.mkdir(parents=True, exist_ok=True)
     interpreter = find_interpreter()
     if use_uv and shutil.which("uv"):
-        note(f"using uv for a faster install")
-        code = run(["uv", "venv", "--python", " ".join(interpreter), str(venv)])
-        if code == 0 and venv_python(venv).is_file():
-            return
+        note("using uv for a faster install")
+        uv_python = " ".join(interpreter) if len(interpreter) == 1 else None
+        if uv_python:
+            code = run(["uv", "venv", "--python", uv_python, str(venv)])
+            if code == 0 and venv_python(venv).is_file():
+                return
         warn("uv could not create the environment; falling back to venv")
         shutil.rmtree(venv, ignore_errors=True)
     code = run([*interpreter, "-m", "venv", str(venv)])
@@ -417,7 +419,9 @@ def verify(skill_dir: Path, venv: Path) -> int:
     if not python.is_file() or not check.is_file():
         return 0
     step("Verifying the environment")
-    return run([str(python), str(check)], echo=False)
+    environment = dict(os.environ, PYTHONWARNINGS="ignore::SyntaxWarning")
+    result = subprocess.run([str(python), str(check)], check=False, env=environment)
+    return result.returncode
 
 
 def uninstall(dry_run: bool) -> int:
