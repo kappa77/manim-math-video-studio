@@ -178,6 +178,21 @@ The runtime schedules animations inside a narration budget and waits for the rem
 
 If the video ends before the audio, the scene's total visual time is shorter than the audio. The runtime adds a tail wait for standard beats, but a custom beat may bypass it. Add `self.wait(...)` or use `vo.remaining`.
 
+### Narration is missing after a re-render, or audio is silent in the middle
+
+A second render reuses Manim's cached partial movies, and cached segments can come back without their
+per-beat sound. The result looks right but has long silent stretches — usually visible as a sudden
+drop in the QA audio level (`RMS` far below the previous render).
+
+Render with caching disabled whenever the scene changed:
+
+```bash
+python scripts/render.py --episode <episode-dir> --quality standard --no-cache
+```
+
+`render.py` passes `--disable_caching` to Manim. Editing narration text alone is safe (the TTS cache
+is keyed by a hash of the text), but editing on-screen text, graph specs, or the theme is not.
+
 ### Subtitles are missing
 
 - Check `output.captions` is `true`.

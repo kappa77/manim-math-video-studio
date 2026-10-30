@@ -217,7 +217,10 @@ class StoryboardScene(Scene):
                     f"Unsupported beat kind {kind!r} for {beat_id!r}. "
                     "Use a documented kind or a custom beat."
                 )
-            with self.voiceover(beat_id) as vo:
+            # `hold` gives a beat extra screen time after its narration ends:
+            # recaps, conclusions, and dense frames need reading time that the
+            # spoken text does not provide.
+            with self.voiceover(beat_id, extra_hold=float(beat.get("hold", 0.0) or 0.0)) as vo:
                 handler(beat, vo)
             if bool(beat.get("clear", True)):
                 self._transition_out()
@@ -255,9 +258,10 @@ class StoryboardScene(Scene):
 
     # ------------------------------------------------------------------ voice
     @contextmanager
-    def voiceover(self, segment_id: str, pad: float | None = None):
+    def voiceover(self, segment_id: str, pad: float | None = None, extra_hold: float = 0.0):
         segment = self.voice.get(segment_id)
         tail = float(self.theme.captions("tail_pad", 0.15) if pad is None else pad)
+        tail += max(0.0, float(extra_hold or 0.0))
         if segment.audio is not None and segment.audio.exists():
             self.add_sound(str(segment.audio))
         elif segment.audio is not None:

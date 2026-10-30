@@ -4,6 +4,20 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **`hold` on any beat.** Extra seconds the beat stays on screen after its narration ends, for
+  recaps, conclusions, and frames that need reading time. Previously the only lever was
+  lengthening the narration.
+
+### Fixed
+
+- **Silent renders after a re-render.** Reusing Manim's cached partial movies could drop the
+  per-beat sound, producing a video that looked correct but had long silent stretches. Documented
+  in `references/troubleshooting.md`; render with `--no-cache` after editing on-screen content.
+
 ## [0.1.0] — first public release
 
 ### Added

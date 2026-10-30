@@ -3,7 +3,7 @@
 **Series:** Path of Knowledge · s01e001
 **Template:** clean-light | **Quality:** standard
 **Language:** en-US | **Voice:** en-US-AvaMultilingualNeural
-**Target:** 110 s | **Estimate:** 113 s | **Words:** 269
+**Target:** 110 s | **Estimate:** 137 s | **Words:** 329
 **Thesis:** The birthday problem is about pairs, not people: 23 people create 253 pairs, so a 50% coincidence is unremarkable.
 
 ---
@@ -86,7 +86,7 @@
 
 ## 08. recap — recap (13.9s)
 
-**Narration:** Three things to keep. Pairs grow with the square of the group, so intuition fails early. Counting the complement beats counting matches. And fifty-seven people are enough for ninety-nine percent.
+**Narration:** Three things to keep. First, pairs grow with the square of the group, so intuition fails early: those twenty-three people already form two hundred fifty-three pairs. Second, counting the complement is easier than counting matches, because nobody matching is a single product, not a pile of cases. Third, the two landmarks worth remembering are twenty-three people for half, and fifty-seven for ninety-nine percent.
 
 **Visual:**
 - Pairs grow with the square of the group
@@ -94,11 +94,11 @@
 - 23 people: 50.7%
 - 57 people: 99.0%
 
-**Notes:** Restate the mechanism, then the two landmark numbers.
+**Notes:** Restate the mechanism, then the two landmark numbers, with enough air to read the list.
 
 ## 09. outro — outro (4.7s)
 
-**Narration:** Next time: more places where counting pairs beats counting people.
+**Narration:** Next time: the same quadratic effect decides how many items a hash table can hold before a collision, and why any system that assumes uniqueness breaks sooner than you expect. Follow the path for the next episode.
 
 **Visual:**
 - Next: Where else does counting pairs beat counting people?

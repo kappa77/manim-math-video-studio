@@ -39,6 +39,7 @@ The schema is `assets/storyboard.schema.json`. A filled example is `assets/story
 | `silent` | no | If true, no narration. Requires `duration_hint`. |
 | `duration_hint` | no | Seconds for a silent beat, or a target for a narrated beat. |
 | `clear` | no | Fade out the visual at the end. Default `true`. Set `false` to carry visuals into the next beat. |
+| `hold` | no | Extra seconds the beat stays on screen after its narration ends. Use it for recaps, conclusions, and any frame that needs reading time. |
 
 The runtime adds a small tail pad after each narration segment (from `theme.captions.tail_pad`), so do not add "..." or trailing silence to the script.
 

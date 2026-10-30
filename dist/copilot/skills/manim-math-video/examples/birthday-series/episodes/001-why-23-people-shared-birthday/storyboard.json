@@ -5,7 +5,7 @@
   "title": "Why 23 people are enough for a shared birthday",
   "language": "en-US",
   "template": "clean-light",
-  "target_duration_seconds": 110,
+  "target_duration_seconds": 140,
   "beats": [
     {
       "id": "title",
@@ -371,6 +371,7 @@
         "role": "success"
       },
       "narration": "So the intuition was not wrong about days. It was wrong about pairs. Twenty-three people look small next to three hundred sixty-five days, yet they create two hundred fifty-three comparisons.",
+      "hold": 0.6,
       "notes": "The comparison is between two models of the same situation, not two facts."
     },
     {
@@ -379,12 +380,13 @@
       "heading": "What we established",
       "items": [
         "Pairs grow with the square of the group",
-        "Counting the complement beats counting matches",
+        "Counting the complement is easier",
         "23 people: 50.7%",
         "57 people: 99.0%"
       ],
-      "narration": "Three things to keep. Pairs grow with the square of the group, so intuition fails early. Counting the complement beats counting matches. And fifty-seven people are enough for ninety-nine percent.",
-      "notes": "Restate the mechanism, then the two landmark numbers."
+      "narration": "Three things to keep. First, pairs grow with the square of the group, so intuition fails early: those twenty-three people already form two hundred fifty-three pairs. Second, counting the complement is easier than counting matches, because nobody matching is a single product, not a pile of cases. Third, the two landmarks worth remembering are twenty-three people for half, and fifty-seven for ninety-nine percent.",
+      "hold": 1.6,
+      "notes": "Restate the mechanism, then the two landmark numbers, with enough air to read the list."
     },
     {
       "id": "outro",
@@ -392,7 +394,8 @@
       "heading": "Next question",
       "next": "Where else does counting pairs beat counting people?",
       "cta": "Follow the path for the next episode.",
-      "narration": "Next time: more places where counting pairs beats counting people.",
+      "narration": "Next time: the same quadratic effect decides how many items a hash table can hold before a collision, and why any system that assumes uniqueness breaks sooner than you expect. Follow the path for the next episode.",
+      "hold": 2.4,
       "notes": "Close on the transferable idea, not on birthdays."
     }
   ]
