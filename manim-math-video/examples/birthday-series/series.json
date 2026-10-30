@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-30T21:17:08Z",
+  "series": {
+    "title": "Path of Knowledge",
+    "slug": "path-of-knowledge",
+    "season": 1,
+    "premise": "One idea per episode, taken from a question to a visual argument, in about two minutes.",
+    "audience": "Curious adults who like mathematics explained honestly.",
+    "visual_motif": "One thin accent line carries the argument: it becomes the curve, the pair, or the count.",
+    "template": "clean-light",
+    "template_version": "1.0.0"
+  },
+  "defaults": {
+    "quality": "standard",
+    "language": "en-US",
+    "voice": {
+      "provider": "edge",
+      "id": "en-US-AvaMultilingualNeural",
+      "style": "warm-teacher",
+      "rate": "-3%",
+      "pitch": "+0Hz",
+      "volume": "+0%"
+    }
+  },
+  "episodes": [
+    {
+      "id": "s01e001",
+      "season": 1,
+      "number": 1,
+      "title": "Why 23 people are enough for a shared birthday",
+      "slug": "why-23-people-shared-birthday",
+      "path": "episodes/001-why-23-people-shared-birthday",
+      "template": "clean-light",
+      "quality": "standard",
+      "language": "en-US",
+      "voice": "en-US-AvaMultilingualNeural",
+      "status": "draft",
+      "created_at": "2026-10-30T21:17:08Z"
+    }
+  ],
+  "updated_at": "2026-10-30T21:17:08Z"
+}

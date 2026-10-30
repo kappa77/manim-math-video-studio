@@ -1,0 +1,399 @@
+{
+  "schema_version": 1,
+  "episode_id": "s01e001",
+  "episode_slug": "why-23-people-shared-birthday",
+  "title": "Why 23 people are enough for a shared birthday",
+  "language": "en-US",
+  "template": "clean-light",
+  "target_duration_seconds": 110,
+  "beats": [
+    {
+      "id": "title",
+      "kind": "title",
+      "title": "Why 23 people are enough",
+      "subtitle": "A fifty percent coincidence, once you count pairs",
+      "narration": "Twenty-three people in one room. The chance that two of them share a birthday is about fifty percent. That sounds impossible, so let's count it properly.",
+      "notes": "Open on the number, not the formula: 23 people, 50% is the whole puzzle."
+    },
+    {
+      "id": "the-claim",
+      "kind": "section",
+      "heading": "The claim",
+      "subheading": "365 equally likely days, 23 people, one shared birthday",
+      "narration": "Assume three hundred sixty-five equally likely days, and ignore leap years. The question is whether any two people in the group match, not whether someone matches a particular person.",
+      "notes": "Pinning the assumptions here keeps the later arithmetic honest. The word any is the hinge."
+    },
+    {
+      "id": "why-it-feels-wrong",
+      "kind": "bullets",
+      "heading": "Why it feels impossible",
+      "items": [
+        "365 days available",
+        "Only 23 people",
+        "Naive guess: 23 / 365, about 6%"
+      ],
+      "narration": "The usual mistake is to compare one person with the other twenty-two. That gives twenty-three small chances, about six percent in total. It also quietly assumes the question names somebody.",
+      "notes": "Name the wrong model before replacing it; the viewer will recognise their own reasoning."
+    },
+    {
+      "id": "count-pairs",
+      "kind": "bullets",
+      "heading": "Count pairs, not people",
+      "items": [
+        "Every two people form one pair",
+        "23 times 22 over 2 equals 253 pairs",
+        "Each pair is its own coincidence"
+      ],
+      "narration": "So count pairs instead of people. Every two people form one pair, and twenty-three people form twenty-three times twenty-two divided by two: two hundred fifty-three pairs. Each pair is a separate chance of a coincidence.",
+      "notes": "The pivot of the episode: 253 comparisons is the quantity that grows, not 23 people."
+    },
+    {
+      "id": "the-curve",
+      "kind": "graph",
+      "heading": "The exact chance",
+      "narration": "Here is the exact probability against group size. It starts flat, then bends upward, because each newcomer pairs with everyone already in the room. At twenty-three people the curve crosses one half.",
+      "notes": "The graph earns its place by showing a rate change: the curve is flat at first, then accelerates. The crossing at 23 is a limit the viewer can see, not a number to trust.",
+      "graph": {
+        "type": "data",
+        "x_range": [
+          0,
+          62,
+          10
+        ],
+        "y_range": [
+          0,
+          100,
+          25
+        ],
+        "x_label": "people in the room",
+        "y_label": "chance of a shared birthday (%)",
+        "show_ticks": true,
+        "legend": false,
+        "points": [
+          [
+            1,
+            0.0
+          ],
+          [
+            2,
+            0.274
+          ],
+          [
+            3,
+            0.82
+          ],
+          [
+            4,
+            1.636
+          ],
+          [
+            5,
+            2.714
+          ],
+          [
+            6,
+            4.046
+          ],
+          [
+            7,
+            5.624
+          ],
+          [
+            8,
+            7.434
+          ],
+          [
+            9,
+            9.462
+          ],
+          [
+            10,
+            11.695
+          ],
+          [
+            11,
+            14.114
+          ],
+          [
+            12,
+            16.702
+          ],
+          [
+            13,
+            19.441
+          ],
+          [
+            14,
+            22.31
+          ],
+          [
+            15,
+            25.29
+          ],
+          [
+            16,
+            28.36
+          ],
+          [
+            17,
+            31.501
+          ],
+          [
+            18,
+            34.691
+          ],
+          [
+            19,
+            37.912
+          ],
+          [
+            20,
+            41.144
+          ],
+          [
+            21,
+            44.369
+          ],
+          [
+            22,
+            47.57
+          ],
+          [
+            23,
+            50.73
+          ],
+          [
+            24,
+            53.834
+          ],
+          [
+            25,
+            56.87
+          ],
+          [
+            26,
+            59.824
+          ],
+          [
+            27,
+            62.686
+          ],
+          [
+            28,
+            65.446
+          ],
+          [
+            29,
+            68.097
+          ],
+          [
+            30,
+            70.632
+          ],
+          [
+            31,
+            73.045
+          ],
+          [
+            32,
+            75.335
+          ],
+          [
+            33,
+            77.497
+          ],
+          [
+            34,
+            79.532
+          ],
+          [
+            35,
+            81.438
+          ],
+          [
+            36,
+            83.218
+          ],
+          [
+            37,
+            84.873
+          ],
+          [
+            38,
+            86.407
+          ],
+          [
+            39,
+            87.822
+          ],
+          [
+            40,
+            89.123
+          ],
+          [
+            41,
+            90.315
+          ],
+          [
+            42,
+            91.403
+          ],
+          [
+            43,
+            92.392
+          ],
+          [
+            44,
+            93.289
+          ],
+          [
+            45,
+            94.098
+          ],
+          [
+            46,
+            94.825
+          ],
+          [
+            47,
+            95.477
+          ],
+          [
+            48,
+            96.06
+          ],
+          [
+            49,
+            96.578
+          ],
+          [
+            50,
+            97.037
+          ],
+          [
+            51,
+            97.443
+          ],
+          [
+            52,
+            97.8
+          ],
+          [
+            53,
+            98.114
+          ],
+          [
+            54,
+            98.388
+          ],
+          [
+            55,
+            98.626
+          ],
+          [
+            56,
+            98.833
+          ],
+          [
+            57,
+            99.012
+          ],
+          [
+            58,
+            99.166
+          ],
+          [
+            59,
+            99.299
+          ],
+          [
+            60,
+            99.412
+          ]
+        ],
+        "line": true,
+        "vertices": false,
+        "annotations": [
+          {
+            "type": "point",
+            "x": 23,
+            "y": 50.73,
+            "label": "23 people: 50.7%",
+            "label_offset": [
+              -3.3,
+              0.6
+            ]
+          },
+          {
+            "type": "point",
+            "x": 57,
+            "y": 99.01,
+            "label": "57 people: 99.0%",
+            "label_offset": [
+              -3.1,
+              0.45
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "the-formula",
+      "kind": "equation",
+      "heading": "Why the curve bends",
+      "latex": "P(n) = 1 - \\frac{365 \\cdot 364 \\cdots (365-n+1)}{365^{n}}",
+      "highlight": [
+        "(365-n+1)"
+      ],
+      "narration": "The exact count is easier by complement. The chance that nobody matches is a product of shrinking fractions: three sixty-five over three sixty-five, then three sixty-four over three sixty-five, and so on. Subtract that product from one, and at twenty-three people you get fifty point seven percent.",
+      "notes": "Derive, do not announce: the product is the no-match path, and subtracting it from one is the complement rule."
+    },
+    {
+      "id": "intuition-vs-count",
+      "kind": "compare",
+      "heading": "Where the intuition failed",
+      "left": {
+        "heading": "Intuition",
+        "items": [
+          "23 people vs 365 days",
+          "Each one looks unlikely",
+          "Guess: about 6%"
+        ],
+        "role": "danger"
+      },
+      "right": {
+        "heading": "Count",
+        "items": [
+          "253 pairs, each a chance",
+          "Pairs grow quadratically",
+          "Exact answer: 50.7%"
+        ],
+        "role": "success"
+      },
+      "narration": "So the intuition was not wrong about days. It was wrong about pairs. Twenty-three people look small next to three hundred sixty-five days, yet they create two hundred fifty-three comparisons.",
+      "notes": "The comparison is between two models of the same situation, not two facts."
+    },
+    {
+      "id": "recap",
+      "kind": "recap",
+      "heading": "What we established",
+      "items": [
+        "Pairs grow with the square of the group",
+        "Counting the complement beats counting matches",
+        "23 people: 50.7%",
+        "57 people: 99.0%"
+      ],
+      "narration": "Three things to keep. Pairs grow with the square of the group, so intuition fails early. Counting the complement beats counting matches. And fifty-seven people are enough for ninety-nine percent.",
+      "notes": "Restate the mechanism, then the two landmark numbers."
+    },
+    {
+      "id": "outro",
+      "kind": "outro",
+      "heading": "Next question",
+      "next": "Where else does counting pairs beat counting people?",
+      "cta": "Follow the path for the next episode.",
+      "narration": "Next time: more places where counting pairs beats counting people.",
+      "notes": "Close on the transferable idea, not on birthdays."
+    }
+  ]
+}
