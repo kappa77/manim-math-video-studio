@@ -22,6 +22,10 @@ install.py                        # installer: detection, skill trees, shared en
 install.sh / install.ps1          # one-command wrappers for macOS/Linux and Windows
 scripts/check_env.py              # repo-root wrapper for the skill environment check
 scripts/setup.py                  # repo-only helper: create ./.venv and install requirements
+tests/                            # installer + simulated-harness verification
+  install_matrix.py               # stdlib-only fast suite and real runtime suite
+  docker/                         # Dockerfile and matrix runner
+  README.md                       # what each test proves, how to add a harness
 docs/                             # GitHub Pages landing page
 ```
 
@@ -31,6 +35,7 @@ docs/                             # GitHub Pages landing page
 | `platforms/<agent>/` | Frontmatter variants and per-agent `README.md` / `INSTALL.md` |
 | `dist/<agent>/skills/manim-math-video/` | **Generated.** Never edit by hand |
 | `install.py`, `install.sh`, `install.ps1` | Installer (stdlib-only Python, plus thin wrappers) |
+| `tests/` | Installer and harness simulation suite, plus the Docker matrix |
 | `docs/` | Landing page published with GitHub Pages |
 
 ## Workflow
@@ -40,9 +45,38 @@ python platforms/build.py          # regenerate every dist/ tree
 python platforms/build.py --check  # fail if dist/ is stale — run this before a PR
 python manim-math-video/scripts/selftest.py
 python manim-math-video/scripts/check_env.py
+python tests/install_matrix.py --scope fast
 ```
 
 A change to `manim-math-video/` without rebuilding `dist/` will fail CI-style review, because the generated trees drift. If you only edit `platforms/<agent>/`, rebuild too: the per-platform `README.md` and `INSTALL.md` are copied into `dist/`.
+
+## Installer and harness tests
+
+`tests/install_matrix.py` runs the installer end to end against a simulated
+copy of every harness. The fast scope needs only the standard library: it
+creates throwaway `HOME` directories, plants the configuration folders and CLI
+names each agent uses, then checks install roots, frontmatter, the platform
+usage section, state, updates, and uninstall.
+
+```bash
+python tests/install_matrix.py --scope fast        # any Python 3.10+, no deps
+python tests/install_matrix.py --scope runtime     # real venv + requirements
+python tests/install_matrix.py --scope runtime --render
+```
+
+The runtime scope creates the shared environment, installs `requirements.txt`,
+runs `check_env.py` and `selftest.py` from every installed harness, and can run
+a silent Manim render. Docker is the clean, reproducible way to run both:
+
+```bash
+tests/docker/run.sh                              # Python 3.10-3.13 + Alpine
+tests/docker/run.sh --scope runtime --render     # dependencies + smoke render
+tests/docker/run.sh --scope all                  # everything
+```
+
+The fast matrix runs `platforms/build.py --check` at image build time, so stale
+generated trees fail before tests start. See `tests/README.md` for the checks,
+the harness contract, and how to add a platform.
 
 ## What belongs where
 
@@ -77,6 +111,18 @@ python -c "import urllib.request as u;exec(u.urlopen('file:///.../install.py').r
 ```
 
 That last form exercises the `python -c` path, where `__file__` does not exist.
+
+Installer behaviour has its own suite; run it before changing detection,
+copying, state, or uninstall logic:
+
+```bash
+python tests/install_matrix.py --scope fast
+tests/docker/run.sh
+```
+
+Set `MMS_ARCHIVE_URL` to a local archive (`file:///...`) to test the download
+path without touching GitHub; the one-liner test in `tests/install_matrix.py`
+does exactly that.
 
 ## Pull requests
 

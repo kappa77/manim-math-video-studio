@@ -30,6 +30,7 @@ import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 
+ARCHIVE_URL = os.environ.get("MMS_ARCHIVE_URL", "").strip()  # optional mirror or file:// URL
 REPO = os.environ.get("MMS_REPO", "kappa77/manim-math-video-studio")
 DEFAULT_REF = os.environ.get("MMS_REF", "main")
 SKILL_NAME = "manim-math-video"
@@ -89,9 +90,13 @@ def looks_like_source(root: Path) -> bool:
 
 def download_source(ref: str, destination: Path) -> Path:
     """Download the repository archive for `ref` and return the extracted root."""
-    kind = "tags" if ref.startswith("v") else "heads"
-    url = f"https://codeload.github.com/{REPO}/tar.gz/refs/{kind}/{ref}"
-    say(f"    fetching {REPO}@{ref}")
+    if ARCHIVE_URL:
+        url = ARCHIVE_URL
+        say(f"    fetching {url}")
+    else:
+        kind = "tags" if ref.startswith("v") else "heads"
+        url = f"https://codeload.github.com/{REPO}/tar.gz/refs/{kind}/{ref}"
+        say(f"    fetching {REPO}@{ref}")
     archive = destination / "repo.archive"
     try:
         with urllib.request.urlopen(url, timeout=120) as response, archive.open("wb") as handle:

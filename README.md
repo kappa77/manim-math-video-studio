@@ -35,6 +35,7 @@ Other routes — `curl -fsSL …/install.sh | bash`, `irm …/install.ps1 | iex`
 | [INSTALL.md](INSTALL.md) | one-command install, options, LaTeX, manual install, runtime resolution, update, uninstall, troubleshooting |
 | [USAGE.md](USAGE.md) | quick start, command reference, pipeline, beats, templates, graphs, narration, series, validation |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | repository layout, source of truth vs `dist/`, adding beats and templates, versioning |
+| [tests/README.md](tests/README.md) | Docker-based install verification for every supported agent harness |
 | [CHANGELOG.md](CHANGELOG.md) | what changed, release by release |
 | [manim-math-video/SKILL.md](manim-math-video/SKILL.md) | the workflow the agent follows; the detailed manual is `manim-math-video/references/` |
 | [Landing page](https://kappa77.github.io/manim-math-video-studio/) | one-page overview with the copy-paste install |

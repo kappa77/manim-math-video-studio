@@ -75,7 +75,7 @@ agent detected, the installer falls back to Claude Code and says so; pass
 | `--dry-run` | print the plan and exit |
 | `--uninstall` | remove the installed skills and the shared environment |
 | `--source DIR` | use a local checkout instead of downloading |
-| `--ref REF` | git ref to download: `main` (default), a branch, or `v0.2.0` |
+| `--ref REF` | git ref to download: `main` (default), a branch, or `v0.3.0` |
 | `--quiet` / `--verbose` | hide command lines / show full `pip` output |
 With the piped installer, pass flags after `bash -s --`. With the universal one-liner, append them after the closing quote:
 
@@ -91,7 +91,10 @@ If a shell mangles the trailing flags, use the environment instead: `MMS_ARGS="-
 With PowerShell, use the parameter form: `.\install.ps1 -Platform codex -WithLatex`.
 
 Environment overrides: `MMS_REPO=owner/name` installs from a fork,
-`MMS_REF=v0.2.0` pins a release, `MMS_REF=<branch>` tracks another branch.
+`MMS_REF=v0.3.0` pins a release, `MMS_REF=<branch>` tracks another branch, and
+`MMS_ARCHIVE_URL=<url>` replaces the codeload download (a mirror, or a local
+`file://` archive for offline and test runs).
+
 ## Verify
 
 ```bash
@@ -108,6 +111,19 @@ dependencies. See [Runtime resolution](#runtime-resolution).
 `ok` rows are ready, `warn` rows cover some workflows, `optional` rows are nice
 to have, `fail` rows block rendering. LaTeX is the only common `fail`-adjacent
 gap: equation beats need it, everything else works without it.
+
+Maintainers can reproduce the install on every supported harness in clean
+containers. The fast suite needs no API keys and no real agent installation:
+
+```bash
+python tests/install_matrix.py --scope fast
+python tests/install_matrix.py --scope runtime --render
+
+tests/docker/run.sh                              # Python 3.10-3.13 + Alpine
+tests/docker/run.sh --scope runtime --render     # real dependencies
+```
+
+See [tests/README.md](tests/README.md) for what each scope verifies.
 
 ## Platform notes and project installs
 

@@ -1,0 +1,12 @@
+# Keep the build context to what the installer, platform builds, and tests need.
+.git
+.gitignore
+.venv
+**/.venv
+**/__pycache__
+**/*.pyc
+**/*.pyo
+.pytest_cache
+my-series
+voice-samples
+docs/img

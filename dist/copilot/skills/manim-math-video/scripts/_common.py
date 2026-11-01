@@ -85,7 +85,13 @@ def ensure_runtime() -> None:
     if python is None:
         return
     try:
-        if Path(python).resolve() == Path(sys.executable).resolve():
+        # Do not use resolve(): in a venv, bin/python is usually a symlink to
+        # the base interpreter, so resolving both paths would make the guard
+        # think the current interpreter is already the managed one and skip
+        # the re-exec on Linux and macOS.
+        if os.path.normcase(os.path.abspath(str(python))) == os.path.normcase(
+            os.path.abspath(sys.executable)
+        ):
             return
     except OSError:
         pass

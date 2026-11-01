@@ -6,6 +6,35 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-11-01
+
+### Added
+
+- **Docker-based install verification.** `tests/install_matrix.py` simulates the
+  Claude Code, Codex, GitHub Copilot, and Pi skill roots in throwaway HOME
+  directories, then checks detection, personal and project installs, frontmatter,
+  state, reinstall, uninstall, the shell wrapper, and the download path. The
+  runtime scope builds the shared environment, installs `requirements.txt`, and
+  runs `check_env.py`, re-exec, and `selftest.py` for every harness, plus an
+  optional Manim smoke render from one installed copy.
+- **A test image and matrix runner.** `tests/docker/run.sh` covers Python
+  3.10-3.13 on Debian and Python 3.12 on Alpine; `--scope runtime --render`
+  verifies real rendering. GitHub Actions runs the matrix, plus native
+  Windows/macOS fast jobs.
+- **`MMS_ARCHIVE_URL`** overrides the installer download for mirrors and offline
+  tests (including `file://` archives); the one-liner test uses it.
+
+### Fixed
+
+- **Linux/macOS runtime re-exec.** `ensure_runtime()` compared resolved paths, so
+  a venv's `bin/python` symlink looked like the base interpreter and the switch
+  to `~/.manim-math-video/venv` never happened. It now compares absolute paths
+  without following the symlink. The runtime test matrix caught this.
+
+### Changed
+
+- `manim-math-video/SKILL.md` version is now `1.3.1`.
+
 ## [0.2.0] — 2026-10-30
 
 ### Added
@@ -73,3 +102,4 @@ All notable changes to this project are documented here. The format follows
 
 [0.1.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.1.0
 [0.2.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.2.0
+[0.3.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.3.0

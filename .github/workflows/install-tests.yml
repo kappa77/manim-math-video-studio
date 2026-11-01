@@ -1,0 +1,58 @@
+name: install-tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: install-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  native:
+    name: fast / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify install on every simulated harness
+        run: python tests/install_matrix.py --scope fast
+
+  fast:
+    name: fast / ${{ matrix.image }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - python:3.10-slim-bookworm
+          - python:3.11-slim-bookworm
+          - python:3.12-slim-bookworm
+          - python:3.13-slim-bookworm
+          - python:3.12-alpine
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify install on every simulated harness
+        run: bash tests/docker/run.sh --scope fast --image "${{ matrix.image }}"
+
+  runtime:
+    name: runtime / python 3.12
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the shared environment and render a smoke test
+        run: bash tests/docker/run.sh --scope runtime --render
