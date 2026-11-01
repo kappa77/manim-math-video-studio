@@ -932,6 +932,18 @@ def runtime_check_env_passes_every_harness(ctx: Context) -> None:
             not any(row["status"] == "fail" for row in report["checks"]),
             f"{name}: check_env reported a blocking failure",
         )
+        for component in ("LaTeX", "dvisvgm"):
+            row = rows[component]
+            if row["status"] != "warn":
+                continue
+            hint = row["recommendation"].lower()
+            require(
+                any(
+                    token in hint
+                    for token in ("apt", "dnf", "pacman", "brew", "winget", "tlmgr", "miktex")
+                ),
+                f"{name}: {component} warning has no install command: {row['recommendation']!r}",
+            )
 
 
 @test("runtime")

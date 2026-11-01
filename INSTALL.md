@@ -110,7 +110,8 @@ dependencies. See [Runtime resolution](#runtime-resolution).
 
 `ok` rows are ready, `warn` rows cover some workflows, `optional` rows are nice
 to have, `fail` rows block rendering. LaTeX is the only common `fail`-adjacent
-gap: equation beats need it, everything else works without it.
+gap: equation beats need it, everything else works without it. When `LaTeX` or
+`dvisvgm` is `warn`, the table prints the install commands for your OS.
 
 Maintainers can reproduce the install on every supported harness in clean
 containers. The fast suite needs no API keys and no real agent installation:

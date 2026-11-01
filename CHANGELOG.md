@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- `check_env.py` now prints OS-specific install commands when `LaTeX` or
+  `dvisvgm` is missing.
+
 ## [0.3.0] — 2026-11-01
 
 ### Added

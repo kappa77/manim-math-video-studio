@@ -73,6 +73,37 @@ def _tool_version(command: list[str]) -> str | None:
         return None
 
 
+def _latex_install_hints() -> tuple[list[str], list[str]]:
+    """Return OS-specific commands for the LaTeX and dvisvgm warnings."""
+    system = platform.system()
+    if system == "Windows":
+        latex = [
+            "winget install --id MiKTeX.MiKTeX -e "
+            "--accept-package-agreements --accept-source-agreements",
+            "Then set MiKTeX Console > Settings > Missing packages to "
+            "'Always install missing packages on the fly'.",
+        ]
+        dvisvgm = ["dvisvgm ships with MiKTeX; install it from MiKTeX Console if it is missing."]
+    elif system == "Darwin":
+        latex = [
+            "brew install --cask basictex",
+            "sudo tlmgr install dvisvgm standalone amsmath amsfonts",
+        ]
+        dvisvgm = ["sudo tlmgr install dvisvgm"]
+    else:
+        latex = [
+            "Debian/Ubuntu: sudo apt install texlive texlive-latex-extra dvisvgm",
+            "Fedora: sudo dnf install texlive-scheme-medium dvisvgm",
+            "Arch: sudo pacman -S texlive-basic texlive-latexextra dvisvgm",
+        ]
+        dvisvgm = [
+            "Debian/Ubuntu: sudo apt install dvisvgm",
+            "Fedora: sudo dnf install dvisvgm",
+            "Arch: sudo pacman -S dvisvgm",
+        ]
+    return latex, dvisvgm
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--json", action="store_true", help="Print JSON")
@@ -133,17 +164,30 @@ def main(argv: list[str] | None = None) -> int:
 
     latex = shutil.which("latex")
     dvisvgm = shutil.which("dvisvgm")
+    latex_hints, dvisvgm_hints = _latex_install_hints()
+    latex_recommendation = ""
+    if not latex:
+        latex_recommendation = (
+            "Required for equation beats. Install TeX Live + dvisvgm:\n"
+            + "\n".join(latex_hints)
+        )
+    dvisvgm_recommendation = ""
+    if not dvisvgm:
+        dvisvgm_recommendation = (
+            "Manim needs it for MathTex. Install dvisvgm:\n"
+            + "\n".join(dvisvgm_hints)
+        )
     add(
         "LaTeX",
         "ok" if latex else "warn",
         latex or "not on PATH",
-        "Required for equation beats. Install TeX Live/MiKTeX/TinyTeX." if not latex else "",
+        latex_recommendation,
     )
     add(
         "dvisvgm",
         "ok" if dvisvgm else "warn",
         dvisvgm or "not on PATH",
-        "Usually installed with TeX; Manim needs it for MathTex." if not dvisvgm else "",
+        dvisvgm_recommendation,
     )
 
     edge_tts = _version_of("edge_tts")
@@ -239,7 +283,10 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{item['component']:22} {status} {item['detail']}")
             if item["recommendation"]:
                 arrow = _paint("->", ANSI_DIM, color)
-                print(f"{'':32} {arrow} {item['recommendation']}")
+                lines = item["recommendation"].splitlines()
+                print(f"{'':32} {arrow} {lines[0]}")
+                for line in lines[1:]:
+                    print(f"{'':32}    {line}")
 
         legend = ", ".join(
             f"{_paint(label, STATUS_COLORS[label], color)} = {description}"
