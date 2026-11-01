@@ -6,10 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.1] — 2026-11-01
+
 ### Changed
 
 - `check_env.py` now prints OS-specific install commands when `LaTeX` or
   `dvisvgm` is missing.
+- `manim-math-video/SKILL.md` version is now `1.3.2`.
 
 ## [0.3.0] — 2026-11-01
 
@@ -108,3 +111,4 @@ All notable changes to this project are documented here. The format follows
 [0.1.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.1.0
 [0.2.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.2.0
 [0.3.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.3.0
+[0.3.1]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.3.1
