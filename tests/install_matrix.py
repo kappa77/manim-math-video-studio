@@ -773,6 +773,30 @@ def uninstall_removes_only_managed_files(ctx: Context) -> None:
 
 
 @test()
+def uninstall_handles_symlinked_home(ctx: Context) -> None:
+    if os.name == "nt":
+        raise SkipTest("symlinked HOME paths are a POSIX case")
+    base = ctx.work / "uninstall-symlink"
+    real_home = base / "real-home"
+    real_home.mkdir(parents=True)
+    link_home = base / "home-link"
+    link_home.symlink_to(real_home, target_is_directory=True)
+    for name in EXPECTED:
+        create_signal_dir(link_home, name)
+    result = run_installer(ctx, link_home, ["--platform", "all", "--no-deps"], timeout=180)
+    expect_success(result, "install with symlinked HOME failed")
+    state_dir = link_home / ".manim-math-video"
+    venv = state_dir / "venv"
+    (venv / "bin").mkdir(parents=True)
+    (venv / "bin" / "python").write_text("sentinel\n", encoding="utf-8")
+
+    result = run_installer(ctx, link_home, ["--uninstall"], timeout=120)
+    expect_success(result, "uninstall with symlinked HOME failed")
+    require(not venv.exists(), "uninstall left the environment behind with a symlinked HOME")
+    require(not (state_dir / "install.json").exists(), "uninstall left the state file behind")
+
+
+@test()
 def install_sh_wrapper_uses_the_checkout(ctx: Context) -> None:
     if os.name == "nt":
         raise SkipTest("install.sh is POSIX-only")

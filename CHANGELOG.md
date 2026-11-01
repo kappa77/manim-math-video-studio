@@ -6,6 +6,15 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.2] — 2026-11-01
+
+### Fixed
+
+- `install.py --uninstall` now normalizes symlinked HOME paths before deciding
+  whether it owns the shared environment. This fixes the venv being left behind
+  on macOS temp paths and Windows short paths. The native Windows/macOS CI jobs
+  caught it.
+
 ## [0.3.1] — 2026-11-01
 
 ### Changed
@@ -112,3 +121,4 @@ All notable changes to this project are documented here. The format follows
 [0.2.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.2.0
 [0.3.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.3.0
 [0.3.1]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.3.1
+[0.3.2]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.3.2

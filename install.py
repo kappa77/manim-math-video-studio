@@ -452,13 +452,21 @@ def uninstall(dry_run: bool) -> int:
         if not dry_run:
             shutil.rmtree(directory, ignore_errors=True)
     if venv.exists():
-        managed = venv == DEFAULT_VENV.expanduser() or STATE_DIR.expanduser() in venv.parents
+        # Normalize symlinked HOME paths (macOS /var -> /private/var, Windows
+        # short paths) before deciding whether this installer owns the venv.
+        try:
+            managed_venv = venv.resolve()
+            default_venv = DEFAULT_VENV.expanduser().resolve()
+            state_root = STATE_DIR.expanduser().resolve()
+        except OSError:
+            managed_venv, default_venv, state_root = venv, DEFAULT_VENV.expanduser(), STATE_DIR.expanduser()
+        managed = managed_venv == default_venv or state_root in managed_venv.parents
         if not managed:
             warn(f"leaving {venv} in place (not created by this installer)")
         else:
             note(f"environment: {venv}")
             if not dry_run:
-                shutil.rmtree(venv, ignore_errors=True)
+                shutil.rmtree(managed_venv, ignore_errors=True)
     if not dry_run:
         STATE_FILE.unlink(missing_ok=True)
     say("\nDone." if not dry_run else "\nDry run: nothing was removed.")

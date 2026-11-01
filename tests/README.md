@@ -32,7 +32,7 @@ throwaway `HOME`, so it cannot touch your real agent installation.
 | Invalid requests | Unknown platforms, `--root` with several platforms, and a bad `--source` fail without writing state |
 | Dry runs | `--dry-run` and `--uninstall --dry-run` change nothing |
 | Reinstall | Files are refreshed, a managed `.venv` is preserved, and no stash is left behind |
-| Uninstall | Only recorded skill directories, the shared environment, and the state file are removed |
+| Uninstall | Only recorded skill directories, the shared environment, and the state file are removed, including when `HOME` is a symlinked path |
 | Wrappers | `install.sh` resolves the checkout and installs; the `python -c "exec(...)"` path downloads from `MMS_ARCHIVE_URL` (a local archive) and installs without `__file__` |
 
 ### `--scope runtime`
