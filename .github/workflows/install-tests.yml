@@ -56,3 +56,53 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build the shared environment and render a smoke test
         run: bash tests/docker/run.sh --scope runtime --render
+
+  package:
+    name: package / wheel and sdist
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build and check the Python package
+        run: |
+          python -m pip install --upgrade build twine
+          python -m build --outdir release-dist
+          python -m twine check release-dist/*
+      - name: The wheel is thin
+        run: |
+          python - <<'PY'
+          import glob
+          import zipfile
+
+          wheel = glob.glob("release-dist/*.whl")[0]
+          names = zipfile.ZipFile(wheel).namelist()
+          forbidden = [
+              name
+              for name in names
+              if name.startswith(("dist/", "manim-math-video/", "platforms/"))
+          ]
+          assert not forbidden, forbidden
+          assert "install.py" in names
+          assert "manim_math_video_studio/__init__.py" in names
+          print(f"{wheel}: {len(names)} files, no skill trees")
+          PY
+      - name: Install wheel and sdist in clean environments
+        run: |
+          set -eux
+          python -m venv /tmp/wheel-venv
+          /tmp/wheel-venv/bin/python -m pip install release-dist/*.whl
+          /tmp/wheel-venv/bin/manim-math-video-studio --version
+          /tmp/wheel-venv/bin/python -m manim_math_video_studio --version
+          mkdir -p /tmp/pkg-home
+          HOME=/tmp/pkg-home /tmp/wheel-venv/bin/manim-math-video-studio \
+            --platform claude --no-deps --source . --quiet
+          test -f /tmp/pkg-home/.claude/skills/manim-math-video/SKILL.md
+
+          python -m venv /tmp/sdist-venv
+          /tmp/sdist-venv/bin/python -m pip install release-dist/*.tar.gz
+          /tmp/sdist-venv/bin/manim-math-video-studio --version
+      - name: Package version matches VERSION
+        run: test "$(/tmp/wheel-venv/bin/manim-math-video-studio --version)" = "manim-math-video-studio $(cat VERSION)"

@@ -20,6 +20,8 @@ platforms/                        # per-agent frontmatter and install notes
 dist/                             # GENERATED skill trees, one per agent — do not edit
 install.py                        # installer: detection, skill trees, shared environment
 install.sh / install.ps1          # one-command wrappers for macOS/Linux and Windows
+pyproject.toml                    # thin PyPI package: console scripts, no skill trees
+manim_math_video_studio/          # package shim used by the console scripts
 scripts/check_env.py              # repo-root wrapper for the skill environment check
 scripts/setup.py                  # repo-only helper: create ./.venv and install requirements
 tests/                            # installer + simulated-harness verification
@@ -35,6 +37,7 @@ docs/                             # GitHub Pages landing page
 | `platforms/<agent>/` | Frontmatter variants and per-agent `README.md` / `INSTALL.md` |
 | `dist/<agent>/skills/manim-math-video/` | **Generated.** Never edit by hand |
 | `install.py`, `install.sh`, `install.ps1` | Installer (stdlib-only Python, plus thin wrappers) |
+| `pyproject.toml`, `manim_math_video_studio/` | Thin PyPI package and console-script entry point |
 | `tests/` | Installer and harness simulation suite, plus the Docker matrix |
 | `docs/` | Landing page published with GitHub Pages |
 
@@ -95,10 +98,10 @@ the harness contract, and how to add a platform.
 
 ## Versioning
 
-1. Bump `VERSION` (repo release, e.g. `0.2.0`).
-2. Bump `metadata.version` in `manim-math-video/SKILL.md` (skill version, e.g. `1.3.0`).
+1. Bump `VERSION` (repo release, e.g. `0.4.0`); it also drives the PyPI package version.
+2. Bump `metadata.version` in `manim-math-video/SKILL.md` (skill version, e.g. `1.3.2`).
 3. Add a `CHANGELOG.md` entry.
-4. Rebuild `dist/`, then tag `v0.2.0`.
+4. Rebuild `dist/`, run package checks, then tag `vX.Y.Z`.
 
 ## Installer changes
 
@@ -123,6 +126,44 @@ tests/docker/run.sh
 Set `MMS_ARCHIVE_URL` to a local archive (`file:///...`) to test the download
 path without touching GitHub; the one-liner test in `tests/install_matrix.py`
 does exactly that.
+
+## Python package and PyPI
+
+The package is deliberately **thin**: the wheel contains `install.py`, the
+`manim_math_video_studio` shim, and metadata. It does not contain `dist/`; at
+runtime it downloads the release tag matching its own version. Keep `dist/` for
+the generated skill trees and build packages into `release-dist/`:
+
+```bash
+python -m build --outdir release-dist
+python -m twine check release-dist/*
+```
+
+Run the package checks before a release; CI also does this on every push:
+
+```bash
+python -m venv /tmp/pkg-venv
+/tmp/pkg-venv/bin/pip install release-dist/*.whl
+/tmp/pkg-venv/bin/manim-math-video-studio --version
+```
+
+Releases are tagged. The `pypi-publish.yml` workflow checks that the tag equals
+`v$(cat VERSION)`, builds the wheel and sdist, and publishes with PyPI trusted
+publishing (no API token).
+
+One-time PyPI setup:
+
+1. Create the project `manim-math-video-studio` on PyPI and enable 2FA.
+2. Add a **pending trusted publisher** with:
+   - owner `kappa77`
+   - repository `manim-math-video-studio`
+   - workflow `pypi-publish.yml`
+   - environment `pypi`
+3. In GitHub, create the `pypi` environment under Settings → Environments.
+4. Push a version tag (`v0.4.0`); the workflow publishes the wheel and sdist.
+
+For a dry run, use TestPyPI or build and install the wheel locally instead of
+tagging a release.
 
 ## Pull requests
 

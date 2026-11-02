@@ -111,4 +111,6 @@ documentation; if a host changes its discovery rules, update `EXPECTED` in
 - `--json` emits a machine-readable summary for CI dashboards.
 - CI runs the fast matrix and the runtime suite in
   `.github/workflows/install-tests.yml`, plus the fast suite natively on Windows
-  and macOS.
+  and macOS. A `package` job builds the wheel and sdist into `release-dist/`,
+  runs `twine check`, installs both in clean environments, verifies the wheel is
+  thin, and checks that the package version matches `VERSION`.

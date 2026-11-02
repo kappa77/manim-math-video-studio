@@ -6,6 +6,16 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Standard Python package.** `pyproject.toml`, a `manim_math_video_studio`
+  entry point, and `manim-math-video-studio` / `manim-math-video-install`
+  console scripts. The thin wheel contains only the installer; it downloads the
+  release tag matching its own version and keeps the skill trees out of the
+  package. Ready for `uvx` and `pipx` after the PyPI release.
+- **PyPI publishing workflow.** Trusted publishing on `v*` tags, with a build
+  and artifact upload step shared by the package checks.
+
 ## [0.3.2] — 2026-11-01
 
 ### Fixed

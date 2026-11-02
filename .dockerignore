@@ -10,3 +10,7 @@
 my-series
 voice-samples
 docs/img
+# Python package build output (dist/ is the generated skill trees)
+release-dist
+build
+*.egg-info

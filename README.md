@@ -13,6 +13,8 @@ python -c "import urllib.request as u;exec(u.urlopen('https://raw.githubusercont
 
 It finds the agents on your machine, installs the skill for each, prepares one shared environment at `~/.manim-math-video/venv` (with `uv` when available), and verifies it. Same command on macOS, Linux, and Windows; needs Python 3.10+.
 
+Standard Python package (v0.4.0+): `uvx manim-math-video-studio --platform claude` — one agent at a time, no clone.
+
 Other routes — `curl -fsSL …/install.sh | bash`, `irm …/install.ps1 | iex`, or `git clone` + `python install.py` — are in [INSTALL.md](INSTALL.md).
 
 ![The birthday-problem episode: the probability curve for a shared birthday rising through 23 people at 50.7%](docs/img/demo.gif)

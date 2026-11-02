@@ -34,3 +34,8 @@ manim-math-video/examples/**/qa/
 
 # Local quick-start output
 my-series/
+
+# Python package build output (dist/ is the generated skill trees)
+release-dist/
+build/
+*.egg-info/

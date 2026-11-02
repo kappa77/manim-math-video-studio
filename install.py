@@ -32,7 +32,7 @@ from pathlib import Path
 
 ARCHIVE_URL = os.environ.get("MMS_ARCHIVE_URL", "").strip()  # optional mirror or file:// URL
 REPO = os.environ.get("MMS_REPO", "kappa77/manim-math-video-studio")
-DEFAULT_REF = os.environ.get("MMS_REF", "main")
+PACKAGE_NAME = "manim-math-video-studio"
 SKILL_NAME = "manim-math-video"
 PLATFORMS = ("claude", "codex", "copilot", "pi")
 MIN_PYTHON = (3, 10)
@@ -86,6 +86,41 @@ def die(message: str, code: int = 1):
 
 def looks_like_source(root: Path) -> bool:
     return (root / "platforms" / "manifest.json").is_file() and (root / "dist").is_dir()
+
+
+def _package_version() -> str | None:
+    """Return the installed package version, when this is a wheel/sdist install."""
+    try:
+        from importlib.metadata import version
+
+        return version(PACKAGE_NAME)
+    except Exception:  # noqa: BLE001 - running standalone from a URL or checkout
+        return None
+
+
+def default_ref() -> str:
+    """Prefer the release tag matching the installed package, then main."""
+    override = os.environ.get("MMS_REF", "").strip()
+    if override:
+        return override
+    package_version = _package_version()
+    if package_version and not any(
+        marker in package_version for marker in ("dev", "a", "b", "rc")
+    ):
+        return f"v{package_version}"
+    return "main"
+
+
+def installer_version() -> str:
+    """Version to show in --version; works from a checkout and from a wheel."""
+    if "__file__" in globals():
+        local_version = Path(globals()["__file__"]).resolve().parent / "VERSION"
+        if local_version.is_file():
+            return local_version.read_text(encoding="utf-8").strip()
+    return _package_version() or "development"
+
+
+DEFAULT_REF = default_ref()
 
 
 def download_source(ref: str, destination: Path) -> Path:
@@ -494,7 +529,7 @@ def main(argv: list[str] | None = None) -> int:
         arguments = [*shlex.split(extra), *arguments]
 
     parser = argparse.ArgumentParser(
-        prog="install.py",
+        prog=Path(sys.argv[0]).name,
         description="Install the manim-math-video skill for your agents.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
@@ -503,7 +538,16 @@ def main(argv: list[str] | None = None) -> int:
             "  python install.py --platform codex     one agent only\n"
             "  python install.py --with-latex         also install a LaTeX engine\n"
             "  python install.py --uninstall          remove skills and environment\n"
+            "\n"
+            "packaged install:\n"
+            "  uvx manim-math-video-studio --platform codex\n"
         ),
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {installer_version()}",
+        help="show the installer version and exit",
     )
     parser.add_argument("--platform", "--platforms", dest="platform", default="auto",
                         help=f"auto (default), all, or a comma list of {', '.join(PLATFORMS)}")

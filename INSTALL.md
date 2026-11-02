@@ -4,6 +4,26 @@ One command installs the skill for the agents on your machine and prepares a
 single shared Python environment. No activation, no manual `pip`, no copying
 directories by hand.
 
+## Standard install from PyPI
+
+Starting with **v0.4.0**, the installer is also a standard Python package. This
+is the shortest complete route: it installs the skill for one agent and prepares
+the shared environment.
+
+```bash
+uvx manim-math-video-studio --platform claude
+```
+
+Or with `pipx`:
+
+```bash
+pipx run --spec manim-math-video-studio manim-math-video-studio --platform claude
+```
+
+Replace `claude` with `codex`, `copilot`, or `pi`. Add `--platform all` only if
+you explicitly want all four. The package is thin: it downloads the release tag
+matching its own version and keeps the skill trees out of the wheel.
+
 ## Quick start
 
 One command, identical on macOS, Linux, and Windows:
