@@ -4,6 +4,7 @@
 #   curl -fsSL https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.sh | bash
 #   curl -fsSL .../install.sh | bash -s -- --platform codex --with-latex
 #   ./install.sh                      # from a clone
+#   ./install.sh --platform claude --tts-provider cartesia
 #
 # Override the source with MMS_REPO=owner/name MMS_REF=main (or v0.1.0).
 set -euo pipefail

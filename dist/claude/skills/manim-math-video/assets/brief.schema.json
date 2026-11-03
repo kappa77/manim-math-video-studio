@@ -120,12 +120,16 @@
       "type": "object",
       "required": ["provider", "id", "style", "rate", "pitch"],
       "properties": {
-        "provider": { "enum": ["edge", "piper", "custom", "none"] },
+        "provider": { "enum": ["edge", "piper", "cartesia", "elevenlabs", "custom", "none"] },
         "id": { "type": "string", "minLength": 1 },
         "style": { "type": "string" },
         "rate": { "type": "string" },
         "pitch": { "type": "string" },
         "volume": { "type": "string" },
+        "model_id": { "type": ["string", "null"] },
+        "api_version": { "type": ["string", "null"] },
+        "emotion": { "type": ["string", "null"] },
+        "voice_settings": { "type": ["object", "null"] },
         "command": {
           "type": ["array", "null"],
           "items": { "type": "string" }

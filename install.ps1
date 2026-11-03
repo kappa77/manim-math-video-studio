@@ -13,6 +13,9 @@
     .\install.ps1 -Platform codex -WithLatex
 
 .EXAMPLE
+    .\install.ps1 -Platform claude -TtsProvider cartesia -TtsModel sonic-3.6
+
+.EXAMPLE
     .\install.ps1 -Platform all -DryRun
 
 .EXAMPLE
@@ -25,6 +28,8 @@ param(
     [string] $Platform = 'auto',
     [string] $Root,
     [string] $Venv,
+    [string] $TtsProvider,
+    [string] $TtsModel,
     [switch] $WithLatex,
     [switch] $NoDeps,
     [switch] $DryRun,
@@ -76,6 +81,8 @@ $installerArgs = @('--platform', $Platform)
 if ($Root) { $installerArgs += @('--root', $Root) }
 if ($Venv) { $installerArgs += @('--venv', $Venv) }
 if ($WithLatex) { $installerArgs += '--with-latex' }
+if ($TtsProvider) { $installerArgs += @('--tts-provider', $TtsProvider) }
+if ($TtsModel) { $installerArgs += @('--tts-model', $TtsModel) }
 if ($NoDeps) { $installerArgs += '--no-deps' }
 if ($DryRun) { $installerArgs += '--dry-run' }
 if ($Uninstall) { $installerArgs += '--uninstall' }

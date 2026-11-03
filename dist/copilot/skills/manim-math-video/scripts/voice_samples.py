@@ -11,7 +11,8 @@ from typing import Any
 
 from _common import (
     atomic_write_json,
-    default_voice,
+    default_voice_for,
+    load_tts_config,
     load_voices,
     normalize_language,
     now_iso,
@@ -21,6 +22,12 @@ from _common import (
     voice_entries,
 )
 from tts import _custom_generate, _edge_generate_with_retry, _piper_generate
+from _tts_providers import (
+    cartesia_generate,
+    elevenlabs_generate,
+    provider_model,
+    provider_voice_entries,
+)
 
 
 DEFAULT_TEXT = (
@@ -109,6 +116,10 @@ def synthesize(
     rate: str,
     pitch: str,
     volume: str,
+    model_id: str,
+    voice_cfg: dict[str, Any],
+    tts_config: dict[str, Any],
+    voices: dict[str, Any],
     piper_model: str | None,
     custom_command: list[str] | None,
     custom_suffix: str,
@@ -123,6 +134,33 @@ def synthesize(
             pitch,
             volume,
             out_path,
+        )
+        return out_path
+    if provider == "cartesia":
+        out_path = out_base.with_suffix(".wav")
+        cartesia_generate(
+            text,
+            voice_id,
+            language,
+            rate,
+            volume,
+            out_path,
+            voice_cfg=voice_cfg,
+            config=tts_config,
+            voices=voices,
+        )
+        return out_path
+    if provider == "elevenlabs":
+        out_path = out_base.with_suffix(".mp3")
+        elevenlabs_generate(
+            text,
+            voice_id,
+            language,
+            rate,
+            out_path,
+            voice_cfg=voice_cfg,
+            config=tts_config,
+            voices=voices,
         )
         return out_path
     if provider == "piper":
@@ -171,7 +209,12 @@ def main(argv: list[str] | None = None) -> int:
         default="voice-samples",
         help="Output directory in the user workspace (default: voice-samples)",
     )
-    parser.add_argument("--provider", choices=["edge", "piper", "custom"], default="edge")
+    parser.add_argument(
+        "--provider",
+        choices=["edge", "piper", "cartesia", "elevenlabs", "custom"],
+        help="TTS provider (default: installer config, then edge)",
+    )
+    parser.add_argument("--model", help="Provider model id override (Cartesia/ElevenLabs)")
     parser.add_argument("--piper-model", help="Path to a Piper .onnx model")
     parser.add_argument(
         "--command-json",
@@ -188,13 +231,27 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     voices = load_voices()
+    tts_config = load_tts_config()
     language = normalize_language(args.language, voices)
-    entries = voice_entries(language, voices)
-    recommended = default_voice(language, voices)
+    provider = args.provider or str(tts_config.get("provider") or "edge")
+    if provider == "auto":
+        provider = str(tts_config.get("provider") or "edge")
+    voice_cfg: dict[str, Any] = {}
+    if args.model:
+        voice_cfg["model_id"] = args.model
+    model_id = provider_model(provider, voice_cfg, tts_config, voices)
+    try:
+        if provider in {"cartesia", "elevenlabs"}:
+            entries = provider_voice_entries(provider, language, voices)
+        else:
+            entries = voice_entries(language, voices)
+    except RuntimeError as exc:
+        raise SystemExit(f"ERROR: {exc}") from exc
+    recommended = default_voice_for(provider, language, voices)
     if not entries:
         print(
-            f"No curated voices for {language!r}. Any valid edge-tts voice id can be "
-            "passed with --voices.",
+            f"No voices found for provider {provider!r} and {language!r}. "
+            "Use --voices with explicit ids, or check the API key and language.",
             file=sys.stderr,
         )
     if args.list:
@@ -240,7 +297,8 @@ def main(argv: list[str] | None = None) -> int:
                 "rate": rate,
                 "pitch": pitch,
                 "volume": args.volume,
-                "provider": args.provider,
+                "provider": provider,
+                "model_id": model_id,
             },
             ensure_ascii=False,
             sort_keys=True,
@@ -271,7 +329,7 @@ def main(argv: list[str] | None = None) -> int:
             + (" (recommended)" if voice_id == recommended else "")
         )
         if args.dry_run:
-            print(f"   would write {out_base} with suffix for {args.provider}")
+            print(f"   would write {out_base} with suffix for {provider}")
             continue
 
         before = previous.get(voice_id)
@@ -299,12 +357,16 @@ def main(argv: list[str] | None = None) -> int:
         out_path = synthesize(
             entry,
             out_base,
-            provider=args.provider,
+            provider=provider,
             text=args.text,
             language=language,
             rate=rate,
             pitch=pitch,
             volume=args.volume,
+            model_id=model_id,
+            voice_cfg=voice_cfg,
+            tts_config=tts_config,
+            voices=voices,
             piper_model=args.piper_model,
             custom_command=custom_command,
             custom_suffix=args.custom_suffix,
@@ -338,7 +400,8 @@ def main(argv: list[str] | None = None) -> int:
         "rate": rate,
         "pitch": pitch,
         "volume": args.volume,
-        "provider": args.provider,
+        "provider": provider,
+        "model_id": model_id or None,
         "recommended_voice": recommended,
         "samples": samples,
     }

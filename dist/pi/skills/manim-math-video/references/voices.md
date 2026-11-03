@@ -1,19 +1,19 @@
 # Voice, language, and pronunciation
 
-The voice is part of the series identity. Select it explicitly before producing a new video; for later episodes ask the user to confirm the saved voice. Reuse a choice already made for the current episode without asking again. The default provider is **edge-tts** because it is free, has broad language coverage, and returns word boundaries for captions. The pipeline can also use a custom command (ElevenLabs, OpenAI TTS, Piper, a local model) or run silently for timing drafts.
+The voice is part of the series identity. Select it explicitly before producing a new video; for later episodes ask the user to confirm the saved voice. Reuse a choice already made for the current episode without asking again. The default provider is **edge-tts** because it is free, has broad language coverage, and returns word boundaries for captions. Native **Cartesia** and **ElevenLabs** providers are available when the user supplies an API key; a custom command and silent mode remain available for other services and timing drafts.
 
 ## Selection order
 
-1. Ask for the **narration language and locale** (for example `en-US`, `it-IT`, `es-MX`).
+1. Ask for the **provider and narration language/locale** (for example edge-tts + `en-US`, Cartesia + `it-IT`, ElevenLabs + `es-MX`). Default to edge-tts unless the user asks for another provider.
 2. Ask for the **delivery style** (`warm-teacher`, `calm-documentary`, `energetic-explainer`, `authoritative-lecturer`, `friendly-conversational`).
 3. Before production, generate **three playable samples of about 6-12 seconds** in that locale, using the same topic-relevant sentence, rate, and pitch for a fair comparison. Use distinct available voices, with varied timbres when possible. Catalog defaults are candidates to recommend, not automatic selections.
 
    ```bash
-   python scripts/voice_samples.py --language it-IT --style warm-teacher \
+   python scripts/voice_samples.py --provider cartesia --language it-IT --style warm-teacher \
      --text "In questa puntata seguiamo un'idea dalla prima domanda al momento in cui tutto si chiarisce."
    ```
 
-   This writes numbered MP3 files and `voice-samples/samples.json` with the exact ids, labels, and durations. Use `--voices` to preselect candidates, `--list` to inspect the catalog, and `--force` to regenerate. The script supports edge-tts, Piper, and a custom command.
+   This writes numbered audio files and `voice-samples/samples.json` with the exact ids, labels, and durations. Use `--voices` to preselect candidates, `--list` to inspect the provider's voices, and `--force` to regenerate. Edge, Cartesia, ElevenLabs, Piper, and custom commands are supported.
 
 4. Display the samples inline, numbered and labelled with their names and exact voice ids. Ask the user which one to use and **wait for an explicit numbered or named choice**. A clear instruction such as "use Isabella" or "reuse the series voice" for this episode also counts; do not repeat a choice already made. General assent to a theme or brief does not identify a narrator.
 5. Confirm **rate** and **pitch** through the sample settings; change them only if requested or if pronunciation/pacing needs correction. If the user delegates voice choice, recommend one sample and ask them to confirm it instead of starting production.
@@ -24,8 +24,9 @@ The voice is part of the series identity. Select it explicitly before producing 
      "language": "en-US",
      "subtitle_language": "en",
      "voice": {
-       "provider": "edge",
-       "id": "en-US-AvaMultilingualNeural",
+       "provider": "cartesia",
+       "id": "<cartesia-voice-id>",
+       "model_id": "sonic-3.6",
        "style": "warm-teacher",
        "rate": "-3%",
        "pitch": "+0Hz",
@@ -33,6 +34,43 @@ The voice is part of the series identity. Select it explicitly before producing 
      }
    }
    ```
+
+   For edge-tts, omit `model_id` and use an edge voice id such as `en-US-AvaMultilingualNeural`.
+
+## Native providers
+
+| Provider | API key environment variable | Default model | Output |
+|---|---|---|---|
+| edge-tts | none | — | MP3, word boundaries |
+| Cartesia | `CARTESIA_API_KEY` | `sonic-3.6` | WAV |
+| ElevenLabs | `ELEVENLABS_API_KEY` | `eleven_multilingual_v2` | MP3, converted to WAV |
+| Piper | none | local `.onnx` model | WAV |
+| custom | none | user command | any format converted to WAV |
+| none | none | — | silent timing |
+
+Keys are read from the environment; never write them into `brief.json`, the storyboard, or the repository.
+
+Install or repair the preferred provider once:
+
+```bash
+python install.py --tts-provider cartesia --tts-model sonic-3.6
+python install.py --tts-provider elevenlabs
+# PyPI package:
+uvx manim-math-video-studio --platform claude --tts-provider cartesia
+```
+
+This writes `~/.manim-math-video/tts.json` with the provider and model (not the key) and prints the missing variable if needed. `scripts/check_env.py` reports both native providers as optional until their key is set. Rerun the installer with a different `--tts-provider` to switch; use `--dry-run` to inspect without writing.
+
+During conversation, set `output.voice.provider` and `output.voice.id` explicitly. `model_id`, `api_version`, `emotion`, and `voice_settings` are optional overrides. List live voices before choosing:
+
+```bash
+python scripts/tts.py --list-voices --provider cartesia --language en-US
+python scripts/voice_samples.py --provider elevenlabs --language en-US --list
+```
+
+`voice_samples.py` defaults to the installer's provider and fetches three candidates from the provider when `--voices` is not supplied. Pass explicit ids when the account has a large custom voice library.
+
+Cartesia maps `rate`/`volume` to its `speed`/`volume` generation settings; ElevenLabs maps `rate` to `voice_settings.speed`. Neither native provider uses `pitch`; use the voice's own character or the provider settings instead.
 
 ## Voice-selection gate
 
@@ -151,7 +189,7 @@ Do not use SSML phoneme tags with edge-tts; the service accepts plain text. Do n
 
 ## Custom providers
 
-Set `output.voice.provider` to `custom` and provide a command template. The script writes the spoken text to `{text_file}` and expects audio at `{out_file}`.
+Use this for a provider without a native adapter. Set `output.voice.provider` to `custom` and provide a command template. The script writes the spoken text to `{text_file}` and expects audio at `{out_file}`.
 
 ```json
 "voice": {
@@ -181,9 +219,9 @@ python scripts/tts.py --episode <episode> \
 
 Piper writes a WAV directly. It is fast and offline, but voice quality and language coverage vary. Use it when privacy or offline operation matters more than polish.
 
-### OpenAI / ElevenLabs / Azure
+### OpenAI / Azure / other services
 
-Use the custom command adapter or write a small wrapper that accepts the placeholders above. Keep API keys in environment variables, never in `brief.json` or the storyboard. The skill does not store secrets.
+Use the custom command adapter or write a small wrapper that accepts the placeholders above. Keep API keys in environment variables, never in `brief.json` or the storyboard. The skill does not store secrets. ElevenLabs and Cartesia use the native adapters above.
 
 ## Sanity checks
 

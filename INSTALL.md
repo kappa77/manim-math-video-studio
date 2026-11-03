@@ -69,12 +69,14 @@ agent detected, the installer falls back to Claude Code and says so; pass
 | `--root DIR` | install into `DIR/manim-math-video` instead of a personal root |
 | `--venv DIR` | use a different environment location |
 | `--with-latex` | also install LaTeX + `dvisvgm` for equation beats |
+| `--tts-provider` | preferred narration provider: `edge`, `cartesia`, or `elevenlabs` |
+| `--tts-model` | model id for the selected provider (for example `sonic-3.6`) |
 | `--no-deps` | install the skill files only (no Python packages) |
 | `--no-uv` | always use `pip`, even when `uv` is available |
 | `--dry-run` | print the plan and exit |
 | `--uninstall` | remove the installed skills and the shared environment |
 | `--source DIR` | use a local checkout instead of downloading |
-| `--ref REF` | git ref to download: `main` (default), a branch, or `v0.4.0` |
+| `--ref REF` | git ref to download: `main` (default), a branch, or `v0.5.0` |
 | `--quiet` / `--verbose` | hide command lines / show full `pip` output |
 With the piped installer, pass flags after `bash -s --`. With the universal one-liner, append them after the closing quote:
 
@@ -90,9 +92,35 @@ If a shell mangles the trailing flags, use the environment instead: `MMS_ARGS="-
 With PowerShell, use the parameter form: `.\install.ps1 -Platform codex -WithLatex`.
 
 Environment overrides: `MMS_REPO=owner/name` installs from a fork,
-`MMS_REF=v0.4.0` pins a release, `MMS_REF=<branch>` tracks another branch, and
+`MMS_REF=v0.5.0` pins a release, `MMS_REF=<branch>` tracks another branch, and
 `MMS_ARCHIVE_URL=<url>` replaces the codeload download (a mirror, or a local
 `file://` archive for offline and test runs).
+
+## TTS providers
+
+Edge-tts is the default and needs no key. Cartesia and ElevenLabs are native
+providers selected per install or per episode:
+
+```bash
+python install.py --tts-provider cartesia --tts-model sonic-3.6
+python install.py --tts-provider elevenlabs
+uvx manim-math-video-studio --platform claude --tts-provider cartesia
+```
+
+The selection is stored in `~/.manim-math-video/tts.json` without secrets.
+Rerunning with another provider updates the preference; `--dry-run` does not
+write it. API keys come from the environment:
+
+| Provider | Variable | Key page |
+|---|---|---|
+| Cartesia | `CARTESIA_API_KEY` | https://play.cartesia.ai/keys |
+| ElevenLabs | `ELEVENLABS_API_KEY` | https://elevenlabs.io/app/settings/api-keys |
+
+`check_env.py` lists both providers as optional until their key is set. During
+a conversation the agent records `output.voice.provider` and a provider voice id
+in `brief.json`; `cartesia`/`elevenlabs` can be overridden with `--provider` on
+`tts.py` and `voice_samples.py`. The key is never written to the brief or state
+file.
 
 ## Verify
 

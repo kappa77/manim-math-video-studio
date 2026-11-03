@@ -54,7 +54,7 @@ Then ask for a video, for example: *"Make a 90-second video on why the derivativ
 
 ## Requirements
 
-Python 3.10+, Manim Community 0.19+ (0.22+ recommended), `edge-tts`, PyAV, Pillow, and NumPy. The installer provides all of them. LaTeX plus `dvisvgm` is needed only for equation beats (`--with-latex` automates MiKTeX on Windows and BasicTeX on macOS).
+Python 3.10+, Manim Community 0.19+ (0.22+ recommended), `edge-tts`, PyAV, Pillow, and NumPy. The installer provides all of them. Narration can use edge-tts (default), or Cartesia / ElevenLabs with `CARTESIA_API_KEY` / `ELEVENLABS_API_KEY`. LaTeX plus `dvisvgm` is needed only for equation beats (`--with-latex` automates MiKTeX on Windows and BasicTeX on macOS).
 
 ## License and notes
 

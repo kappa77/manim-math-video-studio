@@ -41,7 +41,7 @@ python scripts/render.py --episode ../my-series/episodes/001-why-derivative-x-sq
 | `new_episode.py` | Scaffold a series and an episode from an approved brief |
 | `voice_samples.py` | Generate comparable narration samples before choosing a voice |
 | `storyboard_to_script.py` | Human-readable script plus a duration estimate |
-| `tts.py` | Narration with edge-tts, Piper, a custom command, or silent timing |
+| `tts.py` | Narration with edge-tts, Cartesia, ElevenLabs, Piper, a custom command, or silent timing |
 | `render.py` | Render with Manim, copy outputs, then run QA |
 | `qa.py` | Stream report, audio levels, subtitle coverage, contact sheet |
 | `selftest.py` | Asset and runtime checks, optional smoke render |
@@ -101,9 +101,14 @@ stack the `compare` columns. Always review a draft contact sheet for overflow an
 ## Narration
 
 - **edge-tts** (default): many languages, curated voices, style presets, word boundaries.
+- **Cartesia**: native adapter, `CARTESIA_API_KEY`, WAV output.
+- **ElevenLabs**: native adapter, `ELEVENLABS_API_KEY`, MP3 converted to WAV.
 - **Piper**: offline, local model.
-- **Custom command**: ElevenLabs, OpenAI TTS, Azure, or a local model.
+- **Custom command**: OpenAI TTS, Azure, or a local model.
 - **None**: silently timed draft.
+
+Select a provider at install time with `--tts-provider`, or per episode with
+`tts.py --provider cartesia|elevenlabs` and `output.voice.provider` in the brief.
 
 Language and voice are independent of the template. Subtitles can be translated per beat with
 the `caption` field. Voice catalog, pronunciation notes: `references/voices.md`.

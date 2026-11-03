@@ -254,6 +254,36 @@ Use `ReplacementTransform` instead. Matching depends on the LaTeX substrings bei
 - Check the contact sheet and a 1080p still, not only the 480p draft.
 - For projectors, prefer `clean-light`.
 
+### Native provider key missing
+
+```bash
+export CARTESIA_API_KEY=...       # https://play.cartesia.ai/keys
+export ELEVENLABS_API_KEY=...     # https://elevenlabs.io/app/settings/api-keys
+```
+
+Run `python scripts/check_env.py` to confirm the key is visible to the skill
+interpreter. The installer prints the missing variable when you select a native
+provider. Keys are intentionally not stored in `brief.json` or `tts.json`.
+
+### Cartesia returns 401/403 or 422
+
+- Confirm `CARTESIA_API_KEY` is set and starts with `sk_car_`.
+- The request uses `Authorization: Bearer` and `Cartesia-Version: 2026-08-14`.
+  If the provider changed its API version, override `output.voice.api_version`
+  or the `api_version` field in `~/.manim-math-video/tts.json`.
+- A 422 usually means an unsupported `voice` id, `model_id`, output format, or
+  generation config. List voices with
+  `python scripts/tts.py --list-voices --provider cartesia --language en-US`.
+
+### ElevenLabs returns 401/422
+
+- Confirm `ELEVENLABS_API_KEY` is set.
+- Use a voice id from `python scripts/voice_samples.py --provider elevenlabs
+  --language en-US --list` (a display name is not an id).
+- If a model rejects `speed`, remove the override from `voice_settings` or use
+  a supported `model_id`.
+- Available account voices and models depend on the subscription tier.
+
 ### `Edge TTS` returns 403/401 or times out
 
 - Check network access and proxy settings.

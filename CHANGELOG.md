@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-11-03
+
+### Added
+
+- **Native Cartesia and ElevenLabs narration.** Select `cartesia` or
+  `elevenlabs` with `install.py --tts-provider`, `tts.py --provider`, or
+  `output.voice.provider` in the brief. API keys stay in `CARTESIA_API_KEY` /
+  `ELEVENLABS_API_KEY`; `~/.manim-math-video/tts.json` stores only the provider
+  and model. Voice listing, samples, manifest metadata, and `check_env.py`
+  diagnostics are included.
+
 ### Changed
 
 - README, INSTALL, USAGE, and the landing page now lead with the `uvx`/PyPI
@@ -17,6 +28,7 @@ All notable changes to this project are documented here. The format follows
 - Refreshed the birthday demo: verified the four numerical claims, rerendered
   1080p with no QA warnings, replaced the GIF with a title-led sequence, and
   attached the MP4/SRT to the v0.4.0 GitHub release.
+- `manim-math-video/SKILL.md` version is now `1.4.0`.
 
 ## [0.4.0] — 2026-11-03
 
@@ -153,3 +165,4 @@ All notable changes to this project are documented here. The format follows
 [0.3.1]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.3.1
 [0.3.2]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.3.2
 [0.4.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.4.0
+[0.5.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.5.0

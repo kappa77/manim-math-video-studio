@@ -3,7 +3,7 @@ name: manim-math-video
 description: Develop any topic into a storyboarded, narrated animated video with subtitles using Manim. Use for planning, researching, scripting, animating, voicing, rendering, or reviewing educational, historical, scientific, technical, cultural, or narrative videos and series.
 license: MIT
 metadata:
-  version: "1.3.2"
+  version: "1.4.0"
   category: video
 ---
 
@@ -38,11 +38,11 @@ Before running the pipeline, verify that this directory contains `scripts/`, `re
 
 Reuse decisions and approvals already supplied by the user. An explicit voice choice for the current video satisfies the voice-selection gate; do not ask again. A saved series default alone does not satisfy it for a new episode. The interview and brief approval below apply only to unresolved choices or a brief that has not already been approved.
 
-This skill is deliberately **interview-first**. A theme is not a brief. Before starting production of each new video or episode, always ask the user to choose the narration voice and wait for their explicit choice. Offer short playable samples as described in `references/voices.md`. Until that choice is settled, only interview, source research, environment checks, and voice-sample generation may proceed; do not scaffold, write the full script/storyboard, generate episode narration, or render. An existing explicit choice for the current video counts; a generic "ok", "go ahead", or delegated choice does not select an unidentified voice. Do not scaffold or render until the audience, central focus, content progression, visual approach, and four output parameters are settled.
+This skill is deliberately **interview-first**. A theme is not a brief. Before starting production of each new video or episode, always ask the user to choose the narration provider and voice, and wait for their explicit choice. Edge-tts is the default; Cartesia and ElevenLabs are available when `CARTESIA_API_KEY` / `ELEVENLABS_API_KEY` is set. Offer short playable samples as described in `references/voices.md`. Until that choice is settled, only interview, source research, environment checks, and voice-sample generation may proceed; do not scaffold, write the full script/storyboard, generate episode narration, or render. An existing explicit choice for the current video counts; a generic "ok", "go ahead", or delegated choice does not select an unidentified voice. Do not scaffold or render until the audience, central focus, content progression, visual approach, and four output parameters are settled.
 
 ## Non-negotiables
 
-1. **Collect four parameters before production:** video quality, voice, language, and template. Never guess one silently. Voice samples are the explicit exception: generate them before the voice is chosen. Always obtain an explicit voice choice before production; a recommendation or delegated default is not a choice. For other delegated parameters, propose defaults, state them, and record them in `brief.json`.
+1. **Collect four parameters before production:** video quality, voice (provider + voice), language, and template. Never guess one silently. Voice samples are the explicit exception: generate them before the voice is chosen. Always obtain an explicit voice choice before production; a recommendation or delegated default is not a choice. For other delegated parameters, propose defaults, state them, and record them in `brief.json`.
 2. **One coherent focus per episode.** A central question or narrative promise, a clear progression, and a takeaway or resolution. Split overly broad themes into episodes. Include a misconception only when relevant.
 3. **Narration is spoken prose, not slide text.** The storyboard's `narration` is what the viewer hears; on-screen text is short. Use `speech` when a symbol or name needs a pronounceable form.
 4. **Graphs must earn their place.** Every graph needs a reason to be seen: a limit, a comparison, a counterexample, a rate, an area, a transformation. Write that reason in the beat's `notes`.
@@ -94,7 +94,7 @@ If this is a new series, choose a template using `references/templates.md`. Stat
 Create `brief.json` from `assets/brief.schema.json` and the example at `assets/brief.example.json`. Required sections: `series`, `episode`, `output`, `accuracy`. Record:
 
 - `output.quality`: `draft`, `standard`, `high`, or `4k`;
-- `output.language` and `output.voice` (provider, id, style, rate, pitch);
+- `output.language` and `output.voice` (provider, id, model_id when relevant, style, rate, pitch);
 - `series.template`;
 - thesis, audience, goals, rigor, key points, misconceptions, visuals, target duration;
 - terminology or notation, pronunciations, sources, claims to verify; use empty lists for irrelevant fields.
@@ -192,7 +192,7 @@ When the user gives only a theme, reply with a short framing and **one** round o
 4. The key challenge, turning point, or surprising idea.
 5. The visual approach: what should be shown, ordered, compared, or transformed?
 6. Quality: draft / standard (1080p30) / high (1080p60) / 4K?
-7. Language and voice: confirm the locale; offer to generate three short playable voice samples, then ask for a numbered or named choice before production. If the locale is already known, generate the samples directly.
+7. Provider, language, and voice: default to edge-tts or use the installed default; confirm the locale; offer three short playable voice samples, then ask for a numbered or named choice before production. If the locale is already known, generate the samples directly.
 8. Template: choose from the catalog, or let me recommend one.
 
 If a series exists, reuse its quality, language, and template. Still ask the user to choose the saved narrator for this episode or request alternatives; include a short playable sample. Do not repeat a voice choice already made for the current episode.
@@ -223,6 +223,7 @@ python scripts/storyboard_to_script.py --episode series/episodes/001-slug
 # narration (edge-tts by default)
 python scripts/tts.py --episode series/episodes/001-slug
 python scripts/tts.py --episode series/episodes/001-slug --list-voices
+python scripts/tts.py --episode series/episodes/001-slug --provider cartesia --model sonic-3.6
 
 # render (draft, standard, high, 4k)
 python scripts/render.py --episode series/episodes/001-slug --quality draft

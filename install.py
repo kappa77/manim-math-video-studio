@@ -39,6 +39,24 @@ MIN_PYTHON = (3, 10)
 STATE_DIR = Path.home() / ".manim-math-video"
 DEFAULT_VENV = STATE_DIR / "venv"
 STATE_FILE = STATE_DIR / "install.json"
+TTS_CONFIG_FILE = STATE_DIR / "tts.json"
+TTS_PROVIDER_CHOICES = ("edge", "cartesia", "elevenlabs")
+TTS_FALLBACK = {
+    "edge": {"label": "edge-tts", "default_model": None},
+    "cartesia": {
+        "label": "Cartesia",
+        "api_key_env": "CARTESIA_API_KEY",
+        "default_model": "sonic-3.6",
+        "api_version": "2026-08-14",
+        "keys_url": "https://play.cartesia.ai/keys",
+    },
+    "elevenlabs": {
+        "label": "ElevenLabs",
+        "api_key_env": "ELEVENLABS_API_KEY",
+        "default_model": "eleven_multilingual_v2",
+        "keys_url": "https://elevenlabs.io/app/settings/api-keys",
+    },
+}
 
 INVOKE = {
     "claude": "/manim-math-video",
@@ -449,6 +467,56 @@ def write_state(platforms: dict[str, str], venv: Path, version: str) -> None:
     STATE_FILE.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
+def load_tts_catalog(root: Path) -> dict:
+    """Read provider defaults from the skill catalog, with a built-in fallback."""
+    try:
+        data = json.loads(
+            (root / "manim-math-video" / "assets" / "voices.json").read_text(encoding="utf-8")
+        )
+        providers = data.get("providers", {})
+    except Exception:  # noqa: BLE001 - an older checkout may not have providers yet
+        providers = {}
+    catalog = {name: dict(info) for name, info in TTS_FALLBACK.items()}
+    for name, info in providers.items():
+        if isinstance(info, dict):
+            catalog.setdefault(name, {}).update(info)
+    return catalog
+
+
+def read_tts_config() -> dict:
+    try:
+        data = json.loads(TTS_CONFIG_FILE.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def write_tts_config(provider: str, model: str | None, catalog: dict) -> None:
+    previous = read_tts_config()
+    stored = previous.get("providers", {})
+    stored = dict(stored) if isinstance(stored, dict) else {}
+    entry = stored.get(provider, {})
+    entry = dict(entry) if isinstance(entry, dict) else {}
+    if model:
+        entry["model_id"] = model
+    elif not entry.get("model_id"):
+        default_model = catalog.get(provider, {}).get("default_model")
+        if default_model:
+            entry["model_id"] = default_model
+    api_version = catalog.get(provider, {}).get("api_version")
+    if api_version:
+        entry.setdefault("api_version", api_version)
+    stored[provider] = entry
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "schema_version": 1,
+        "provider": provider,
+        "updated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "providers": stored,
+    }
+    TTS_CONFIG_FILE.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+
 def read_version(root: Path) -> str:
     try:
         return (root / "VERSION").read_text(encoding="utf-8").strip() or "0.0.0"
@@ -504,6 +572,7 @@ def uninstall(dry_run: bool) -> int:
                 shutil.rmtree(managed_venv, ignore_errors=True)
     if not dry_run:
         STATE_FILE.unlink(missing_ok=True)
+        TTS_CONFIG_FILE.unlink(missing_ok=True)
     say("\nDone." if not dry_run else "\nDry run: nothing was removed.")
     return 0
 
@@ -537,6 +606,7 @@ def main(argv: list[str] | None = None) -> int:
             "  python install.py                      auto-detect agents, install everything\n"
             "  python install.py --platform codex     one agent only\n"
             "  python install.py --with-latex         also install a LaTeX engine\n"
+            "  python install.py --tts-provider cartesia  select Cartesia for new voices\n"
             "  python install.py --uninstall          remove skills and environment\n"
             "\n"
             "packaged install:\n"
@@ -560,6 +630,12 @@ def main(argv: list[str] | None = None) -> int:
         help=f"git ref to download when not installed from a checkout (default: {DEFAULT_REF})",
     )
     parser.add_argument("--with-latex", action="store_true", help="install a LaTeX engine for equation beats")
+    parser.add_argument(
+        "--tts-provider",
+        choices=TTS_PROVIDER_CHOICES,
+        help="preferred TTS provider for new work (default: keep existing, then edge)",
+    )
+    parser.add_argument("--tts-model", help="model id for the selected TTS provider")
     parser.add_argument("--no-deps", action="store_true", help="skip Python dependencies")
     parser.add_argument("--no-uv", action="store_true", help="do not use uv even when it is installed")
     parser.add_argument("--dry-run", action="store_true", help="show the plan without changing anything")
@@ -586,10 +662,34 @@ def main(argv: list[str] | None = None) -> int:
         venv = Path(args.venv).expanduser().resolve()
         version = read_version(root)
 
+        tts_catalog = load_tts_catalog(root)
+        tts_config = read_tts_config()
+        tts_provider = args.tts_provider or str(tts_config.get("provider") or "edge")
+        if tts_provider not in TTS_PROVIDER_CHOICES:
+            tts_provider = "edge"
+        provider_cfg = tts_catalog.get(tts_provider, {})
+        stored_provider = tts_config.get("providers", {})
+        stored_provider = (
+            stored_provider.get(tts_provider, {})
+            if isinstance(stored_provider, dict)
+            else {}
+        )
+        tts_model = (
+            args.tts_model
+            or (stored_provider.get("model_id") if isinstance(stored_provider, dict) else None)
+            or provider_cfg.get("default_model")
+        )
+        key_env = str(provider_cfg.get("api_key_env") or "")
+        key_set = not key_env or bool(os.environ.get(key_env))
+        tts_line = tts_provider + (f" ({tts_model})" if tts_model else "")
+        if key_env:
+            tts_line += f" | {key_env} {'set' if key_set else 'missing'}"
+
         say("manim-math-video installer")
         say(f"  version   {version}")
         say(f"  python    {sys.version.split()[0]} ({sys.executable})")
         say(f"  env       {venv}")
+        say(f"  tts       {tts_line}")
         for name, path in plan.items():
             say(f"  {name:<9} {path}")
 
@@ -616,6 +716,16 @@ def main(argv: list[str] | None = None) -> int:
                 (path / ".venv-path").write_text(str(venv) + "\n", encoding="utf-8", newline="\n")
 
         install_latex(args.with_latex, dry_run=False)
+        write_tts_config(tts_provider, tts_model, tts_catalog)
+        if key_env and not key_set:
+            warn(
+                f"{provider_cfg.get('label', tts_provider)} selected, but {key_env} is not set"
+            )
+            keys_url = provider_cfg.get("keys_url")
+            if keys_url:
+                note(f"set it before narration; get a key at {keys_url}")
+        elif key_env:
+            note(f"{key_env} detected")
         write_state({name: str(path) for name, path in plan.items()}, venv, version)
 
         code = verify(next(iter(plan.values())), venv)

@@ -14,7 +14,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from _common import SKILL_ROOT, find_manim_executable
+from _common import SKILL_ROOT, find_manim_executable, load_voices
 
 ANSI_RESET = "\033[0m"
 ANSI_BOLD = "\033[1m"
@@ -204,6 +204,27 @@ def main(argv: list[str] | None = None) -> int:
         piper or "not installed (optional offline TTS)",
         "Install Piper and a voice model for offline narration." if not piper else "",
     )
+    providers = load_voices().get("providers", {})
+    for provider, fallback_env in (
+        ("cartesia", "CARTESIA_API_KEY"),
+        ("elevenlabs", "ELEVENLABS_API_KEY"),
+    ):
+        info = providers.get(provider, {})
+        env_name = str(info.get("api_key_env") or fallback_env)
+        key_set = bool(os.environ.get(env_name))
+        label = str(info.get("label") or provider.title())
+        keys_url = str(info.get("keys_url") or "")
+        recommendation = ""
+        if not key_set:
+            recommendation = f"Optional provider. Set {env_name}"
+            if keys_url:
+                recommendation += f"; get a key at {keys_url}"
+        add(
+            label,
+            "ok" if key_set else "optional",
+            f"{env_name} set" if key_set else f"{env_name} not set",
+            recommendation,
+        )
 
     av_version = _version_of("av")
     add(

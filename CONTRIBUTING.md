@@ -26,6 +26,7 @@ scripts/check_env.py              # repo-root wrapper for the skill environment 
 scripts/setup.py                  # repo-only helper: create ./.venv and install requirements
 tests/                            # installer + simulated-harness verification
   install_matrix.py               # stdlib-only fast suite and real runtime suite
+  tts_providers_smoke.py          # Cartesia/ElevenLabs adapters against a local mock
   docker/                         # Dockerfile and matrix runner
   README.md                       # what each test proves, how to add a harness
 docs/                             # GitHub Pages landing page
@@ -160,7 +161,7 @@ One-time PyPI setup:
    - workflow `pypi-publish.yml`
    - environment `pypi`
 3. In GitHub, create the `pypi` environment under Settings → Environments.
-4. Push a version tag (`v0.4.0`); the workflow publishes the wheel and sdist.
+4. Push a version tag (`v0.5.0`); the workflow publishes the wheel and sdist.
 
 For a dry run, use TestPyPI or build and install the wheel locally instead of
 tagging a release.

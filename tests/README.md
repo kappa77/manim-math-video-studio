@@ -25,6 +25,8 @@ throwaway `HOME`, so it cannot touch your real agent installation.
 | Manifest contract | `platforms/manifest.json` still matches the documented install roots, frontmatter edits, and Codex `agents/openai.yaml` rule |
 | Generated trees | `python platforms/build.py --check` passes, so `dist/` is not stale |
 | Re-exec symlinks | A managed venv whose `bin/python` is a symlink (the normal Linux/macOS layout) still triggers the switch to the shared environment |
+| TTS provider selection | The installer persists Cartesia/ElevenLabs preferences and models without writing API keys; missing keys produce a warning, and dry runs write nothing |
+| Native TTS checks | `tts.py --check` reports the provider model and rejects a missing Cartesia/ElevenLabs key |
 | Personal install | For each of Claude Code, Codex, GitHub Copilot, and Pi: the skill lands in the right root, the tree is byte-identical to `dist/<harness>/`, frontmatter is correct, `INSTALL.md` and `LICENSE` are present, and the platform usage section is in `SKILL.md` |
 | Codex roots | `~/.codex/skills`, `~/.agents/skills`, and the documented fallback all work |
 | Auto-detection | Configuration directories (`~/.claude`, `~/.codex`, `~/.agents`, `~/.copilot`, `~/.pi`) and CLI names on `PATH` select the right harness; an empty machine falls back to Claude Code |
@@ -46,6 +48,7 @@ The runtime scope runs the fast suite first, then:
 | `check_env.py` | Python, Manim, the `manim` executable, edge-tts, PyAV, NumPy, Pillow, and skill assets are all `ok` for every harness |
 | Re-exec | Calling a skill script with an interpreter that lacks the dependencies switches to the shared environment; `MANIM_STUDIO_NO_REEXEC=1` disables it |
 | Skill self-test | The asset checks pass from every installed harness |
+| Native TTS | A local mock API verifies Cartesia and ElevenLabs request paths, auth headers, payloads, WAV output, and manifest metadata |
 | `--render` | A silent two-beat Manim render produces an MP4 (needs the native Pango/cairo libraries) |
 
 ## Docker
@@ -70,7 +73,8 @@ The fast matrix is:
 The runtime target uses `python:3.12-slim-bookworm` plus `ffmpeg`, fonts,
 Manim's cairo/pango libraries, and a C toolchain (pycairo and manimpango are
 source builds on Linux). It needs network access to install `requirements.txt`
-on the first run. Other options: `--no-cache`, `--pull`, `DOCKER=podman`.
+on the first run. The native TTS smoke test uses a local HTTP mock, not the real
+Cartesia/ElevenLabs APIs. Other options: `--no-cache`, `--pull`, `DOCKER=podman`.
 
 The image runs `platforms/build.py --check` at build time, so a stale `dist/`
 fails before any test starts.

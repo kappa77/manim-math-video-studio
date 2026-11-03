@@ -24,6 +24,7 @@ ASSETS = SKILL_ROOT / "assets"
 TEMPLATES_DIR = ASSETS / "templates"
 PROJECT_DIR = ASSETS / "project"
 VOICES_PATH = ASSETS / "voices.json"
+TTS_CONFIG_PATH = Path.home() / ".manim-math-video" / "tts.json"
 
 MANIM_NAMES = ("manim.exe", "manim.cmd", "manim") if os.name == "nt" else ("manim",)
 
@@ -337,6 +338,32 @@ def voice_entries(locale: str, voices: dict[str, Any] | None = None) -> list[dic
     return list(language_info(locale, voices).get("voices", []))
 
 
+def load_tts_config() -> dict[str, Any]:
+    """Read the provider preference written by the installer, if present."""
+    try:
+        data = load_json(TTS_CONFIG_PATH)
+    except Exception:  # noqa: BLE001 - a missing or broken config is not fatal
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def provider_info(provider: str, voices: dict[str, Any] | None = None) -> dict[str, Any]:
+    voices = voices or load_voices()
+    return dict(voices.get("providers", {}).get(provider, {}))
+
+
+def default_voice_for(
+    provider: str,
+    locale: str,
+    voices: dict[str, Any] | None = None,
+) -> str:
+    """Pick the provider's default voice, falling back to the edge catalog."""
+    voices = voices or load_voices()
+    if provider in {"cartesia", "elevenlabs"}:
+        return str(provider_info(provider, voices).get("default_voice") or "")
+    return default_voice(locale, voices)
+
+
 def default_voice(locale: str, voices: dict[str, Any] | None = None) -> str:
     voices = voices or load_voices()
     info = language_info(locale, voices)
@@ -366,13 +393,23 @@ def resolve_output(brief: dict[str, Any]) -> dict[str, Any]:
     locale = normalize_language(str(output.get("language", "")), voices)
     output["language"] = locale
     voice = dict(output.get("voice", {}))
+    config = load_tts_config()
+    provider = str(voice.get("provider") or config.get("provider") or "edge")
+    if provider == "auto":
+        provider = str(config.get("provider") or "edge")
     style = str(voice.get("style") or "warm-teacher")
     defaults = style_defaults(style, voices)
     for key in ("rate", "pitch", "volume"):
         voice.setdefault(key, defaults[key])
+    voice["provider"] = provider
     if not voice.get("id"):
-        voice["id"] = default_voice(locale, voices)
-    voice.setdefault("provider", "edge")
+        voice["id"] = default_voice_for(provider, locale, voices)
+    if provider in {"cartesia", "elevenlabs"} and not voice.get("model_id"):
+        stored = config.get("providers", {})
+        stored = stored.get(provider, {}) if isinstance(stored, dict) else {}
+        voice["model_id"] = stored.get("model_id") or provider_info(provider, voices).get(
+            "default_model"
+        )
     voice.setdefault("style", style)
     output["voice"] = voice
     output.setdefault("quality", "standard")
@@ -489,14 +526,24 @@ def validate_brief(brief: dict[str, Any], *, check_template: bool = True) -> tup
         warnings.append("output.subtitle_language is missing; defaulting to the narration language.")
     voice = output.get("voice", {})
     provider = str(voice.get("provider", "edge"))
-    if provider not in {"edge", "piper", "custom", "none"}:
-        errors.append("output.voice.provider must be edge, piper, custom, or none.")
-    if provider in {"edge", "piper", "custom"} and not voice.get("id"):
+    if provider not in {"edge", "piper", "cartesia", "elevenlabs", "custom", "none"}:
+        errors.append(
+            "output.voice.provider must be edge, piper, cartesia, elevenlabs, custom, or none."
+        )
+    if provider in {"edge", "piper", "cartesia", "elevenlabs", "custom"} and not voice.get("id"):
         errors.append("output.voice.id is required.")
     if provider == "piper" and not voice.get("piper_model"):
         errors.append("output.voice.piper_model is required when provider is piper.")
     if provider == "custom" and not voice.get("command"):
         errors.append("output.voice.command is required when provider is custom.")
+    if provider in {"cartesia", "elevenlabs"}:
+        info = provider_info(provider)
+        env_name = str(info.get("api_key_env") or "")
+        if env_name and not os.environ.get(env_name):
+            warnings.append(
+                f"{info.get('label', provider)} is selected but {env_name} is not set; "
+                "narration will fail until the key is available."
+            )
     locale = normalize_language(str(output.get("language", "")))
     info = language_info(locale)
     voice_id = str(voice.get("id", ""))

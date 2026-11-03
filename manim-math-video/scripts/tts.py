@@ -20,15 +20,28 @@ from typing import Any
 from _common import (
     atomic_write_json,
     default_voice,
+    default_voice_for,
     load_json,
     load_template,
+    load_tts_config,
     load_voices,
     normalize_language,
     now_iso,
+    provider_info,
     resolve_episode,
     sha256_text,
     style_defaults,
     write_text,
+)
+from _tts_providers import (
+    api_key,
+    cartesia_config,
+    cartesia_generate,
+    elevenlabs_generate,
+    elevenlabs_settings,
+    provider_api_version,
+    provider_model,
+    provider_voice_entries,
 )
 
 
@@ -287,6 +300,21 @@ def _list_edge_voices(language: str | None) -> int:
     return 0
 
 
+def _list_provider_voices(provider: str, language: str | None) -> int:
+    if provider == "edge":
+        return _list_edge_voices(language)
+    entries = provider_voice_entries(provider, language or "en-US")
+    label = provider_info(provider).get("label", provider)
+    print(f"{label} voices ({len(entries)}):")
+    print(f"{'Voice':44} {'Label':24} {'Gender':10} Style")
+    for entry in sorted(entries, key=lambda item: str(item.get("label", "")).casefold()):
+        print(
+            f"{str(entry.get('id', '')):44} {str(entry.get('label', '')):24} "
+            f"{str(entry.get('gender', '')):10} {entry.get('style', '')}"
+        )
+    return 0
+
+
 def _list_styles() -> int:
     voices = load_voices()
     print(f"{'Style':26} {'Rate':8} {'Pitch':8} Description")
@@ -350,8 +378,13 @@ def _write_preview_srt(segments: list[dict[str, Any]], path: Path, max_chars: in
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--episode", help="Episode directory")
-    parser.add_argument("--provider", choices=["edge", "piper", "custom", "none"], help="TTS provider override")
+    parser.add_argument(
+        "--provider",
+        choices=["edge", "piper", "cartesia", "elevenlabs", "custom", "none"],
+        help="TTS provider override",
+    )
     parser.add_argument("--voice", help="Voice id override")
+    parser.add_argument("--model", help="Provider model id override (Cartesia/ElevenLabs)")
     parser.add_argument("--language", help="Narration locale override")
     parser.add_argument("--style", help="Delivery style override")
     parser.add_argument("--rate", help="Rate override, e.g. -3%%")
@@ -368,10 +401,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--wpm", type=float, default=145.0, help="Words per minute for silent/estimated durations")
     args = parser.parse_args(argv)
 
+    voices = load_voices()
+    tts_config = load_tts_config()
     if args.list_styles:
         return _list_styles()
     if args.list_voices:
-        return _list_edge_voices(args.language)
+        listed_provider = args.provider or str(tts_config.get("provider") or "edge")
+        try:
+            return _list_provider_voices(listed_provider, args.language)
+        except RuntimeError as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 2
     if not args.episode:
         parser.error("--episode is required unless --list-voices/--list-styles is used.")
 
@@ -383,8 +423,10 @@ def main(argv: list[str] | None = None) -> int:
     voice_cfg = dict(brief.get("output", {}).get("voice", {}))
     output_cfg = brief.get("output", {})
 
-    language = normalize_language(args.language or output_cfg.get("language", ""))
-    provider = args.provider or voice_cfg.get("provider") or "edge"
+    language = normalize_language(args.language or output_cfg.get("language", ""), voices)
+    provider = args.provider or voice_cfg.get("provider") or tts_config.get("provider") or "edge"
+    if provider == "auto":
+        provider = str(tts_config.get("provider") or "edge")
     style = args.style or voice_cfg.get("style") or "warm-teacher"
     presets = style_defaults(style)
     if args.style and not args.rate:
@@ -396,9 +438,16 @@ def main(argv: list[str] | None = None) -> int:
     else:
         pitch = args.pitch or voice_cfg.get("pitch") or presets["pitch"]
     volume = args.volume or voice_cfg.get("volume") or "+0%"
-    voice_id = args.voice or voice_cfg.get("id") or default_voice(language)
+    brief_provider = str(voice_cfg.get("provider") or "")
+    reuse_brief_voice = not args.provider or args.provider == brief_provider
+    voice_id = (
+        args.voice
+        or (voice_cfg.get("id") if reuse_brief_voice else None)
+        or default_voice_for(provider, language, voices)
+    )
     if provider == "none":
         voice_id = voice_id or "silent"
+    model_id = provider_model(provider, voice_cfg, tts_config, voices)
     lexicon = dict(brief.get("accuracy", {}).get("pronunciations", {}) or {})
     wpm = float(args.wpm or theme.get("story", {}).get("words_per_minute", 145))
     tail_pad = float(theme.get("captions", {}).get("tail_pad", 0.15))
@@ -436,6 +485,20 @@ def main(argv: list[str] | None = None) -> int:
                 file=sys.stderr,
             )
             return 2
+    if provider in {"cartesia", "elevenlabs"}:
+        if not voice_id:
+            print(
+                f"--provider {provider} requires a voice id; pass --voice or set output.voice.id.",
+                file=sys.stderr,
+            )
+            return 2
+        try:
+            api_key(provider, voices)
+        except RuntimeError as exc:
+            if args.check or not args.dry_run:
+                print(f"ERROR: {exc}", file=sys.stderr)
+                return 2
+            print(f"  ! {exc}")
     if provider == "edge":
         voices = load_voices()
         info = voices.get("languages", {}).get(language, {})
@@ -458,6 +521,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.check:
         print(f"Episode: {episode_dir}")
         print(f"Provider: {provider} | voice: {voice_id} | language: {language}")
+        if provider in {"cartesia", "elevenlabs"}:
+            print(f"Model: {model_id or '(provider default)'}")
+            print(f"API key: {provider_info(provider, voices).get('api_key_env')} is set")
         print(f"Style: {style} | rate: {rate} | pitch: {pitch} | volume: {volume}")
         print(f"Beats: {len(beats)} | lexicon entries: {len(lexicon)}")
         print("Voice selection looks valid.")
@@ -476,6 +542,18 @@ def main(argv: list[str] | None = None) -> int:
     voice_dir.mkdir(parents=True, exist_ok=True)
     segments: list[dict[str, Any]] = []
     total = 0.0
+    provider_options: dict[str, Any] = {}
+    if provider == "cartesia":
+        provider_options = {
+            "model_id": model_id,
+            "api_version": provider_api_version("cartesia", voice_cfg, tts_config, voices),
+            "generation_config": cartesia_config(voice_cfg, rate, volume),
+        }
+    elif provider == "elevenlabs":
+        provider_options = {
+            "model_id": model_id,
+            "voice_settings": elevenlabs_settings(voice_cfg, rate),
+        }
 
     for index, beat in enumerate(beats, start=1):
         beat_id = str(beat["id"])
@@ -492,6 +570,7 @@ def main(argv: list[str] | None = None) -> int:
                 "volume": volume,
                 "text": spoken,
                 "lexicon": lexicon,
+                "provider_options": provider_options,
             },
             ensure_ascii=False,
             sort_keys=True,
@@ -543,6 +622,32 @@ def main(argv: list[str] | None = None) -> int:
                     elif provider == "piper":
                         _piper_generate(spoken, str(voice_cfg.get("piper_model")), wav_path)
                         words = []
+                    elif provider == "cartesia":
+                        cartesia_generate(
+                            spoken,
+                            voice_id,
+                            language,
+                            rate,
+                            volume,
+                            wav_path,
+                            voice_cfg=voice_cfg,
+                            config=tts_config,
+                            voices=voices,
+                        )
+                        words = []
+                    elif provider == "elevenlabs":
+                        elevenlabs_generate(
+                            spoken,
+                            voice_id,
+                            language,
+                            rate,
+                            mp3_path,
+                            voice_cfg=voice_cfg,
+                            config=tts_config,
+                            voices=voices,
+                        )
+                        ensure_wav(mp3_path, wav_path)
+                        words = []
                     elif provider == "custom":
                         raw_out = voice_dir / f"{base}.out"
                         _custom_generate(
@@ -589,6 +694,8 @@ def main(argv: list[str] | None = None) -> int:
         "created_at": now_iso(),
         "episode_id": storyboard.get("episode_id"),
         "provider": provider,
+        "model_id": model_id or None,
+        "provider_options": provider_options,
         "language": language,
         "voice": voice_id,
         "style": style,

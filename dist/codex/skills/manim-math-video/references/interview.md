@@ -34,6 +34,8 @@ Also ask:
 
 ### 3. Voice
 
+Ask which provider first: **edge-tts** is the free default; **Cartesia** and **ElevenLabs** are available when `CARTESIA_API_KEY` / `ELEVENLABS_API_KEY` is set. If the user has no preference, use the provider selected at install time, then edge-tts.
+
 Offer a style first, then a specific voice:
 
 | Style | Delivery | Typical fit |
@@ -44,7 +46,7 @@ Offer a style first, then a specific voice:
 | `authoritative-lecturer` | precise, deliberate, minimal hype | university, proofs, technical |
 | `friendly-conversational` | informal, close, conversational | podcasts, accessible intros |
 
-Follow the voice-selection gate in `references/voices.md`: generate three short playable samples with the same sentence and settings, present numbered choices, and wait for explicit selection before starting production. For an existing series, offer the saved voice with a sample and ask whether to keep it or hear alternatives. Record the exact voice id, rate, pitch, and choice in the brief. An explicit choice already made for the current episode does not need repeating; a generic "ok" or "you decide" does not identify a voice.
+Follow the voice-selection gate in `references/voices.md`: generate three short playable samples with the same sentence and settings, present numbered choices, and wait for explicit selection before starting production. For an existing series, offer the saved voice with a sample and ask whether to keep it or hear alternatives. Record the provider, exact voice id, model id when relevant, rate, pitch, and choice in the brief. An explicit choice already made for the current episode does not need repeating; a generic "ok" or "you decide" does not identify a voice.
 
 Ask whether the voice should be:
 

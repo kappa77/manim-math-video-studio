@@ -1,6 +1,51 @@
 {
   "schema_version": 1,
   "default_language": "en-US",
+  "providers": {
+    "edge": {
+      "label": "edge-tts",
+      "requires_api_key": false,
+      "default_model": null,
+      "notes": "Free default; returns word boundaries for captions."
+    },
+    "piper": {
+      "label": "Piper",
+      "requires_api_key": false,
+      "default_model": null,
+      "notes": "Offline; needs a local .onnx voice model."
+    },
+    "cartesia": {
+      "label": "Cartesia",
+      "requires_api_key": true,
+      "api_key_env": "CARTESIA_API_KEY",
+      "api_url": "https://api.cartesia.ai",
+      "api_version": "2026-08-14",
+      "default_model": "sonic-3.6",
+      "default_voice": "db6b0ed5-d5d3-463d-ae85-518a07d3c2b4",
+      "keys_url": "https://play.cartesia.ai/keys",
+      "docs_url": "https://docs.cartesia.ai"
+    },
+    "elevenlabs": {
+      "label": "ElevenLabs",
+      "requires_api_key": true,
+      "api_key_env": "ELEVENLABS_API_KEY",
+      "api_url": "https://api.elevenlabs.io",
+      "default_model": "eleven_multilingual_v2",
+      "default_voice": "21m00Tcm4TlvDq8ikWAM",
+      "keys_url": "https://elevenlabs.io/app/settings/api-keys",
+      "docs_url": "https://elevenlabs.io/docs"
+    },
+    "custom": {
+      "label": "Custom command",
+      "requires_api_key": false,
+      "default_model": null
+    },
+    "none": {
+      "label": "Silent",
+      "requires_api_key": false,
+      "default_model": null
+    }
+  },
   "languages": {
     "en-US": {
       "label": "English (United States)",
