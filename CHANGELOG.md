@@ -11,6 +11,12 @@ All notable changes to this project are documented here. The format follows
 - README, INSTALL, USAGE, and the landing page now lead with the `uvx`/PyPI
   install and keep the long fallback routes collapsed. The landing page lists
   the explicit per-agent commands.
+- The landing page follows the system light/dark preference, uses AA text
+  contrast, stacks the install table on small screens, and shows the page
+  version and date in the footer.
+- Refreshed the birthday demo: verified the four numerical claims, rerendered
+  1080p with no QA warnings, replaced the GIF with a title-led sequence, and
+  attached the MP4/SRT to the v0.4.0 GitHub release.
 
 ## [0.4.0] — 2026-11-03
 

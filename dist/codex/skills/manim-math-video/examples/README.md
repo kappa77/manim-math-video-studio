@@ -9,15 +9,15 @@ what you see here is the source, plus one preview image per episode.
 
 ![Contact sheet](birthday-preview.jpg)
 
-`birthday-series/` — the episode used as the README demo. Nine beats, 144 s, 1080p30,
+`birthday-series/` — the episode used as the README demo. Nine beats, 143.8 s, 1080p30,
 with `hold` time added to the last three beats so the closing frames can be read.
 
 - **Series:** Path of Knowledge · **Episode:** `s01e001`
 - **Template:** `clean-light` · **Voice:** `en-US-AvaMultilingualNeural` (`-3%`)
 - **Shows:** a `data` graph built from exact probabilities with point annotations, an
   equation beat that explains the curve, and a `compare` beat for the misconception.
-- **Result:** 1920x1080 at 30 fps, 34 subtitle cues at 94% coverage, audio peak -4.6 dB,
-  QA with no failures or warnings.
+- **Result:** 1920x1080 at 30 fps, 34 subtitle cues at 94% coverage, audio peak -4.8 dB,
+  QA with no failures or warnings. Refreshed 2026-11-03 (demo v0.4.0).
 
 ```bash
 EP=examples/birthday-series/episodes/001-why-23-people-shared-birthday

@@ -101,12 +101,13 @@
       "Feller, An Introduction to Probability Theory and Its Applications, Vol. 1 (birthday problem)",
       "Exact values recomputed in the episode: P(23) = 0.507297, P(57) = 0.990122"
     ],
-    "claims_to_verify": [
+    "claims_to_verify": [],
+    "verified_claims": [
       "23 * 22 / 2 = 253",
       "P(23) = 0.507297 to six decimal places",
       "P(57) = 0.990122 to six decimal places",
       "23 / 365 = 0.063, the naive one-person answer"
     ],
-    "reviewed_by": "agent (values recomputed from the complement product)"
+    "reviewed_by": "agent, 2026-11-03 (values recomputed from the complement product)"
   }
 }
