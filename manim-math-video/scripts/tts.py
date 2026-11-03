@@ -72,10 +72,32 @@ def estimate_seconds(text: str, wpm: float) -> float:
 
 # --------------------------------------------------------------------------- audio
 def wav_duration(path: Path) -> float:
+    # Some providers (Cartesia) return WAV files with a streaming RIFF header
+    # whose sizes are 0xFFFFFFFF. PyAV reads the actual audio duration; only
+    # fall back to the wave module when PyAV is unavailable.
+    try:
+        import av
+
+        with av.open(str(path)) as container:
+            if container.duration:
+                return float(container.duration) / av.time_base
+            stream = container.streams.audio[0]
+            if stream.duration and stream.time_base:
+                return float(stream.duration * stream.time_base)
+    except Exception:
+        pass
     with wave.open(str(path), "rb") as handle:
         frames = handle.getnframes()
         rate = handle.getframerate()
-    return frames / float(rate) if rate else 0.0
+        channels = handle.getnchannels()
+        width = handle.getsampwidth()
+    if rate:
+        plausible = frames * max(1, channels) * max(1, width)
+        if plausible <= max(44, path.stat().st_size):
+            return frames / float(rate)
+        # Streaming WAV header: estimate from the payload size and byte rate.
+        return max(0.0, (path.stat().st_size - 44) / float(rate * max(1, channels) * max(1, width)))
+    return 0.0
 
 
 def ensure_wav(source: Path, target: Path) -> Path:

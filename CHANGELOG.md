@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.5.1] — 2026-11-03
+
+### Fixed
+
+- **Cartesia streaming WAV durations.** Cartesia returns WAV files with a
+  streaming RIFF header (`0xFFFFFFFF` sizes); the wave module read them as
+  ~48,695 seconds per segment. `wav_duration()` now reads the real duration via
+  PyAV and falls back to a file-size sanity check. Added a regression in the
+  native TTS smoke test.
+- `manim-math-video/SKILL.md` version is now `1.4.1`.
+
 ## [0.5.0] — 2026-11-03
 
 ### Added
@@ -166,3 +177,4 @@ All notable changes to this project are documented here. The format follows
 [0.3.2]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.3.2
 [0.4.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.4.0
 [0.5.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.5.0
+[0.5.1]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.5.1

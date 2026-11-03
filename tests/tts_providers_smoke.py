@@ -35,7 +35,14 @@ def silent_wav(seconds: float = 0.2) -> bytes:
         handle.setsampwidth(2)
         handle.setframerate(44100)
         handle.writeframes(b"\0\0" * int(44100 * seconds))
-    return buffer.getvalue()
+    data = bytearray(buffer.getvalue())
+    # Cartesia returns streaming WAV headers with 0xFFFFFFFF sizes. Mimic that
+    # so the duration regression is covered by this smoke test.
+    data[4:8] = b"\xff\xff\xff\xff"
+    marker = data.find(b"data")
+    if marker >= 0:
+        data[marker + 4 : marker + 8] = b"\xff\xff\xff\xff"
+    return bytes(data)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -286,6 +293,7 @@ def main(argv: list[str] | None = None) -> int:
     assert cartesia_request["body"]["transcript"] == "This is a short provider smoke test."
     assert cartesia["provider"] == "cartesia"
     assert cartesia["model_id"] == "sonic-3.6"
+    assert 0 < cartesia["segments"][0]["duration"] < 5, cartesia["segments"][0]["duration"]
 
     assert eleven_request["path"].startswith("/v1/text-to-speech/eleven-voice?")
     assert eleven_request["headers"]["xi-api-key"] == "test-elevenlabs"
