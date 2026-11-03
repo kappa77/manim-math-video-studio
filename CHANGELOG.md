@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.7.1] — 2026-11-03
+
 ### Changed
 
 - The PyPI publish workflow now also creates a GitHub Release from the pushed
@@ -223,3 +225,4 @@ All notable changes to this project are documented here. The format follows
 [0.5.1]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.5.1
 [0.6.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.6.0
 [0.7.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.7.0
+[0.7.1]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.7.1
