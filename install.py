@@ -537,7 +537,11 @@ def verify(skill_dir: Path, venv: Path) -> int:
     if not python.is_file() or not check.is_file():
         return 0
     step("Verifying the environment")
-    environment = dict(os.environ, PYTHONWARNINGS="ignore::SyntaxWarning")
+    environment = dict(
+        os.environ,
+        PYTHONWARNINGS="ignore::SyntaxWarning",
+        MANIM_STUDIO_NO_UPDATE_CHECK="1",
+    )
     result = subprocess.run([str(python), str(check)], check=False, env=environment)
     return result.returncode
 

@@ -9,6 +9,8 @@ import os
 import re
 import shutil
 import sys
+import time
+import urllib.request
 
 for _stream in (sys.stdout, sys.stderr):
     try:
@@ -30,6 +32,14 @@ MANIM_NAMES = ("manim.exe", "manim.cmd", "manim") if os.name == "nt" else ("mani
 
 
 MANAGED_VENV = Path.home() / ".manim-math-video" / "venv"
+STATE_DIR = MANAGED_VENV.parent
+INSTALL_STATE_PATH = STATE_DIR / "install.json"
+UPDATE_CACHE_PATH = STATE_DIR / "update-check.json"
+UPDATE_CHECK_INTERVAL_SECONDS = 24 * 60 * 60
+UPDATE_CHECK_URL = os.environ.get(
+    "MANIM_STUDIO_UPDATE_URL",
+    "https://pypi.org/pypi/manim-math-video-studio/json",
+)
 #: Modules that must exist for the scripts to run; used by ensure_runtime().
 RUNTIME_MODULES = ("numpy", "manim", "av", "PIL")
 
@@ -336,6 +346,88 @@ def language_info(locale: str, voices: dict[str, Any] | None = None) -> dict[str
 
 def voice_entries(locale: str, voices: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     return list(language_info(locale, voices).get("voices", []))
+
+
+def _version_key(value: str) -> tuple[int, ...]:
+    numbers = [int(part) for part in re.findall(r"\d+", str(value))]
+    while len(numbers) < 3:
+        numbers.append(0)
+    return tuple(numbers[:3])
+
+
+def _installed_platform(state: dict[str, Any]) -> str | None:
+    current = SKILL_ROOT.resolve()
+    platforms = state.get("platforms", {})
+    if not isinstance(platforms, dict):
+        return None
+    for name, path in platforms.items():
+        try:
+            if Path(str(path)).resolve() == current:
+                return str(name)
+        except OSError:
+            continue
+    return None
+
+
+def check_for_update(*, disabled: bool = False) -> dict[str, Any] | None:
+    """Compare the installed release with PyPI, at most once per day.
+
+    The check is intentionally quiet: it never fails the environment check and
+    never stores secrets. MANIM_STUDIO_NO_UPDATE_CHECK=1 disables it.
+    """
+    if disabled or os.environ.get("MANIM_STUDIO_NO_UPDATE_CHECK"):
+        return None
+    try:
+        state = load_json(INSTALL_STATE_PATH)
+    except Exception:  # noqa: BLE001 - manual installs have no state
+        return None
+    if not isinstance(state, dict):
+        return None
+    current = str(state.get("version") or "").strip()
+    if not current:
+        return None
+
+    latest = ""
+    cache: dict[str, Any] = {}
+    try:
+        cache = load_json(UPDATE_CACHE_PATH)
+    except Exception:  # noqa: BLE001
+        cache = {}
+    if not isinstance(cache, dict):
+        cache = {}
+    checked_at = float(cache.get("checked_at") or 0)
+    cached_latest = str(cache.get("latest_version") or "").strip()
+    if time.time() - checked_at < UPDATE_CHECK_INTERVAL_SECONDS and cached_latest:
+        latest = cached_latest
+    else:
+        try:
+            with urllib.request.urlopen(UPDATE_CHECK_URL, timeout=4) as response:
+                data = json.load(response)
+            latest = str((data.get("info") or {}).get("version") or "").strip()
+        except Exception:  # noqa: BLE001 - offline is normal
+            latest = cached_latest
+        try:
+            atomic_write_json(
+                UPDATE_CACHE_PATH,
+                {
+                    "checked_at": time.time(),
+                    "latest_version": latest or None,
+                },
+            )
+        except Exception:  # noqa: BLE001 - cache is best effort
+            pass
+
+    if not latest:
+        return None
+    platform = _installed_platform(state)
+    command = "uvx manim-math-video-studio" + (f" --platform {platform}" if platform else "")
+    return {
+        "available": _version_key(latest) > _version_key(current),
+        "current": current,
+        "latest": latest,
+        "platform": platform,
+        "command": command,
+    }
 
 
 def load_tts_config() -> dict[str, Any]:

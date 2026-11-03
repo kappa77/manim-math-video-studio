@@ -14,7 +14,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from _common import SKILL_ROOT, find_manim_executable, load_voices
+from _common import SKILL_ROOT, check_for_update, find_manim_executable, load_voices
 
 ANSI_RESET = "\033[0m"
 ANSI_BOLD = "\033[1m"
@@ -114,6 +114,11 @@ def main(argv: list[str] | None = None) -> int:
         help="Color the table (default: auto; respects NO_COLOR)",
     )
     parser.add_argument("--no-color", action="store_true", help="Same as --color never")
+    parser.add_argument(
+        "--no-update-check",
+        action="store_true",
+        help="Skip the periodic PyPI update check",
+    )
     args = parser.parse_args(argv)
     if args.no_color:
         args.color = "never"
@@ -289,8 +294,15 @@ def main(argv: list[str] | None = None) -> int:
         "Reinstall/copy the complete skill directory." if missing else "",
     )
 
+    update = check_for_update(disabled=args.no_update_check)
     if args.json:
-        print(json.dumps({"ok": not any(item["status"] == "fail" for item in checks), "checks": checks}, indent=2))
+        payload = {
+            "ok": not any(item["status"] == "fail" for item in checks),
+            "checks": checks,
+        }
+        if update is not None:
+            payload["update"] = update
+        print(json.dumps(payload, indent=2))
     else:
         title = f"manim-math-video environment — {platform.system()} {platform.release()}"
         print(_paint(title, ANSI_BOLD, color))
@@ -335,6 +347,14 @@ def main(argv: list[str] | None = None) -> int:
                 f"{_paint('Warnings:', STATUS_COLORS['warn'], color)}"
                 f" {len(warnings)} (review the rows above)"
             )
+        if update and update.get("available"):
+            print(
+                f"\n{_paint('Update available:', STATUS_COLORS['warn'], color)}"
+                f" {update['latest']} (installed {update['current']})"
+            )
+            print(f"  {update['command']}")
+            if update.get("platform"):
+                print(f"  Restart the {update['platform']} agent after updating.")
 
     return 1 if any(item["status"] == "fail" for item in checks) else 0
 

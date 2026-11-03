@@ -6,6 +6,22 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.7.0] — 2026-11-03
+
+### Added
+
+- **Periodic update check.** `scripts/check_env.py` compares the installed
+  release in `~/.manim-math-video/install.json` with PyPI at most once every
+  24 hours (cached in `~/.manim-math-video/update-check.json`) and prints the
+  latest version plus a matching `uvx manim-math-video-studio --platform ...`
+  command. Offline checks are silent. `MANIM_STUDIO_NO_UPDATE_CHECK=1` disables
+  it; `MANIM_STUDIO_UPDATE_URL` overrides the endpoint. No keys are sent.
+
+### Changed
+
+- `manim-math-video/SKILL.md` version is now `1.6.0`.
+- README and INSTALL explain the update check and opt-out.
+
 ## [0.6.0] — 2026-11-03
 
 ### Added
@@ -200,3 +216,4 @@ All notable changes to this project are documented here. The format follows
 [0.5.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.5.0
 [0.5.1]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.5.1
 [0.6.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.6.0
+[0.7.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.7.0

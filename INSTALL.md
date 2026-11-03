@@ -77,7 +77,7 @@ agent detected, the installer falls back to Claude Code and says so; pass
 | `--dry-run` | print the plan and exit |
 | `--uninstall` | remove the installed skills and the shared environment |
 | `--source DIR` | use a local checkout instead of downloading |
-| `--ref REF` | git ref to download: `main` (default), a branch, or `v0.6.0` |
+| `--ref REF` | git ref to download: `main` (default), a branch, or `v0.7.0` |
 | `--quiet` / `--verbose` | hide command lines / show full `pip` output |
 With the piped installer, pass flags after `bash -s --`. With the universal one-liner, append them after the closing quote:
 
@@ -93,7 +93,7 @@ If a shell mangles the trailing flags, use the environment instead: `MMS_ARGS="-
 With PowerShell, use the parameter form: `.\install.ps1 -Platform codex -WithLatex`.
 
 Environment overrides: `MMS_REPO=owner/name` installs from a fork,
-`MMS_REF=v0.6.0` pins a release, `MMS_REF=<branch>` tracks another branch, and
+`MMS_REF=v0.7.0` pins a release, `MMS_REF=<branch>` tracks another branch, and
 `MMS_ARCHIVE_URL=<url>` replaces the codeload download (a mirror, or a local
 `file://` archive for offline and test runs).
 
@@ -274,6 +274,23 @@ uvx manim-math-video-studio --platform claude
 From a checkout, use `python install.py --platform claude` instead. Force a
 dependency refresh with `--venv` pointing at a new directory, or delete
 `~/.manim-math-video/venv` and rerun.
+
+## Update check
+
+`scripts/check_env.py` checks PyPI at most once every 24 hours when
+`~/.manim-math-video/install.json` exists. When a newer release is available it
+prints the installed and latest versions and the matching update command, for
+example:
+
+```text
+Update available: 0.7.0 (installed 0.6.0)
+  uvx manim-math-video-studio --platform claude
+```
+
+The cache is `~/.manim-math-video/update-check.json`; the check is silent when
+offline or when no installer state exists. Disable it with
+`MANIM_STUDIO_NO_UPDATE_CHECK=1`, or set `MANIM_STUDIO_UPDATE_URL` to a mirror or
+local JSON file. No API keys or personal data are sent.
 
 ## Uninstall
 

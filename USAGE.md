@@ -13,7 +13,7 @@ the skill directory: the scripts find that environment on their own.
 ```bash
 cd manim-math-video
 
-# 1. Check the environment
+# 1. Check the environment (may report an update command)
 python scripts/check_env.py
 
 # 2. Scaffold a series and an episode from the example brief

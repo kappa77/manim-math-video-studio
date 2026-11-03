@@ -229,7 +229,9 @@ def clean_env(home: Path, *, path: str | None = None) -> dict[str, str]:
     env["HOME"] = str(home)
     env["USERPROFILE"] = str(home)
     env["PYTHONIOENCODING"] = "utf-8"
+    env["PYTHONDONTWRITEBYTECODE"] = "1"
     env["NO_COLOR"] = "1"
+    env["MANIM_STUDIO_NO_UPDATE_CHECK"] = "1"
     if path is not None:
         env["PATH"] = path
     return env
@@ -553,6 +555,81 @@ def reexec_handles_venv_symlinks(ctx: Context) -> None:
         "using the managed environment" in (result.stderr or ""),
         "check_env did not re-exec into a symlinked managed interpreter",
     )
+
+
+@test()
+def update_check_suggests_newer_release(ctx: Context) -> None:
+    home = new_home(ctx, "update-check")
+    state_dir = home / ".manim-math-video"
+    state_dir.mkdir()
+    installed_skill = ctx.repo / "dist" / "claude" / "skills" / SKILL
+    (state_dir / "install.json").write_text(
+        json.dumps(
+            {
+                "version": "0.1.0",
+                "platforms": {"claude": str(installed_skill)},
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    pypi = home.parent / "pypi.json"
+    pypi.write_text(json.dumps({"info": {"version": "9.9.9"}}), encoding="utf-8")
+    env = clean_env(home, path=system_path())
+    env.pop("MANIM_STUDIO_NO_UPDATE_CHECK", None)
+    env["MANIM_STUDIO_NO_REEXEC"] = "1"
+    env["MANIM_STUDIO_UPDATE_URL"] = pypi.as_uri()
+    result = run_command(
+        ctx,
+        [
+            ctx.python,
+            str(installed_skill / "scripts" / "check_env.py"),
+            "--json",
+            "--color",
+            "never",
+        ],
+        env=env,
+        timeout=120,
+    )
+    require(result.returncode in {0, 1}, f"check_env crashed: {describe(result)}")
+    try:
+        report = json.loads(result.stdout)
+    except json.JSONDecodeError as exc:
+        raise Failure(
+            f"check_env update report is not JSON: {exc} {tail(result.stdout)}"
+        ) from exc
+    update = report.get("update")
+    require(isinstance(update, dict), "check_env did not report update metadata")
+    require(update.get("available") is True, f"update was not detected: {update}")
+    require(update.get("latest") == "9.9.9", f"unexpected latest version: {update.get('latest')}")
+    require(update.get("current") == "0.1.0", f"unexpected current version: {update.get('current')}")
+    require(
+        update.get("command") == "uvx manim-math-video-studio --platform claude",
+        f"unexpected update command: {update.get('command')}",
+    )
+    require(
+        (state_dir / "update-check.json").is_file(),
+        "update check did not write its cache",
+    )
+
+    env["MANIM_STUDIO_NO_UPDATE_CHECK"] = "1"
+    muted = run_command(
+        ctx,
+        [
+            ctx.python,
+            str(installed_skill / "scripts" / "check_env.py"),
+            "--json",
+            "--color",
+            "never",
+        ],
+        env=env,
+        timeout=120,
+    )
+    try:
+        muted_report = json.loads(muted.stdout)
+    except json.JSONDecodeError as exc:
+        raise Failure(f"opt-out check_env report is not JSON: {exc}") from exc
+    require("update" not in muted_report, "opt-out still performed an update check")
 
 
 @test()

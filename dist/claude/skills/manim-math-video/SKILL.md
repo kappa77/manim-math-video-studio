@@ -3,7 +3,7 @@ name: manim-math-video
 description: Develop any topic into a storyboarded, narrated animated video with subtitles using Manim. Use for planning, researching, scripting, animating, voicing, rendering, or reviewing educational, historical, scientific, technical, cultural, or narrative videos and series.
 license: MIT
 metadata:
-  version: "1.5.0"
+  version: "1.6.0"
   category: video
 argument-hint: "[topic, brief.json, or episode directory]"
 ---
@@ -206,7 +206,7 @@ If a series exists, reuse its quality, language, and template. Still ask the use
 All paths are relative to this skill directory unless noted.
 
 ```bash
-# environment + asset checks
+# environment + asset checks (may report an Update available command)
 python scripts/check_env.py
 python scripts/selftest.py
 python scripts/selftest.py --full   # optional silent smoke render
@@ -214,6 +214,9 @@ python scripts/selftest.py --full   # optional silent smoke render
 # comparable voice samples before the voice-selection gate
 python scripts/voice_samples.py --language it-IT --style warm-teacher \
   --text "In questa puntata seguiamo un'idea dalla prima domanda al momento in cui tutto si chiarisce."
+
+# If check_env reports "Update available", tell the user and use the printed
+# `uvx manim-math-video-studio --platform <agent>` command.
 
 # validate a brief
 python scripts/validate.py --brief brief.json

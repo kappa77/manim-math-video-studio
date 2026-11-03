@@ -254,6 +254,19 @@ Use `ReplacementTransform` instead. Matching depends on the LaTeX substrings bei
 - Check the contact sheet and a 1080p still, not only the 480p draft.
 - For projectors, prefer `clean-light`.
 
+### `Update available` at the end of `check_env.py`
+
+Run the printed command, for example:
+
+```bash
+uvx manim-math-video-studio --platform claude
+```
+
+The check runs at most once every 24 hours and caches the result in
+`~/.manim-math-video/update-check.json`. Set `MANIM_STUDIO_NO_UPDATE_CHECK=1`
+to disable it, or `MANIM_STUDIO_UPDATE_URL` to use a mirror/local JSON file.
+No API keys are sent.
+
 ### Native provider key missing
 
 Provider guides: [Cartesia](voices-cartesia.md) and [ElevenLabs](voices-elevenlabs.md).

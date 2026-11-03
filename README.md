@@ -14,7 +14,7 @@ uvx manim-math-video-studio --platform claude
 
 Replace `claude` with `codex`, `copilot`, or `pi`. Needs Python 3.10+ and `uv`; the package installs the skill and the shared Manim environment. No clone.
 
-Fallback routes (one-line installer, `pipx`, manual copy) are in [INSTALL.md](INSTALL.md).
+Fallback routes (one-line installer, `pipx`, manual copy) are in [INSTALL.md](INSTALL.md). `scripts/check_env.py` checks PyPI once a day and prints the update command when a newer release exists; see [update check](INSTALL.md#update-check).
 
 ![The birthday-problem episode: the probability curve for a shared birthday rising through 23 people at 50.7%](docs/img/demo.gif)
 
