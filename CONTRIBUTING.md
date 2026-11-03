@@ -161,7 +161,7 @@ One-time PyPI setup:
    - workflow `pypi-publish.yml`
    - environment `pypi`
 3. In GitHub, create the `pypi` environment under Settings → Environments.
-4. Push a version tag (`v0.5.1`); the workflow publishes the wheel and sdist.
+4. Push a version tag (`v0.6.0`); the workflow publishes the wheel and sdist.
 
 For a dry run, use TestPyPI or build and install the wheel locally instead of
 tagging a release.

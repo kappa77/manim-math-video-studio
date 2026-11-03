@@ -6,16 +6,26 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-11-03
+
+### Added
+
+- **Installer default voice.** `install.py --tts-voice <id>` stores a default
+  provider voice in `~/.manim-math-video/tts.json` without storing API keys.
+  The conversation can still override it per series or episode.
+
 ### Changed
 
 - Split Cartesia and ElevenLabs voice requirements/criteria into dedicated
   `references/voices-cartesia.md` and `references/voices-elevenlabs.md` guides.
 - `--list-voices` now shows `Access` and `Languages`; native-provider errors
-  point to the provider guide; `--tts-voice` sets an installer default voice;
-  display names are rejected where a provider voice id is required.
+  point to the provider guide; display names are rejected where a provider voice
+  id is required.
 - The ElevenLabs guide now explains how to create an owned voice with Voice
   Design (free), Instant Voice Cloning (Starter), or Professional Voice Cloning
   (Creator), and how to verify `Access: own` before selecting it.
+- README and landing page link the provider-specific voice guides.
+- `manim-math-video/SKILL.md` version is now `1.5.0`.
 
 ## [0.5.1] — 2026-11-03
 
@@ -189,3 +199,4 @@ All notable changes to this project are documented here. The format follows
 [0.4.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.4.0
 [0.5.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.5.0
 [0.5.1]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.5.1
+[0.6.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.6.0

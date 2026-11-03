@@ -29,12 +29,25 @@ Fallback routes (one-line installer, `pipx`, manual copy) are in [INSTALL.md](IN
 - **Verified, not vibes.** JSON-schema validation for brief and storyboard, environment checks, contact-sheet QA, and a self-test.
 - **Any subject.** History, science, technology, literature, philosophy, art, tutorials — mathematics is one supported domain, not the whole product.
 
+## Narration providers
+
+Edge-tts is the free default. Cartesia and ElevenLabs are native providers when
+`CARTESIA_API_KEY` / `ELEVENLABS_API_KEY` is set. Voice selection is explicit:
+generate samples, check the provider's `Access` and `Languages`, then keep the same
+voice across the series.
+
+- [Cartesia requirements and criteria](manim-math-video/references/voices-cartesia.md)
+- [ElevenLabs requirements and criteria](manim-math-video/references/voices-elevenlabs.md)
+- [Voice, language, samples, and pronunciation](manim-math-video/references/voices.md)
+
 ## Documentation
 
 | Doc | Covers |
 |---|---|
 | [INSTALL.md](INSTALL.md) | PyPI/`uvx` install, fallbacks, options, LaTeX, runtime resolution, update, uninstall, troubleshooting |
 | [USAGE.md](USAGE.md) | quick start, command reference, pipeline, beats, templates, graphs, narration, series, validation |
+| [voices-cartesia.md](manim-math-video/references/voices-cartesia.md) | Cartesia key, access, languages, voice criteria |
+| [voices-elevenlabs.md](manim-math-video/references/voices-elevenlabs.md) | ElevenLabs scopes, plans, owned voices, criteria |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | repository layout, source of truth vs `dist/`, adding beats and templates, versioning |
 | [tests/README.md](tests/README.md) | Docker-based install verification for every supported agent harness |
 | [CHANGELOG.md](CHANGELOG.md) | what changed, release by release |

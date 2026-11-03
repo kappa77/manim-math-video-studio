@@ -118,6 +118,8 @@
   .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
   .card h3 { margin: 0 0 8px; font-size: 15px; }
   .card p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.6; }
+  .card-link { margin-top: 10px !important; font-size: 13px !important; }
+  .card-link a { color: var(--accent); }
   ol.pipeline { counter-reset: step; list-style: none; padding: 0; margin: 0; }
   ol.pipeline li {
     counter-increment: step; position: relative; padding: 0 0 16px 46px; color: var(--muted);
@@ -179,7 +181,7 @@
     </p>
     <div class="pills">
       <a class="pill" href="https://pypi.org/project/manim-math-video-studio/">PyPI package</a>
-      <a class="pill" href="https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.5.1">v0.5.1 tag</a>
+      <a class="pill" href="https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.6.0">v0.6.0 tag</a>
       <a class="pill" href="https://github.com/kappa77/manim-math-video-studio/releases/download/v0.4.0/manim-math-video-demo-23-people-1080p.mp4">watch the demo</a>
       <a class="pill" href="https://github.com/kappa77/manim-math-video-studio/blob/main/INSTALL.md">install guide</a>
       <a class="pill" href="https://github.com/kappa77/manim-math-video-studio/blob/main/USAGE.md">usage</a>
@@ -241,6 +243,28 @@
   </section>
 
   <section>
+    <h2>Voice providers</h2>
+    <p class="note">Edge-tts is the free default. Cartesia and ElevenLabs are native providers when their API keys are available. Voice choice is explicit: generate samples, check access and language, then keep the same voice across the series.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>edge-tts</h3>
+        <p>Free default with word boundaries for captions, broad language coverage, and curated voices. No key required.</p>
+      </div>
+      <div class="card">
+        <h3>Cartesia</h3>
+        <p>Native adapter with WAV output, speed/volume control, and live voice listing. Needs <code>CARTESIA_API_KEY</code>; check the access and language columns before choosing.</p>
+        <p class="card-link"><a href="https://github.com/kappa77/manim-math-video-studio/blob/main/manim-math-video/references/voices-cartesia.md">Cartesia requirements and voice criteria</a></p>
+      </div>
+      <div class="card">
+        <h3>ElevenLabs</h3>
+        <p>Native adapter with multilingual models and voice settings. Needs <code>ELEVENLABS_API_KEY</code>; library voices require a paid plan, so prefer an owned voice.</p>
+        <p class="card-link"><a href="https://github.com/kappa77/manim-math-video-studio/blob/main/manim-math-video/references/voices-elevenlabs.md">ElevenLabs requirements and voice criteria</a></p>
+      </div>
+    </div>
+    <p class="note"><a href="https://github.com/kappa77/manim-math-video-studio/blob/main/manim-math-video/references/voices.md">Voice, language, sample, and pronunciation guide</a></p>
+  </section>
+
+  <section>
     <h2>Install one agent at a time</h2>
     <div class="table-wrap">
       <table>
@@ -260,14 +284,14 @@
     <h2>Get it</h2>
     <div class="cta">
       <a class="primary" href="https://pypi.org/project/manim-math-video-studio/">Install from PyPI</a>
-      <a href="https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.5.1">v0.5.1 tag</a>
+      <a href="https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.6.0">v0.6.0 tag</a>
       <a href="https://github.com/kappa77/manim-math-video-studio">Star on GitHub</a>
       <a href="https://github.com/kappa77/manim-math-video-studio/blob/main/INSTALL.md">Read the install guide</a>
     </div>
   </section>
 
   <footer>
-    <p class="page-meta">Page for <a href="https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.5.1"><strong>Manim Math Video Studio v0.5.1</strong></a> · updated <time datetime="2026-11-03">2026-11-03</time></p>
+    <p class="page-meta">Page for <a href="https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.6.0"><strong>Manim Math Video Studio v0.6.0</strong></a> · updated <time datetime="2026-11-03">2026-11-03</time></p>
     MIT licensed · Built with <a href="https://www.manim.community/">Manim Community</a> and
     <a href="https://github.com/rany2/edge-tts">edge-tts</a> ·
     <a href="https://pypi.org/project/manim-math-video-studio/">PyPI</a> ·
