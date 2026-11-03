@@ -256,6 +256,8 @@ Use `ReplacementTransform` instead. Matching depends on the LaTeX substrings bei
 
 ### Native provider key missing
 
+Provider guides: [Cartesia](voices-cartesia.md) and [ElevenLabs](voices-elevenlabs.md).
+
 ```bash
 export CARTESIA_API_KEY=...       # https://play.cartesia.ai/keys
 export ELEVENLABS_API_KEY=...     # https://elevenlabs.io/app/settings/api-keys

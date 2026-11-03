@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Split Cartesia and ElevenLabs voice requirements/criteria into dedicated
+  `references/voices-cartesia.md` and `references/voices-elevenlabs.md` guides.
+- `--list-voices` now shows `Access` and `Languages`; native-provider errors
+  point to the provider guide; `--tts-voice` sets an installer default voice;
+  display names are rejected where a provider voice id is required.
+
 ## [0.5.1] — 2026-11-03
 
 ### Fixed

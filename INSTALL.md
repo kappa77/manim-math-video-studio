@@ -71,6 +71,7 @@ agent detected, the installer falls back to Claude Code and says so; pass
 | `--with-latex` | also install LaTeX + `dvisvgm` for equation beats |
 | `--tts-provider` | preferred narration provider: `edge`, `cartesia`, or `elevenlabs` |
 | `--tts-model` | model id for the selected provider (for example `sonic-3.6`) |
+| `--tts-voice` | default voice id for the selected provider (not a display name) |
 | `--no-deps` | install the skill files only (no Python packages) |
 | `--no-uv` | always use `pip`, even when `uv` is available |
 | `--dry-run` | print the plan and exit |
@@ -102,9 +103,9 @@ Edge-tts is the default and needs no key. Cartesia and ElevenLabs are native
 providers selected per install or per episode:
 
 ```bash
-python install.py --tts-provider cartesia --tts-model sonic-3.6
-python install.py --tts-provider elevenlabs
-uvx manim-math-video-studio --platform claude --tts-provider cartesia
+python install.py --tts-provider cartesia --tts-model sonic-3.6 --tts-voice <voice-id>
+python install.py --tts-provider elevenlabs --tts-voice <voice-id>
+uvx manim-math-video-studio --platform claude --tts-provider cartesia --tts-voice <voice-id>
 ```
 
 The selection is stored in `~/.manim-math-video/tts.json` without secrets.
@@ -116,11 +117,17 @@ write it. API keys come from the environment:
 | Cartesia | `CARTESIA_API_KEY` | https://play.cartesia.ai/keys |
 | ElevenLabs | `ELEVENLABS_API_KEY` | https://elevenlabs.io/app/settings/api-keys |
 
-`check_env.py` lists both providers as optional until their key is set. During
-a conversation the agent records `output.voice.provider` and a provider voice id
-in `brief.json`; `cartesia`/`elevenlabs` can be overridden with `--provider` on
-`tts.py` and `voice_samples.py`. The key is never written to the brief or state
-file.
+`check_env.py` lists both providers as optional until their key is set. A
+visible key does not guarantee access to a specific voice or plan tier; the
+installer default is only a starting point. During a conversation the agent
+records `output.voice.provider` and a provider voice id in `brief.json`;
+`cartesia`/`elevenlabs` can be overridden with `--provider` on `tts.py` and
+`voice_samples.py`. The key is never written to the brief or state file.
+
+Provider-specific requirements and selection criteria:
+[Cartesia](manim-math-video/references/voices-cartesia.md) and
+[ElevenLabs](manim-math-video/references/voices-elevenlabs.md). The list commands
+show `Access` and `Languages` for each voice.
 
 ## Verify
 

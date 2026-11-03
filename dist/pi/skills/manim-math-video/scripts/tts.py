@@ -328,11 +328,13 @@ def _list_provider_voices(provider: str, language: str | None) -> int:
     entries = provider_voice_entries(provider, language or "en-US")
     label = provider_info(provider).get("label", provider)
     print(f"{label} voices ({len(entries)}):")
-    print(f"{'Voice':44} {'Label':24} {'Gender':10} Style")
+    print(f"{'Voice':44} {'Label':22} {'Access':8} {'Languages':18} Style")
     for entry in sorted(entries, key=lambda item: str(item.get("label", "")).casefold()):
+        languages = ",".join(str(item) for item in (entry.get("languages") or []))
         print(
-            f"{str(entry.get('id', '')):44} {str(entry.get('label', '')):24} "
-            f"{str(entry.get('gender', '')):10} {entry.get('style', '')}"
+            f"{str(entry.get('id', '')):44} {str(entry.get('label', ''))[:22]:22} "
+            f"{str(entry.get('access', '') or '')[:8]:8} {languages[:18]:18} "
+            f"{str(entry.get('style', ''))[:60]}"
         )
     return 0
 

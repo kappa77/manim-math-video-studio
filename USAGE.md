@@ -109,6 +109,9 @@ stack the `compare` columns. Always review a draft contact sheet for overflow an
 
 Select a provider at install time with `--tts-provider`, or per episode with
 `tts.py --provider cartesia|elevenlabs` and `output.voice.provider` in the brief.
+Provider requirements and voice criteria:
+[Cartesia](manim-math-video/references/voices-cartesia.md) and
+[ElevenLabs](manim-math-video/references/voices-elevenlabs.md).
 
 Language and voice are independent of the template. Subtitles can be translated per beat with
 the `caption` field. Voice catalog, pronunciation notes: `references/voices.md`.

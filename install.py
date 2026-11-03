@@ -491,7 +491,12 @@ def read_tts_config() -> dict:
         return {}
 
 
-def write_tts_config(provider: str, model: str | None, catalog: dict) -> None:
+def write_tts_config(
+    provider: str,
+    model: str | None,
+    catalog: dict,
+    voice_id: str | None = None,
+) -> None:
     previous = read_tts_config()
     stored = previous.get("providers", {})
     stored = dict(stored) if isinstance(stored, dict) else {}
@@ -503,6 +508,8 @@ def write_tts_config(provider: str, model: str | None, catalog: dict) -> None:
         default_model = catalog.get(provider, {}).get("default_model")
         if default_model:
             entry["model_id"] = default_model
+    if voice_id:
+        entry["voice_id"] = voice_id
     api_version = catalog.get(provider, {}).get("api_version")
     if api_version:
         entry.setdefault("api_version", api_version)
@@ -636,6 +643,10 @@ def main(argv: list[str] | None = None) -> int:
         help="preferred TTS provider for new work (default: keep existing, then edge)",
     )
     parser.add_argument("--tts-model", help="model id for the selected TTS provider")
+    parser.add_argument(
+        "--tts-voice",
+        help="default provider voice id (the id, not the display name)",
+    )
     parser.add_argument("--no-deps", action="store_true", help="skip Python dependencies")
     parser.add_argument("--no-uv", action="store_true", help="do not use uv even when it is installed")
     parser.add_argument("--dry-run", action="store_true", help="show the plan without changing anything")
@@ -679,9 +690,18 @@ def main(argv: list[str] | None = None) -> int:
             or (stored_provider.get("model_id") if isinstance(stored_provider, dict) else None)
             or provider_cfg.get("default_model")
         )
+        tts_voice = (
+            args.tts_voice
+            or (stored_provider.get("voice_id") if isinstance(stored_provider, dict) else None)
+            or ""
+        )
+        if tts_voice and any(character.isspace() for character in tts_voice):
+            die("--tts-voice must be the provider voice id, not a display name")
         key_env = str(provider_cfg.get("api_key_env") or "")
         key_set = not key_env or bool(os.environ.get(key_env))
         tts_line = tts_provider + (f" ({tts_model})" if tts_model else "")
+        if tts_voice:
+            tts_line += f", voice {tts_voice}"
         if key_env:
             tts_line += f" | {key_env} {'set' if key_set else 'missing'}"
 
@@ -716,7 +736,9 @@ def main(argv: list[str] | None = None) -> int:
                 (path / ".venv-path").write_text(str(venv) + "\n", encoding="utf-8", newline="\n")
 
         install_latex(args.with_latex, dry_run=False)
-        write_tts_config(tts_provider, tts_model, tts_catalog)
+        write_tts_config(tts_provider, tts_model, tts_catalog, tts_voice or None)
+        if tts_voice:
+            note(f"default voice: {tts_voice}")
         if key_env and not key_set:
             warn(
                 f"{provider_cfg.get('label', tts_provider)} selected, but {key_env} is not set"

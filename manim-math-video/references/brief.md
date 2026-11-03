@@ -132,7 +132,8 @@ Render time depends heavily on graph complexity, text, and caching. A 7-minute e
 - `music` is an optional path relative to the episode directory. `music_gain_db` is negative dB under narration.
 - `voice.provider` accepts `edge`, `piper`, `cartesia`, `elevenlabs`, `custom`, or `none`.
 - `voice.command` is required for `custom`; `voice.piper_model` is required for `piper`.
-- Cartesia and ElevenLabs require an API key in `CARTESIA_API_KEY` / `ELEVENLABS_API_KEY`; the key never goes in the brief. Use `voice.model_id` to override the provider default (`sonic-3.6` / `eleven_multilingual_v2`).
+- Cartesia and ElevenLabs require an API key in `CARTESIA_API_KEY` / `ELEVENLABS_API_KEY`; the key never goes in the brief. Use `voice.model_id` to override the provider default (`sonic-3.6` / `eleven_multilingual_v2`). Read [voices-cartesia.md](voices-cartesia.md) or [voices-elevenlabs.md](voices-elevenlabs.md) for key scopes, plan/tier limits, access, and selection criteria.
+- `voice.id` must be the provider's exact voice id, not a display name. A key being present does not mean the account may use that voice.
 - `voice_settings` (ElevenLabs) and `emotion` / `generation_config` (Cartesia) are optional provider overrides.
 - `rate`, `pitch`, and `volume` use edge-tts syntax (`+0%`, `-3%`, `+2Hz`). Cartesia maps rate/volume to speed/volume; ElevenLabs maps rate to voice speed; pitch applies only to edge-tts.
 - `voice_selection` records the voice-selection gate: `status` is `confirmed` only after an explicit choice or confirmed series-voice reuse, `voice_id` must match `voice.id`, and `user_choice` / `sample_paths` preserve what the user chose. Do not run narration while it is `pending` or missing.

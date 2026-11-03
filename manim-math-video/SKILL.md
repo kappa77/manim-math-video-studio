@@ -33,7 +33,7 @@ Invoke the skill explicitly when the agent exposes skills as commands: `/skill:m
 
 Reuse decisions and approvals already supplied by the user. An explicit voice choice for the current video satisfies the voice-selection gate; do not ask again. A saved series default alone does not satisfy it for a new episode. The interview and brief approval below apply only to unresolved choices or a brief that has not already been approved.
 
-This skill is deliberately **interview-first**. A theme is not a brief. Before starting production of each new video or episode, always ask the user to choose the narration provider and voice, and wait for their explicit choice. Edge-tts is the default; Cartesia and ElevenLabs are available when `CARTESIA_API_KEY` / `ELEVENLABS_API_KEY` is set. Offer short playable samples as described in `references/voices.md`. Until that choice is settled, only interview, source research, environment checks, and voice-sample generation may proceed; do not scaffold, write the full script/storyboard, generate episode narration, or render. An existing explicit choice for the current video counts; a generic "ok", "go ahead", or delegated choice does not select an unidentified voice. Do not scaffold or render until the audience, central focus, content progression, visual approach, and four output parameters are settled.
+This skill is deliberately **interview-first**. A theme is not a brief. Before starting production of each new video or episode, always ask the user to choose the narration provider and voice, and wait for their explicit choice. Edge-tts is the default; Cartesia and ElevenLabs are available when `CARTESIA_API_KEY` / `ELEVENLABS_API_KEY` is set. Read the provider guide for Cartesia or ElevenLabs before offering voices; a configured key is not proof that the account may use a particular voice or tier. Offer short playable samples as described in `references/voices.md`. Until that choice is settled, only interview, source research, environment checks, and voice-sample generation may proceed; do not scaffold, write the full script/storyboard, generate episode narration, or render. An existing explicit choice for the current video counts; a generic "ok", "go ahead", or delegated choice does not select an unidentified voice. Do not scaffold or render until the audience, central focus, content progression, visual approach, and four output parameters are settled.
 
 ## Non-negotiables
 
@@ -58,6 +58,8 @@ Read only what the current step needs:
 | Brief fields, quality presets, defaults | `references/brief.md` |
 | Template catalog and series consistency | `references/templates.md` |
 | Voice/language selection and pronunciation | `references/voices.md` |
+| Cartesia voice requirements and criteria | `references/voices-cartesia.md` |
+| ElevenLabs voice requirements and criteria | `references/voices-elevenlabs.md` |
 | Storyboard beat grammar and pacing | `references/storyboard.md` |
 | Graph specs and animation recipes | `references/graphs.md` |
 | Custom Manim code, 3D, camera, equations | `references/manim-recipes.md` |

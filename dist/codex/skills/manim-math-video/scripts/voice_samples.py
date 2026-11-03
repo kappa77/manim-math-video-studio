@@ -255,11 +255,14 @@ def main(argv: list[str] | None = None) -> int:
             file=sys.stderr,
         )
     if args.list:
+        print(f"{'Voice':44} {'Label':22} {'Access':8} {'Lang':14} Style")
         for entry in entries:
             marker = " (recommended)" if entry.get("id") == recommended else ""
+            languages = ",".join(str(item) for item in (entry.get("languages") or []))
             print(
-                f"{entry.get('id', ''):44} {entry.get('label', ''):10} "
-                f"{entry.get('gender', ''):7} {entry.get('style', '')}{marker}"
+                f"{entry.get('id', ''):44} {str(entry.get('label', ''))[:22]:22} "
+                f"{str(entry.get('access', '') or '')[:8]:8} {languages[:14]:14} "
+                f"{str(entry.get('style', ''))[:60]}{marker}"
             )
         return 0
 

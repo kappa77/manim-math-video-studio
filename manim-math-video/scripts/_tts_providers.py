@@ -17,6 +17,26 @@ from typing import Any
 
 from _common import load_voices, provider_info
 
+_REFERENCE_HINTS = {
+    "cartesia": {
+        "401": "Check CARTESIA_API_KEY and its Cartesia-Version; see references/voices-cartesia.md.",
+        "403": "The Cartesia key cannot use this voice; see references/voices-cartesia.md.",
+        "422": "Check the Cartesia voice id, model, and generation config; see references/voices-cartesia.md.",
+    },
+    "elevenlabs": {
+        "401": "The key needs text_to_speech; enable voices_read to list voices; see references/voices-elevenlabs.md.",
+        "402": "Free plans cannot use library voices via the API; use an owned voice or upgrade; see references/voices-elevenlabs.md.",
+        "400": "This voice may require Creator tier or another plan; see references/voices-elevenlabs.md.",
+        "404": "The ElevenLabs voice id was not found; see references/voices-elevenlabs.md.",
+    },
+}
+
+
+def _with_hint(provider: str, message: str) -> str:
+    match = re.search(r"\((\d{3})\)", message)
+    hint = _REFERENCE_HINTS.get(provider, {}).get(match.group(1)) if match else None
+    return message + "\n" + hint if hint else message
+
 
 def _parse_percent(value: str) -> float:
     match = re.match(r"^\s*([+-]?\d+(?:\.\d+)?)\s*%\s*$", str(value or ""))
@@ -216,14 +236,17 @@ def cartesia_generate(
     api_version = provider_api_version("cartesia", voice_cfg, config, voices)
     generation_config = cartesia_config(voice_cfg, rate, volume)
     payload = cartesia_payload(text, voice, language, model_id, generation_config)
-    raw = _post_json(
-        f"{api_url('cartesia', voices)}/tts/bytes",
-        payload,
-        {
-            "Authorization": f"Bearer {key}",
-            "Cartesia-Version": api_version,
-        },
-    )
+    try:
+        raw = _post_json(
+            f"{api_url('cartesia', voices)}/tts/bytes",
+            payload,
+            {
+                "Authorization": f"Bearer {key}",
+                "Cartesia-Version": api_version,
+            },
+        )
+    except RuntimeError as exc:
+        raise RuntimeError(_with_hint("cartesia", str(exc))) from exc
     out_wav.write_bytes(raw)
 
 
@@ -248,14 +271,17 @@ def elevenlabs_generate(
         f"{api_url('elevenlabs', voices)}/v1/text-to-speech/"
         f"{urllib.parse.quote(voice, safe='')}?output_format=mp3_44100_128"
     )
-    raw = _post_json(
-        url,
-        payload,
-        {
-            "xi-api-key": key,
-            "Accept": "audio/mpeg",
-        },
-    )
+    try:
+        raw = _post_json(
+            url,
+            payload,
+            {
+                "xi-api-key": key,
+                "Accept": "audio/mpeg",
+            },
+        )
+    except RuntimeError as exc:
+        raise RuntimeError(_with_hint("elevenlabs", str(exc))) from exc
     out_mp3.write_bytes(raw)
 
 
@@ -294,6 +320,15 @@ def provider_voice_entries(
                 "gender": str(item.get("gender") or ""),
                 "style": str(item.get("tagline") or item.get("description") or ""),
                 "best_for": [],
+                "languages": sorted(
+                    {
+                        str(accent.get("locale"))
+                        for accent in (item.get("accents") or [])
+                        if accent.get("locale")
+                    }
+                ),
+                "access": "own" if item.get("is_owner") else str(item.get("access") or ""),
+                "category": "cartesia",
             }
             for item in rows
             if item.get("id")
@@ -316,6 +351,15 @@ def provider_voice_entries(
                     or (item.get("labels") or {}).get("use_case", "")
                 ),
                 "best_for": [],
+                "languages": sorted(
+                    {
+                        str(lang.get("language"))
+                        for lang in (item.get("verified_languages") or [])
+                        if lang.get("language")
+                    }
+                ),
+                "access": "own" if item.get("is_owner") else "library",
+                "category": str(item.get("category") or ""),
             }
             for item in rows
             if item.get("voice_id")

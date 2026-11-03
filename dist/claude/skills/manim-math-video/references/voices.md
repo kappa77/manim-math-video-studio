@@ -48,18 +48,23 @@ The voice is part of the series identity. Select it explicitly before producing 
 | custom | none | user command | any format converted to WAV |
 | none | none | — | silent timing |
 
-Keys are read from the environment; never write them into `brief.json`, the storyboard, or the repository.
+Detailed provider requirements and selection criteria:
+
+- [Cartesia](voices-cartesia.md) — key, voice ids, locales, speed/volume, streaming WAV.
+- [ElevenLabs](voices-elevenlabs.md) — key scopes, plan/tier, owned vs library voices, speed.
+
+Keys are read from the environment; never write them into `brief.json`, the storyboard, or the repository. A key being present does not guarantee that the account may use a particular voice; check the `Access` column and the provider guide.
 
 Install or repair the preferred provider once:
 
 ```bash
-python install.py --tts-provider cartesia --tts-model sonic-3.6
-python install.py --tts-provider elevenlabs
+python install.py --tts-provider cartesia --tts-model sonic-3.6 --tts-voice <voice-id>
+python install.py --tts-provider elevenlabs --tts-voice <voice-id>
 # PyPI package:
-uvx manim-math-video-studio --platform claude --tts-provider cartesia
+uvx manim-math-video-studio --platform claude --tts-provider cartesia --tts-voice <voice-id>
 ```
 
-This writes `~/.manim-math-video/tts.json` with the provider and model (not the key) and prints the missing variable if needed. `scripts/check_env.py` reports both native providers as optional until their key is set. Rerun the installer with a different `--tts-provider` to switch; use `--dry-run` to inspect without writing.
+This writes `~/.manim-math-video/tts.json` with the provider, model, and optional default voice id (not the key) and prints the missing variable if needed. The installer default is only a starting point; the series/episode still needs an explicit voice choice from the samples. `scripts/check_env.py` reports both native providers as optional until their key is set. Rerun the installer with a different `--tts-provider` to switch; use `--dry-run` to inspect without writing.
 
 During conversation, set `output.voice.provider` and `output.voice.id` explicitly. `model_id`, `api_version`, `emotion`, and `voice_settings` are optional overrides. List live voices before choosing:
 

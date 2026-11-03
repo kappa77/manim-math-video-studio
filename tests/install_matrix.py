@@ -589,7 +589,15 @@ def tts_provider_selection_is_persisted(ctx: Context) -> None:
     first = run_installer(
         ctx,
         home,
-        ["--platform", "claude", "--no-deps", "--tts-provider", "cartesia"],
+        [
+            "--platform",
+            "claude",
+            "--no-deps",
+            "--tts-provider",
+            "cartesia",
+            "--tts-voice",
+            "cartesia-voice",
+        ],
         timeout=180,
     )
     expect_success(first, "Cartesia provider selection failed")
@@ -601,12 +609,24 @@ def tts_provider_selection_is_persisted(ctx: Context) -> None:
         config["providers"]["cartesia"]["model_id"] == "sonic-3.6",
         "Cartesia default model was not recorded",
     )
+    require(
+        config["providers"]["cartesia"]["voice_id"] == "cartesia-voice",
+        "Cartesia default voice was not recorded",
+    )
     require("CARTESIA_API_KEY" in (first.stdout or ""), "missing-key warning was not shown")
 
     second = run_installer(
         ctx,
         home,
-        ["--platform", "claude", "--no-deps", "--tts-provider", "elevenlabs"],
+        [
+            "--platform",
+            "claude",
+            "--no-deps",
+            "--tts-provider",
+            "elevenlabs",
+            "--tts-voice",
+            "elevenlabs-voice",
+        ],
         timeout=180,
     )
     expect_success(second, "ElevenLabs provider selection failed")
@@ -620,11 +640,25 @@ def tts_provider_selection_is_persisted(ctx: Context) -> None:
         config["providers"]["elevenlabs"]["model_id"] == "eleven_multilingual_v2",
         "ElevenLabs default model was not recorded",
     )
+    require(
+        config["providers"]["elevenlabs"]["voice_id"] == "elevenlabs-voice",
+        "ElevenLabs default voice was not recorded",
+    )
 
     third = run_installer(
         ctx,
         home,
-        ["--platform", "claude", "--no-deps", "--tts-provider", "cartesia", "--tts-model", "sonic-3.5"],
+        [
+            "--platform",
+            "claude",
+            "--no-deps",
+            "--tts-provider",
+            "cartesia",
+            "--tts-model",
+            "sonic-3.5",
+            "--tts-voice",
+            "cartesia-voice-2",
+        ],
         timeout=180,
     )
     expect_success(third, "model override failed")
@@ -634,12 +668,25 @@ def tts_provider_selection_is_persisted(ctx: Context) -> None:
         config["providers"]["cartesia"]["model_id"] == "sonic-3.5",
         "model override was not persisted",
     )
+    require(
+        config["providers"]["cartesia"]["voice_id"] == "cartesia-voice-2",
+        "voice override was not persisted",
+    )
 
     dry_home = new_home(ctx, "tts-dry")
     dry = run_installer(
         ctx,
         dry_home,
-        ["--platform", "claude", "--no-deps", "--tts-provider", "cartesia", "--dry-run"],
+        [
+            "--platform",
+            "claude",
+            "--no-deps",
+            "--tts-provider",
+            "cartesia",
+            "--tts-voice",
+            "cartesia-voice",
+            "--dry-run",
+        ],
         timeout=120,
     )
     expect_success(dry, "TTS dry-run failed")
@@ -706,6 +753,49 @@ def tts_provider_cli_checks(ctx: Context) -> None:
     require(
         "Model: eleven_multilingual_v2" in (eleven.stdout or ""),
         "ElevenLabs model was not reported",
+    )
+
+    configured_home = new_home(ctx, "tts-config-voice")
+    config_path = configured_home / ".manim-math-video" / "tts.json"
+    config_path.parent.mkdir(parents=True)
+    config_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "provider": "cartesia",
+                "providers": {
+                    "cartesia": {
+                        "model_id": "sonic-3.6",
+                        "voice_id": "configured-cartesia-voice",
+                    }
+                },
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    configured = run_command(
+        ctx,
+        [
+            ctx.python,
+            str(tts_script),
+            "--episode",
+            str(episode),
+            "--provider",
+            "cartesia",
+            "--check",
+        ],
+        env={
+            **clean_env(configured_home, path=system_path()),
+            "MANIM_STUDIO_NO_REEXEC": "1",
+            "CARTESIA_API_KEY": "test-key",
+        },
+        timeout=120,
+    )
+    expect_success(configured, "configured Cartesia voice check failed")
+    require(
+        "configured-cartesia-voice" in (configured.stdout or ""),
+        "tts.py did not use the configured default voice",
     )
 
     missing = {**env}

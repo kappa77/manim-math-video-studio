@@ -356,11 +356,19 @@ def default_voice_for(
     provider: str,
     locale: str,
     voices: dict[str, Any] | None = None,
+    config: dict[str, Any] | None = None,
 ) -> str:
-    """Pick the provider's default voice, falling back to the edge catalog."""
+    """Pick the configured/default voice, falling back to the edge catalog."""
     voices = voices or load_voices()
     if provider in {"cartesia", "elevenlabs"}:
-        return str(provider_info(provider, voices).get("default_voice") or "")
+        config = config if config is not None else load_tts_config()
+        stored = config.get("providers", {})
+        stored = stored.get(provider, {}) if isinstance(stored, dict) else {}
+        return str(
+            (stored.get("voice_id") if isinstance(stored, dict) else None)
+            or provider_info(provider, voices).get("default_voice")
+            or ""
+        )
     return default_voice(locale, voices)
 
 
@@ -403,7 +411,7 @@ def resolve_output(brief: dict[str, Any]) -> dict[str, Any]:
         voice.setdefault(key, defaults[key])
     voice["provider"] = provider
     if not voice.get("id"):
-        voice["id"] = default_voice_for(provider, locale, voices)
+        voice["id"] = default_voice_for(provider, locale, voices, config)
     if provider in {"cartesia", "elevenlabs"} and not voice.get("model_id"):
         stored = config.get("providers", {})
         stored = stored.get(provider, {}) if isinstance(stored, dict) else {}
@@ -532,6 +540,12 @@ def validate_brief(brief: dict[str, Any], *, check_template: bool = True) -> tup
         )
     if provider in {"edge", "piper", "cartesia", "elevenlabs", "custom"} and not voice.get("id"):
         errors.append("output.voice.id is required.")
+    if provider in {"cartesia", "elevenlabs"} and voice.get("id") and any(
+        character.isspace() for character in str(voice["id"])
+    ):
+        errors.append(
+            "output.voice.id must be the provider voice id, not a display name."
+        )
     if provider == "piper" and not voice.get("piper_model"):
         errors.append("output.voice.piper_model is required when provider is piper.")
     if provider == "custom" and not voice.get("command"):
