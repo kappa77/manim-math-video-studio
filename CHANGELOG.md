@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-11-03
+
 ### Added
 
 - **Standard Python package.** `pyproject.toml`, a `manim_math_video_studio`
@@ -15,6 +17,12 @@ All notable changes to this project are documented here. The format follows
   package. Ready for `uvx` and `pipx` after the PyPI release.
 - **PyPI publishing workflow.** Trusted publishing on `v*` tags, with a build
   and artifact upload step shared by the package checks.
+
+### Changed
+
+- `install.py` gains `--version`. When installed from a wheel it defaults to the
+  release tag matching the package version instead of `main`, and the console
+  script reports its own name in `--help`.
 
 ## [0.3.2] — 2026-11-01
 
@@ -132,3 +140,4 @@ All notable changes to this project are documented here. The format follows
 [0.3.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.3.0
 [0.3.1]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.3.1
 [0.3.2]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.3.2
+[0.4.0]: https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.4.0
