@@ -19,6 +19,34 @@ Read this file when `output.voice.provider` is `elevenlabs`. The general voice g
 - The locale controls pronunciation through the model and the text; the adapter does
   not send `language_code` because multilingual v2 does not support it.
 
+## Creating an owned voice
+
+A key can be valid while every library voice is blocked on the free plan. The reliable
+route is to create a voice in **My Voices**:
+
+1. **Voice Design (free plan).** Open
+   <https://elevenlabs.io/app/voice-lab?create=true&creationType=voiceDesign>, or go to
+   **Voices → My Voices → Add a new voice → Voice Design**. Describe the voice, generate
+   three options, listen, and save one. The saved voice belongs to your account and has
+   `Access: own` in the API list. Preview text consumes credits.
+2. **Instant Voice Cloning (Starter and above).** Go to **Voices → + → Instant Voice
+   Clone**, upload 1–2 minutes of clean, consistent audio in the target language, name
+   the voice, confirm you have the right and consent to clone it, and save. Each file
+   must be at least 5 seconds; total audio must be at least 10 seconds.
+3. **Professional Voice Cloning (Creator and above).** Use 30–180 minutes of clean audio
+   for the highest fidelity. Training takes hours.
+
+Do not rely on "add a library voice to My Voices" for the free API: library voices
+remain plan-restricted. After saving, copy the **voice id** from My Voices (not the
+display name) and check it with:
+
+```bash
+python scripts/tts.py --list-voices --provider elevenlabs --language it-IT
+```
+
+The row must show `Access: own`. Then generate a sample with that id. If the API still
+returns `402`, the account plan or voice slot is the constraint.
+
 ## Criteria
 
 Choose a voice only after checking all of these:

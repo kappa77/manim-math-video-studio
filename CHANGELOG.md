@@ -13,6 +13,9 @@ All notable changes to this project are documented here. The format follows
 - `--list-voices` now shows `Access` and `Languages`; native-provider errors
   point to the provider guide; `--tts-voice` sets an installer default voice;
   display names are rejected where a provider voice id is required.
+- The ElevenLabs guide now explains how to create an owned voice with Voice
+  Design (free), Instant Voice Cloning (Starter), or Professional Voice Cloning
+  (Creator), and how to verify `Access: own` before selecting it.
 
 ## [0.5.1] — 2026-11-03
 

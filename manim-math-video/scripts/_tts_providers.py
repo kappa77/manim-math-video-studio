@@ -25,7 +25,7 @@ _REFERENCE_HINTS = {
     },
     "elevenlabs": {
         "401": "The key needs text_to_speech; enable voices_read to list voices; see references/voices-elevenlabs.md.",
-        "402": "Free plans cannot use library voices via the API; use an owned voice or upgrade; see references/voices-elevenlabs.md.",
+        "402": "Free plans cannot use library voices via the API; create a Voice Design voice in My Voices or upgrade; see references/voices-elevenlabs.md.",
         "400": "This voice may require Creator tier or another plan; see references/voices-elevenlabs.md.",
         "404": "The ElevenLabs voice id was not found; see references/voices-elevenlabs.md.",
     },
