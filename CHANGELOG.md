@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- The PyPI publish workflow now also creates a GitHub Release from the pushed
+  tag, so tags and releases no longer drift. Existing missing releases were
+  created retroactively.
+
 ## [0.7.0] — 2026-11-03
 
 ### Added
