@@ -1,67 +1,46 @@
 # Install Manim Math Video Studio
 
-One command installs the skill for the agents on your machine and prepares a
-single shared Python environment. No activation, no manual `pip`, no copying
-directories by hand.
-
-## Standard install from PyPI
-
-Starting with **v0.4.0**, the installer is also a standard Python package. This
-is the shortest complete route: it installs the skill for one agent and prepares
-the shared environment.
+## Standard install (PyPI)
 
 ```bash
 uvx manim-math-video-studio --platform claude
 ```
 
-Or with `pipx`:
+Replace `claude` with `codex`, `copilot`, or `pi`. Add `--platform all` only if
+you explicitly want all four. Needs Python 3.10+; `uvx` comes with [`uv`](https://docs.astral.sh/uv/getting-started/installation/).
+The package is thin: it downloads the release tag matching its own version and
+keeps the skill trees out of the wheel.
+
+With `pipx`:
 
 ```bash
 pipx run --spec manim-math-video-studio manim-math-video-studio --platform claude
 ```
 
-Replace `claude` with `codex`, `copilot`, or `pi`. Add `--platform all` only if
-you explicitly want all four. The package is thin: it downloads the release tag
-matching its own version and keeps the skill trees out of the wheel.
+It installs the skill, prepares one shared environment at
+`~/.manim-math-video/venv`, and verifies it. Restart the agent afterwards.
 
-## Quick start
+## Fallback installers
 
-One command, identical on macOS, Linux, and Windows:
+<details>
+<summary>Without PyPI: one-line installer or a checkout</summary>
+
+One command on macOS, Linux, and Windows (Python 3.10+):
 
 ```bash
 python -c "import urllib.request as u;exec(u.urlopen('https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.py').read().decode())"
 ```
 
-It needs only Python 3.10+ (Windows: `winget install --id Python.Python.3.12 -e`, macOS: `brew install python`, Debian/Ubuntu: `sudo apt install python3`). Use `python` or `py` — the line is the same in PowerShell, `cmd`, bash, and zsh.
-
-Shorter native wrappers, one per platform:
-
-```bash
-# macOS / Linux
-curl -fsSL https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.sh | bash
-```
-
-```powershell
-# Windows
-irm https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.ps1 | iex
-```
-
-Two commands at worst, with no download-through-a-pipe at all:
+Or clone the release and run the stdlib installer:
 
 ```bash
 git clone --depth 1 https://github.com/kappa77/manim-math-video-studio
-python manim-math-video-studio/install.py
+python manim-math-video-studio/install.py --platform claude
 ```
 
-The installer prints a plan, then:
+The `install.sh` and `install.ps1` wrappers do the same for a piped install.
 
-1. copies the prebuilt skill tree into the personal skill root of every agent it detects;
-2. creates the shared environment at `~/.manim-math-video/venv` and installs `requirements.txt`;
-3. records what it did in `~/.manim-math-video/install.json`;
-4. runs `check_env.py` against the installed skill;
-5. prints the invocation syntax for each platform.
-
-Restart your agent afterwards so it reloads its skill directory.
+</details>
 
 ## What gets installed where
 
@@ -249,22 +228,23 @@ for subtitle burn-in and audio normalization.
 
 ## Update
 
-Run the same one command again — the installer is idempotent. It replaces the
-skill trees in place and leaves the shared environment alone when the
-requirements are already satisfied:
+Run the same command again; the installer is idempotent. It replaces the skill
+trees in place and leaves the shared environment alone when the requirements
+are already satisfied:
 
 ```bash
-python -c "import urllib.request as u;exec(u.urlopen('https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.py').read().decode())"
+uvx manim-math-video-studio --platform claude
 ```
 
-Force a dependency refresh with `--venv` pointing at a new directory, or delete
+From a checkout, use `python install.py --platform claude` instead. Force a
+dependency refresh with `--venv` pointing at a new directory, or delete
 `~/.manim-math-video/venv` and rerun.
 
 ## Uninstall
 
 ```bash
-python install.py --uninstall           # or: ... | bash -s -- --uninstall
-python install.py --uninstall --dry-run # show what would be removed
+uvx manim-math-video-studio --uninstall
+uvx manim-math-video-studio --uninstall --dry-run
 ```
 
 The installer removes the skill directories it recorded, the shared

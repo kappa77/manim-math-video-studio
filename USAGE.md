@@ -6,8 +6,9 @@ guide covers the pipeline, the commands, and what each artifact means. Depth liv
 
 ## Quick start
 
-Run the installer once (see [INSTALL.md](INSTALL.md)); it creates the shared environment and
-checks it. Then work from the skill directory: the scripts find that environment on their own.
+Run the installer once with `uvx manim-math-video-studio --platform claude` (see
+[INSTALL.md](INSTALL.md)); it creates the shared environment and checks it. Then work from
+the skill directory: the scripts find that environment on their own.
 
 ```bash
 cd manim-math-video

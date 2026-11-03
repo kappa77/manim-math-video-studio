@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- README, INSTALL, USAGE, and the landing page now lead with the `uvx`/PyPI
+  install and keep the long fallback routes collapsed. The landing page lists
+  the explicit per-agent commands.
+
 ## [0.4.0] — 2026-11-03
 
 ### Added

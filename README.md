@@ -1,6 +1,7 @@
 # Manim Math Video Studio
 
-[![release](https://img.shields.io/github/v/release/kappa77/manim-math-video-studio?color=blue)](https://github.com/kappa77/manim-math-video-studio/releases/latest)
+[![pypi](https://img.shields.io/pypi/v/manim-math-video-studio?color=blue)](https://pypi.org/project/manim-math-video-studio/)
+[![tag](https://img.shields.io/github/v/tag/kappa77/manim-math-video-studio?label=tag&color=blue)](https://github.com/kappa77/manim-math-video-studio/tags)
 [![license](https://img.shields.io/github/license/kappa77/manim-math-video-studio)](LICENSE)
 [![python](https://img.shields.io/badge/python-3.10%2B-yellow)](INSTALL.md)
 [![agents](https://img.shields.io/badge/agents-Claude%20Code%20%7C%20Codex%20%7C%20Copilot%20%7C%20Pi-blueviolet)](INSTALL.md)
@@ -8,14 +9,12 @@
 A portable [Agent Skill](https://agentskills.io/specification) that turns a topic into a storyboarded, narrated Manim video — and into a consistent series. Prebuilt for Claude Code, Codex, GitHub Copilot, and Pi.
 
 ```bash
-python -c "import urllib.request as u;exec(u.urlopen('https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.py').read().decode())"
+uvx manim-math-video-studio --platform claude
 ```
 
-It finds the agents on your machine, installs the skill for each, prepares one shared environment at `~/.manim-math-video/venv` (with `uv` when available), and verifies it. Same command on macOS, Linux, and Windows; needs Python 3.10+.
+Replace `claude` with `codex`, `copilot`, or `pi`. Needs Python 3.10+ and `uv`; the package installs the skill and the shared Manim environment. No clone.
 
-Standard Python package (v0.4.0+): `uvx manim-math-video-studio --platform claude` — one agent at a time, no clone.
-
-Other routes — `curl -fsSL …/install.sh | bash`, `irm …/install.ps1 | iex`, or `git clone` + `python install.py` — are in [INSTALL.md](INSTALL.md).
+Fallback routes (one-line installer, `pipx`, manual copy) are in [INSTALL.md](INSTALL.md).
 
 ![The birthday-problem episode: the probability curve for a shared birthday rising through 23 people at 50.7%](docs/img/demo.gif)
 
@@ -34,7 +33,7 @@ Other routes — `curl -fsSL …/install.sh | bash`, `irm …/install.ps1 | iex`
 
 | Doc | Covers |
 |---|---|
-| [INSTALL.md](INSTALL.md) | one-command install, options, LaTeX, manual install, runtime resolution, update, uninstall, troubleshooting |
+| [INSTALL.md](INSTALL.md) | PyPI/`uvx` install, fallbacks, options, LaTeX, runtime resolution, update, uninstall, troubleshooting |
 | [USAGE.md](USAGE.md) | quick start, command reference, pipeline, beats, templates, graphs, narration, series, validation |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | repository layout, source of truth vs `dist/`, adding beats and templates, versioning |
 | [tests/README.md](tests/README.md) | Docker-based install verification for every supported agent harness |

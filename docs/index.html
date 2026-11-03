@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Manim Math Video Studio — an agent skill for narrated animated videos</title>
-<meta name="description" content="An Agent Skill that turns a topic into a storyboarded, narrated Manim video — and into a consistent series. Prebuilt for Claude Code, Codex, GitHub Copilot, and Pi. One command install.">
+<meta name="description" content="An Agent Skill that turns a topic into a storyboarded, narrated Manim video — and into a consistent series. Install with uvx, pipx, or the fallback installer for Claude Code, Codex, GitHub Copilot, and Pi.">
 <meta property="og:title" content="Manim Math Video Studio">
-<meta property="og:description" content="Topic in, narrated Manim video out. One command install for Claude Code, Codex, GitHub Copilot, and Pi.">
+<meta property="og:description" content="Topic in, narrated Manim video out. Install with uvx or pipx for Claude Code, Codex, GitHub Copilot, and Pi.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://kappa77.github.io/manim-math-video-studio/">
 <meta property="og:image" content="https://kappa77.github.io/manim-math-video-studio/img/demo-poster.jpg">
@@ -113,7 +113,8 @@
       <strong>then keeps doing it in the same visual style for the whole series.</strong>
     </p>
     <div class="pills">
-      <a class="pill" href="https://github.com/kappa77/manim-math-video-studio/releases/latest">v0.4.0 release</a>
+      <a class="pill" href="https://pypi.org/project/manim-math-video-studio/">PyPI package</a>
+      <a class="pill" href="https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.4.0">v0.4.0 tag</a>
       <a class="pill" href="https://github.com/kappa77/manim-math-video-studio/releases/download/v0.2.0/manim-math-video-demo-23-people-1080p.mp4">watch the demo</a>
       <a class="pill" href="https://github.com/kappa77/manim-math-video-studio/blob/main/INSTALL.md">install guide</a>
       <a class="pill" href="https://github.com/kappa77/manim-math-video-studio/blob/main/USAGE.md">usage</a>
@@ -122,10 +123,10 @@
     </div>
 
     <div class="install">
-      <code id="cmd">python -c "import urllib.request as u;exec(u.urlopen('https://raw.githubusercontent.com/kappa77/manim-math-video-studio/main/install.py').read().decode())"</code>
+      <code id="cmd">uvx manim-math-video-studio --platform claude</code>
       <button class="copy" id="copy" type="button">Copy</button>
     </div>
-    <p class="note">One command on macOS, Linux, and Windows. Detects Claude Code, Codex, GitHub Copilot, and Pi; installs one shared environment; verifies it. Needs Python 3.10+.</p>
+    <p class="note">One agent at a time. Replace <code>claude</code> with <code>codex</code>, <code>copilot</code>, or <code>pi</code>. Needs Python 3.10+ and <a href="https://docs.astral.sh/uv/">uv</a>; installs the shared Manim environment. <a href="https://github.com/kappa77/manim-math-video-studio/blob/main/INSTALL.md">Other installers</a>.</p>
   </header>
 
   <figure>
@@ -175,23 +176,24 @@
   </section>
 
   <section>
-    <h2>Install by hand, if you prefer</h2>
+    <h2>Install one agent at a time</h2>
     <table>
-      <thead><tr><th>Agent</th><th>Unzip the release asset into</th><th>Invoke</th></tr></thead>
+      <thead><tr><th>Agent</th><th>Install</th><th>Invoke</th></tr></thead>
       <tbody>
-        <tr><td>Claude Code</td><td><code>~/.claude/skills/</code></td><td><code>/manim-math-video</code></td></tr>
-        <tr><td>Codex</td><td><code>~/.codex/skills/</code> or <code>~/.agents/skills/</code></td><td><code>$manim-math-video</code></td></tr>
-        <tr><td>GitHub Copilot</td><td><code>~/.copilot/skills/</code></td><td><code>/manim-math-video</code></td></tr>
-        <tr><td>Pi</td><td><code>~/.pi/agent/skills/</code></td><td><code>/skill:manim-math-video</code></td></tr>
+        <tr><td>Claude Code</td><td><code>uvx manim-math-video-studio --platform claude</code></td><td><code>/manim-math-video</code></td></tr>
+        <tr><td>Codex</td><td><code>uvx manim-math-video-studio --platform codex</code></td><td><code>$manim-math-video</code></td></tr>
+        <tr><td>GitHub Copilot</td><td><code>uvx manim-math-video-studio --platform copilot</code></td><td><code>/manim-math-video</code></td></tr>
+        <tr><td>Pi</td><td><code>uvx manim-math-video-studio --platform pi</code></td><td><code>/skill:manim-math-video</code></td></tr>
       </tbody>
     </table>
-    <p class="note">Each zip contains a single <code>manim-math-video/</code> folder. Keep it complete — <code>SKILL.md</code> references the bundled scripts, references, and assets.</p>
+    <p class="note">The package installs the skill and the shared environment. Prefer <code>pipx</code> or a checkout? See the <a href="https://github.com/kappa77/manim-math-video-studio/blob/main/INSTALL.md">install guide</a>.</p>
   </section>
 
   <section>
     <h2>Get it</h2>
     <div class="cta">
-      <a class="primary" href="https://github.com/kappa77/manim-math-video-studio/releases/latest">Download v0.4.0</a>
+      <a class="primary" href="https://pypi.org/project/manim-math-video-studio/">Install from PyPI</a>
+      <a href="https://github.com/kappa77/manim-math-video-studio/releases/tag/v0.4.0">v0.4.0 tag</a>
       <a href="https://github.com/kappa77/manim-math-video-studio">Star on GitHub</a>
       <a href="https://github.com/kappa77/manim-math-video-studio/blob/main/INSTALL.md">Read the install guide</a>
     </div>
@@ -200,6 +202,7 @@
   <footer>
     MIT licensed · Built with <a href="https://www.manim.community/">Manim Community</a> and
     <a href="https://github.com/rany2/edge-tts">edge-tts</a> ·
+    <a href="https://pypi.org/project/manim-math-video-studio/">PyPI</a> ·
     <a href="https://github.com/kappa77/manim-math-video-studio">github.com/kappa77/manim-math-video-studio</a>
   </footer>
 
